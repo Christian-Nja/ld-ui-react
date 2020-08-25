@@ -1,0 +1,8 @@
+1) code views not browsing functionality on data
+2) start with static data and then pass them define a ld-r query constructor
+   look at queryObject if it may be good for you (by ld-r) but it would be better to find a sparql npm module to do the queries
+
+# TimeIndexedTypedLocationResource
+properties: data to visualize
+
+
