@@ -1,0 +1,45 @@
+{
+  "name": "ld-ui-react",
+  "version": "1.0.0",
+  "description": "React UIs to visualize Linked Data, especially Ontology Design Patterns",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "./node_modules/.bin/babel src --out-dir lib --copy-files"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Christian-Nja/ld-ui-react.git"
+  },
+  "keywords": [
+    "linked",
+    "data",
+    "react",
+    "ui",
+    "ontology",
+    "design",
+    "patterns"
+  ],
+  "author": "Christian Colonna",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Christian-Nja/ld-ui-react/issues"
+  },
+  "homepage": "https://github.com/Christian-Nja/ld-ui-react#readme",
+  "dependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.4",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-react": "^7.10.4",
+    "leaflet": "^1.6.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-leaflet": "^2.7.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-leaflet": "^2.7.0",
+    "leaflet": "^1.6.0"
+  }
+}
