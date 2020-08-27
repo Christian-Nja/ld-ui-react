@@ -5,7 +5,19 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "./node_modules/.bin/babel src --out-dir lib --copy-files"
+    "build": "./node_modules/.bin/babel src --out-dir lib --copy-files",
+    "lint": "eslint --ignore-path .gitignore -c .eslintrc \"./**/*.js\""
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "./node_modules/.bin/eslint --fix",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
@@ -31,6 +43,12 @@
     "@babel/core": "^7.11.4",
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-react": "^7.10.4",
+    "@fortawesome/fontawesome-free": "^5.14.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.30",
+    "@fortawesome/free-brands-svg-icons": "^5.14.0",
+    "@fortawesome/free-regular-svg-icons": "^5.14.0",
+    "@fortawesome/free-solid-svg-icons": "^5.14.0",
+    "@fortawesome/react-fontawesome": "^0.1.11",
     "leaflet": "^1.6.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -41,5 +59,9 @@
     "react-dom": "^16.13.1",
     "react-leaflet": "^2.7.0",
     "leaflet": "^1.6.0"
+  },
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.13"
   }
 }

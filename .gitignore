@@ -1,3 +1,9 @@
+# My file
+.eslintignore
+.eslintrc
+DEVELOPMENT-PROCESS
+
+
 # Logs
 logs
 *.log

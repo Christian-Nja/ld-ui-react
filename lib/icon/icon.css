@@ -1,0 +1,9 @@
+/*
+In this file you can set icon default css
+*/
+
+.ld-ui-div-icon {
+    opacity: 1;
+    height: 50px;
+    width: auto;
+}

@@ -1,10 +1,5 @@
 /* This is needed else Map will collapse in 0 dimensions */
 .leaflet-container {
     height: 400px;
-    width: 100%;
-}
-
-.ld-ui-div-icon {
-    opacity: 1;
-    fill: brown;
+    width: 400px;
 }

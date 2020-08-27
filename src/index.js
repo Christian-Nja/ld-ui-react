@@ -1,3 +1,3 @@
-import TimeIndexedTypedLocation from "./components/TimeIndexedTypedLocation"
+import TimeIndexedTypedLocation from './components/TimeIndexedTypedLocation/TimeIndexedTypedLocation'
 
 export { TimeIndexedTypedLocation };
