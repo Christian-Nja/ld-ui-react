@@ -1,9 +1,12 @@
 import leafletIcon from '../functions/leafletIcon';
 import LeafletIconParams from '../classes/LeafletIconParams';
 
+import svg from '../uri-encoded-icons/red-marker.svg.uri.js';
+console.log(svg);
+
 const locationIconParams = new LeafletIconParams({
-    iconUrl: require('../images/red-marker.png'),
-    iconRetinaUrl: require('../images/red-marker.png'),
+    iconUrl: svg,
+    iconRetinaUrl: svg,
     iconWidth: 60,
     iconHeight: 75,
     className: 'ld-ui-div-icon',

@@ -8,8 +8,8 @@ import { locationIcon } from '../../icon/ld-ui-icon';
 
 export default function TimeIndexedTypedLocation(props) {
     const position = [
-        props.data.timeIndexedTypedLocations[0].coordinates.latitude,
-        props.data.timeIndexedTypedLocations[0].coordinates.longitude,
+        props.timeIndexedTypedLocations[0].latitude,
+        props.timeIndexedTypedLocations[0].longitude,
     ];
     const zoom = 6;
     return (

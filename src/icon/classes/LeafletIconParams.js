@@ -31,13 +31,3 @@ export default class LeafletIconParams {
         this.className = params.className;
     }
 }
-
-// iconUrl: require('@fortawesome/fontawesome-free/svgs/regular/sun.svg'),
-// iconRetinaUrl: require('@fortawesome/fontawesome-free/svgs/regular/sun.svg'),
-// iconAnchor: null,
-// popupAnchor: null,
-// shadowUrl: null,
-// shadowSize: null,
-// shadowAnchor: null,
-// iconSize: new L.Point(60, 75),
-// className: 'ld-ui-div-icon'
