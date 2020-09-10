@@ -1,6 +1,9 @@
 /* This is needed else Map will collapse in 0 dimensions */
 .leaflet-container {
-    height: 400px;
-    width: 400px;
+    height: 500px;
+    width: 500px;
 }
- 
+
+.clickable-tooltip {
+    pointer-events: auto;
+}

@@ -8,6 +8,6 @@ Some day you may host icons in a separate online server and switch the iconUrl t
 
 To encode icons you need to:
 
--   download svg one
--   pass the html to this site: https://runkit.com/embed/o0641isnb3ce
--   put the result in the file in the current folder
+-   download svg: https://freesvg.org/
+
+$ npm run encode-svg

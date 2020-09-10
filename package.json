@@ -6,7 +6,8 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "./node_modules/.bin/babel src --out-dir lib --copy-files",
-        "lint": "eslint --ignore-path .gitignore -c .eslintrc \"./**/*.js\""
+        "lint": "eslint --ignore-path .gitignore -c .eslintrc \"./**/*.js\"",
+        "encode-icon": "cd ./src/icon/images && ./encode-all-svg && cd ../../.."
     },
     "husky": {
         "hooks": {
@@ -43,6 +44,7 @@
         "@babel/core": "^7.11.4",
         "@babel/preset-env": "^7.11.0",
         "@babel/preset-react": "^7.10.4",
+        "@christian-nja/general-components": "^1.0.2",
         "@fortawesome/fontawesome-free": "^5.14.0",
         "@fortawesome/fontawesome-svg-core": "^1.2.30",
         "@fortawesome/free-brands-svg-icons": "^5.14.0",
@@ -52,7 +54,8 @@
         "leaflet": "^1.6.0",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
-        "react-leaflet": "^2.7.0"
+        "react-leaflet": "^2.7.0",
+        "react-leaflet-arrowheads": "^1.1.0"
     },
     "devDependencies": {
         "babel-eslint": "^10.1.0",

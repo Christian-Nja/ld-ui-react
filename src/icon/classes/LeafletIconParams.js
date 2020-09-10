@@ -10,7 +10,7 @@ export default class LeafletIconParams {
      * Params keys:
      * @param {string} iconUrl the path to iconUrl
      * @param {string} iconRetinaUrl
-     * @param {*} iconAnchor
+     * @param {number[]} iconAnchor by default top left corner of icon points to provided coordinates, change this to move your icon
      * @param {*} popupAnchor
      * @param {*} shadowUrl
      * @param {*} shadowSize
