@@ -6,4 +6,5 @@
 
 .clickable-tooltip {
     pointer-events: auto;
+    transition: 0.7s;
 }

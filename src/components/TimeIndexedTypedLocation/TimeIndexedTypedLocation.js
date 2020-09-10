@@ -22,8 +22,13 @@ export default function TimeIndexedTypedLocation(props) {
 
     // fit map focus to markers
     const onFeatureGroupAdd = (e) => {
-        mapRef.current.leafletElement.fitBounds(e.target.getBounds());
+        mapRef.current.leafletElement.fitBounds(e.target.getBounds(), {
+            padding: [50, 50],
+        });
     };
+
+    // 2 problems: overlapping markers (tooltip || popup), polyline
+    // https://stackoverflow.com/questions/51178273/install-overlapping-marker-spiderfier-for-leaflet-with-react
 
     return (
         <div>
@@ -61,6 +66,7 @@ export default function TimeIndexedTypedLocation(props) {
                                             : 'Today'
                                     }`}
                                     siteLabel={tITL.siteLabel}
+                                    city={tITL.city}
                                 ></ClickableTooltip>
                             </Marker>
                         );
