@@ -4,7 +4,12 @@
     width: 500px;
 }
 
-.clickable-tooltip {
+#map {
+    height: 500px;
+    width: 500px;
+}
+
+.tITL-popup {
     pointer-events: auto;
     transition: 0.7s;
 }

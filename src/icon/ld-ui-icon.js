@@ -1,20 +1,30 @@
 import './icon.css';
 
-import locationIcon from './custom-leaflet-icons/locationIcon';
+import blueMarkerIcon from './custom-leaflet-icons/blueMarkerIcon';
 
-import TimeIcon from './simple-icons/TimeIcon';
-import MuseumIcon from './simple-icons/MuseumIcon';
-import LocationIcon from './simple-icons/LocationIcon';
+import timeIcon from './custom-html-icons/timeIcon';
+import museumIcon from './custom-html-icons/museumIcon';
+
+import TimeIcon from './custom-react-icons/TimeIcon';
+import MuseumIcon from './custom-react-icons/MuseumIcon';
+import LocationIcon from './custom-react-icons/LocationIcon';
 
 /*
  *  Leaflet icons
  * _________________________ */
 
-export { locationIcon };
+export { blueMarkerIcon };
+
+/**
+ * Html icons
+ ____________________________*/
+
+export { timeIcon };
+export { museumIcon };
 
 /*
  *  React icons
- * _________________________*/
+ * __________________________*/
 
 export { TimeIcon };
 export { MuseumIcon };

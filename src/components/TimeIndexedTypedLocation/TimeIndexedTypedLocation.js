@@ -1,80 +1,80 @@
 import React, { useRef, useEffect } from 'react';
+import L from 'leaflet';
+import 'leaflet.markercluster/dist/leaflet.markercluster';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
-import { Map, TileLayer, Marker, FeatureGroup } from 'react-leaflet';
-import Polyline from 'react-leaflet-arrowheads';
+// import "overlapping-marker-spiderfier-leaflet/dist/oms";
+// const OverlappingMarkerSpiderfier = window.OverlappingMarkerSpiderfier;
+// https://stackoverflow.com/questions/59306768/marker-clustering-leaflet-markercluster-with-react-leaflet-2-0
+
+/**
+ * css
+ */
 import 'leaflet/dist/leaflet.css';
 import './TimeIndexedTypedLocation.css';
 
-import { locationIcon } from '../../icon/ld-ui-icon';
+/**
+ * Internal modules
+ */
 
-import ClickableTooltip from './ClickableTooltip';
+import { useMap } from '../hooks/ld-ui-hooks';
+import { blueMarkerIcon } from '../../icon/ld-ui-icon';
+import tITLPopup from './tITLPopup';
 
 export default function TimeIndexedTypedLocation(props) {
-    console.log(JSON.stringify(props.timeIndexedTypedLocations[0]));
-
     // optional as zoom is handled by markers
-    const defaultCenter = [51, 0];
-    const defaultZoom = 10;
-
     const lines = getTimeOrientedCoordinates(props.timeIndexedTypedLocations);
 
     const mapRef = useRef(null);
+    const markerRefs = useRef([]);
 
-    // fit map focus to markers
-    const onFeatureGroupAdd = (e) => {
-        mapRef.current.leafletElement.fitBounds(e.target.getBounds(), {
-            padding: [50, 50],
+    useMap(mapRef);
+
+    useEffect(() => {
+        const mcg = L.markerClusterGroup();
+        /** display markers */
+        var bounds = L.latLngBounds();
+
+        props.timeIndexedTypedLocations.forEach((tITL, index) => {
+            const markerPosition = [
+                parseFloat(tITL.latitude),
+                parseFloat(tITL.longitude),
+            ];
+            const popupContent = {
+                city: tITL.city,
+                siteLabel: tITL.siteLabel,
+                timeInterval: `${tITL.startTime} - ${
+                    tITL.endTime !== '' ? tITL.endTime : 'Today'
+                }`,
+            };
+            var popup = L.popup()
+                .setContent(tITLPopup(popupContent))
+                .setLatLng(markerPosition);
+
+            markerRefs.current[index] = L.marker(markerPosition, {
+                icon: blueMarkerIcon,
+            })
+                .addTo(mcg)
+                .bindPopup(popup);
+
+            //            bounds.extend(markerPosition);
+            //mapRef.current.fitBounds(bounds, { padding: [50, 50] });
+            mapRef.current.addLayer(mcg);
         });
-    };
+    }, []);
 
-    // 2 problems: overlapping markers (tooltip || popup), polyline
-    // https://stackoverflow.com/questions/51178273/install-overlapping-marker-spiderfier-for-leaflet-with-react
+    // add marker
+    // const markerRef = useRef(null);
+    // useEffect(() => {
+    //     if (markerRef.current) {
+    //         markerRef.current.setLatLng(markerPosition);
+    //     } else {
+    //         markerRef.current = L.marker(markerPosition).addTo(mapRef.current);
+    //     }
+    // }, [markerPosition]);
 
-    return (
-        <div>
-            <Map
-                center={defaultCenter}
-                zoom={defaultZoom}
-                ref={mapRef}
-                zoomControl={false}
-                attributionControl={false}
-            >
-                <TileLayer
-                    attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <Polyline
-                    positions={lines}
-                    arrowheads={{
-                        fill: true,
-                        size: '1%',
-                        proportionalToTotal: true,
-                    }}
-                />
-                <FeatureGroup onAdd={onFeatureGroupAdd}>
-                    {props.timeIndexedTypedLocations.map((tITL, index) => {
-                        return (
-                            <Marker
-                                position={[tITL.latitude, tITL.longitude]}
-                                icon={locationIcon}
-                                key={index}
-                            >
-                                <ClickableTooltip
-                                    timeInterval={`${tITL.startTime} - ${
-                                        tITL.endTime !== ''
-                                            ? tITL.endTime
-                                            : 'Today'
-                                    }`}
-                                    siteLabel={tITL.siteLabel}
-                                    city={tITL.city}
-                                ></ClickableTooltip>
-                            </Marker>
-                        );
-                    })}
-                </FeatureGroup>
-            </Map>
-        </div>
-    );
+    return <div id="map"></div>;
 }
 
 function getTimeOrientedCoordinates(timeIndexedTypedLocations) {
@@ -89,13 +89,3 @@ function getTimeOrientedCoordinates(timeIndexedTypedLocations) {
     });
     return coordinatesArray;
 }
-
-/*
-<button onClick={handleClick}>Zoom</button>
-
-const handleClick = () => {
-    const map = mapRef.current.leafletElement;
-    const group = groupRef.current.leafletElement;
-    map.fitBounds(group.getBounds());
-};
-*/
