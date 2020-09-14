@@ -3,11 +3,8 @@ import L from 'leaflet';
 import 'leaflet.markercluster/dist/leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-
-// import "overlapping-marker-spiderfier-leaflet/dist/oms";
-// const OverlappingMarkerSpiderfier = window.OverlappingMarkerSpiderfier;
-// https://stackoverflow.com/questions/59306768/marker-clustering-leaflet-markercluster-with-react-leaflet-2-0
-
+import '@elfalem/leaflet-curve';
+import 'leaflet-polylinedecorator';
 /**
  * css
  */
@@ -19,11 +16,11 @@ import './TimeIndexedTypedLocation.css';
  */
 
 import { useMap } from '../hooks/ld-ui-hooks';
-import { blueMarkerIcon } from '../../icon/ld-ui-icon';
+import { blueMarkerIcon, blackArrowHeadIcon } from '../../icon/ld-ui-icon';
 import tITLPopup from './tITLPopup';
+import { _getControlPoint } from '../../utilities/math';
 
 export default function TimeIndexedTypedLocation(props) {
-    // optional as zoom is handled by markers
     const lines = getTimeOrientedCoordinates(props.timeIndexedTypedLocations);
 
     const mapRef = useRef(null);
@@ -58,23 +55,52 @@ export default function TimeIndexedTypedLocation(props) {
                 .addTo(mcg)
                 .bindPopup(popup);
 
-            //            bounds.extend(markerPosition);
-            //mapRef.current.fitBounds(bounds, { padding: [50, 50] });
-            mapRef.current.addLayer(mcg);
+            bounds.extend(markerPosition);
+            //            sleep(1000, index).then(() => {});
         });
+
+        mapRef.current.fitBounds(bounds, { padding: [50, 50] });
+        mapRef.current.addLayer(mcg);
+
+        let arrows = [];
+        for (let i = 0; i < lines.length - 1; i++) {
+            let path = drawCurve(lines[i], lines[i + 1], mapRef);
+            arrows.push(path);
+            let arrowhead = arrowHead(lines[i + 1]);
+            arrowhead.addTo(mapRef.current);
+        }
+
+        arrows.forEach((arrow) => {
+            arrow.addTo(mapRef.current);
+        });
+
+        //var path = drawCurve(lines[0], lines[1]);
+        //path.addTo(mapRef.current);
     }, []);
 
-    // add marker
-    // const markerRef = useRef(null);
-    // useEffect(() => {
-    //     if (markerRef.current) {
-    //         markerRef.current.setLatLng(markerPosition);
-    //     } else {
-    //         markerRef.current = L.marker(markerPosition).addTo(mapRef.current);
-    //     }
-    // }, [markerPosition]);
-
     return <div id="map"></div>;
+}
+
+function arrowHead(coordinates) {
+    return L.marker(coordinates, {
+        icon: blackArrowHeadIcon,
+    });
+}
+
+function drawCurve(coordinates_1, coordinates_2, mapRef) {
+    const controlPointXoffset = 1;
+    let path = L.curve(
+        [
+            'M',
+            coordinates_1,
+            'Q',
+            _getControlPoint(coordinates_1, coordinates_2, controlPointXoffset),
+            coordinates_2,
+        ],
+        { color: 'red', fill: false }
+    );
+
+    return path;
 }
 
 function getTimeOrientedCoordinates(timeIndexedTypedLocations) {
@@ -85,7 +111,15 @@ function getTimeOrientedCoordinates(timeIndexedTypedLocations) {
     });
     var coordinatesArray = [];
     timeIndexedTypedLocations.forEach((element) => {
-        coordinatesArray.push([element.latitude, element.longitude]);
+        coordinatesArray.push([
+            parseFloat(element.latitude),
+            parseFloat(element.longitude),
+        ]);
     });
     return coordinatesArray;
+}
+
+function sleep(ms, index) {
+    console.log(index, ms);
+    return new Promise((resolve) => setTimeout(resolve, index * ms));
 }

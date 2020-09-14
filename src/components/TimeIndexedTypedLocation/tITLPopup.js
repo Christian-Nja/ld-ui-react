@@ -7,7 +7,3 @@ export default function tITLPopup(content) {
             </div>
             `;
 }
-
-/*
- * NOTE: you may change this with a Popup to make it appear with a click
- *______________________________________________________________________ */
