@@ -1,19 +1,19 @@
 import { useEffect } from 'react';
 
-export function useMap(mapRef) {
+//'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png'
+
+//'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+
+export function useMap(mapRef, mapProvider) {
     useEffect(() => {
         /** mounts map */
         mapRef.current = L.map('map', {
             center: [0, 0],
             zoom: 1,
             layers: [
-                L.tileLayer(
-                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    {
-                        attribution:
-                            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                    }
-                ),
+                L.tileLayer(mapProvider.url, {
+                    attribution: mapProvider.attribution,
+                }),
             ],
             zoomControl: false,
             attributionControl: false,

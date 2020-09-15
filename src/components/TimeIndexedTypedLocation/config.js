@@ -1,26 +1,36 @@
-// you can change map provider the tilelayer
-// geojson.io
+import {
+    blueMarkerIcon,
+    blueClusterMarkerIcon,
+    redSquatMarkerIcon,
+    redSquatClusterMarkerIcon,
+} from '../../icon/ld-ui-icon';
 
-// var myCircle =  L.circle(...).addTo(myMap).openPopup()
+const CONFIG = {
+    DEPICTION: false,
+    MARKER_ICON: [blueMarkerIcon, blueClusterMarkerIcon],
+    ARROW: {
+        COLOR: 'blue',
+        HEAD_COLOR: 'blue',
+        FILL_COLOR: 'blue',
+        SIZE: '15px',
+    },
+    POPUP: {
+        OPEN: 'mouseover',
+        CLOSE: 'mouseout',
+        OPEN_CLUSTER: 'clustermouseover',
+    },
+    MAP: [
+        {
+            PROVIDER:
+                'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
+            ATTRIBUTION: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+        },
+        {
+            PROVIDER: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            ATTRIBUTION:
+                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        },
+    ],
+};
 
-// map.fitBounds(myCircle.getBounds())
-
-// events
-
-// markers.forEach().on('mouseover', function(e) {
-// e.target.setIcon(redIcon)
-//})
-
-// browser events
-
-// map events! example:  movend  -> the map stop moving (print center)
-
-// $(document).on('click', '#button', function() {
-// if (map.hasLayer(featureGroup)) {
-//     map.removeLayer(featureGroup)
-// } else {
-// featureGroup.addTo(map)
-// }
-// })
-
-// a way to remove all the markers in a map featureGroup
+export default CONFIG;

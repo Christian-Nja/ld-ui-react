@@ -1,10 +1,10 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet.markercluster/dist/leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-import '@elfalem/leaflet-curve';
-import 'leaflet-polylinedecorator';
+import 'leaflet-arrowheads';
+import 'leaflet-arc';
 /**
  * css
  */
@@ -15,21 +15,64 @@ import './TimeIndexedTypedLocation.css';
  * Internal modules
  */
 
+import CONFIG from './config';
 import { useMap } from '../hooks/ld-ui-hooks';
-import { blueMarkerIcon, blackArrowHeadIcon } from '../../icon/ld-ui-icon';
 import tITLPopup from './tITLPopup';
 import { _getControlPoint } from '../../utilities/math';
 
+/**
+ *
+ * @param {Object} props React properties
+ */
 export default function TimeIndexedTypedLocation(props) {
     const lines = getTimeOrientedCoordinates(props.timeIndexedTypedLocations);
+    const DARK_PROVIDER = 0;
+    const DAY_PROVIDER = 1;
 
+    /* configuration state 
+     _______________________*/
+    const [mapProvider, setMapProvider] = useState({
+        url: CONFIG.MAP[DAY_PROVIDER].PROVIDER,
+        attribution: CONFIG.MAP[DAY_PROVIDER].ATTRIBUTION,
+    });
+    const [isDepiction, setDepiction] = useState(CONFIG.DEPICTION);
+    const [arrowState, setArrowState] = useState({
+        color: CONFIG.ARROW.COLOR,
+        headColor: CONFIG.ARROW.HEAD_COLOR,
+        fillColor: CONFIG.ARROW.FILL_COLOR,
+        size: CONFIG.ARROW.SIZE,
+    });
+    const [popupState, setPopupState] = useState({
+        open: CONFIG.POPUP.OPEN,
+        close: CONFIG.POPUP.CLOSE,
+        openCluster: CONFIG.POPUP.OPEN_CLUSTER,
+    });
+
+    /** refs */
     const mapRef = useRef(null);
     const markerRefs = useRef([]);
 
-    useMap(mapRef);
+    useMap(mapRef, mapProvider);
 
     useEffect(() => {
-        const mcg = L.markerClusterGroup();
+        const mcg = L.markerClusterGroup({
+            iconCreateFunction: (cluster) => {
+                return L.divIcon({
+                    html: `${CONFIG.MARKER_ICON[1](cluster.getChildCount())}`,
+                    className: 'cluster-icon',
+                    iconAnchor: [15, 50],
+                });
+            },
+        }).on(popupState.openCluster, function (e) {
+            e.layer.spiderfy();
+        });
+        // .on("clustermouseout", function (e) {
+        //     // setTimeout(() => {
+        //     //     e.layer.unspiderfy();
+        //     // }, 4000);
+        //     // clear timeout
+        // });
+
         /** display markers */
         var bounds = L.latLngBounds();
 
@@ -50,10 +93,16 @@ export default function TimeIndexedTypedLocation(props) {
                 .setLatLng(markerPosition);
 
             markerRefs.current[index] = L.marker(markerPosition, {
-                icon: blueMarkerIcon,
+                icon: CONFIG.MARKER_ICON[0],
             })
                 .addTo(mcg)
-                .bindPopup(popup);
+                .bindPopup(popup)
+                .on(popupState.open, function (e) {
+                    this.openPopup();
+                })
+                .on(popupState.close, function (e) {
+                    this.closePopup();
+                });
 
             bounds.extend(markerPosition);
             //            sleep(1000, index).then(() => {});
@@ -64,43 +113,43 @@ export default function TimeIndexedTypedLocation(props) {
 
         let arrows = [];
         for (let i = 0; i < lines.length - 1; i++) {
-            let path = drawCurve(lines[i], lines[i + 1], mapRef);
-            arrows.push(path);
-            let arrowhead = arrowHead(lines[i + 1]);
-            arrowhead.addTo(mapRef.current);
+            let arrow = getArrow(lines[i], lines[i + 1], arrowState);
+            arrows.push(arrow);
         }
 
-        arrows.forEach((arrow) => {
-            arrow.addTo(mapRef.current);
+        arrows.forEach((arrow, index) => {
+            sleep(2000, index).then(() => {
+                arrow.addTo(mapRef.current);
+            });
         });
-
-        //var path = drawCurve(lines[0], lines[1]);
-        //path.addTo(mapRef.current);
     }, []);
 
-    return <div id="map"></div>;
-}
-
-function arrowHead(coordinates) {
-    return L.marker(coordinates, {
-        icon: blackArrowHeadIcon,
-    });
-}
-
-function drawCurve(coordinates_1, coordinates_2, mapRef) {
-    const controlPointXoffset = 1;
-    let path = L.curve(
-        [
-            'M',
-            coordinates_1,
-            'Q',
-            _getControlPoint(coordinates_1, coordinates_2, controlPointXoffset),
-            coordinates_2,
-        ],
-        { color: 'red', fill: false }
+    return (
+        <div>
+            {isDepiction ? (
+                <img
+                    className={'depiction'}
+                    src={props.timeIndexedTypedLocations[0].depiction}
+                ></img>
+            ) : null}
+            <div id="map"></div>
+        </div>
     );
+}
 
-    return path;
+function getArrow(coordinates_1, coordinates_2, arrowState) {
+    return L.Polyline.Arc(coordinates_1, coordinates_2, {
+        vertices: 300,
+        className: 'arrowheads',
+        color: arrowState.color,
+    }).arrowheads({
+        yawn: 40,
+        fill: true,
+        size: arrowState.size,
+        frequency: 'endonly',
+        color: arrowState.headColor,
+        fillColor: arrowState.fillColor,
+    });
 }
 
 function getTimeOrientedCoordinates(timeIndexedTypedLocations) {
@@ -120,6 +169,5 @@ function getTimeOrientedCoordinates(timeIndexedTypedLocations) {
 }
 
 function sleep(ms, index) {
-    console.log(index, ms);
     return new Promise((resolve) => setTimeout(resolve, index * ms));
 }

@@ -13,3 +13,22 @@
     pointer-events: auto;
     transition: 0.7s;
 }
+
+.arrowheads {
+    color: "red";
+}
+
+.depiction {
+    z-index: 1000;
+    position: absolute;
+    height: 120px;
+    left: 420px;
+    top: 380px;
+    opacity: 0.6;
+    transition-property: opacity;
+    transition-duration: 0.5s;
+}
+
+.depiction:hover {
+    opacity: 1;
+}

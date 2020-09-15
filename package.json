@@ -54,7 +54,7 @@
         "@fortawesome/react-fontawesome": "^0.1.11",
         "leaflet": "^1.6.0",
         "leaflet-arc": "^1.0.2",
-        "leaflet-polylinedecorator": "^1.6.0",
+        "leaflet-arrowheads": "^1.2.1",
         "leaflet.markercluster": "^1.4.1",
         "overlapping-marker-spiderfier-leaflet": "^0.2.7",
         "prunecluster": "^2.1.0",
