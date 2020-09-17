@@ -1,9 +1,9 @@
 # ToDoS
 
-before try to load another map!!!
-
 -   (1) animate path
--   (2) tune arrows and spyderfying / zoom
+-   (2) query URI in a configuration file
+
+-   (3) mockup and thinking of new visualization
 
 -   edges, arcs | for a full control you need an algorithm
     to convert geodesic coordinates to cartesian one, calculate
@@ -17,6 +17,10 @@ before try to load another map!!!
     maybe specifying maxZoom (on map?)
 
 #Interesting libraries:
+
+maps: deck.gl + webgl + mapboxgl
+mapping: react-map-gl, deck.gl, luna.gl
+charts: react-vis
 
 https://turfjs.org/
 #d3 animated path

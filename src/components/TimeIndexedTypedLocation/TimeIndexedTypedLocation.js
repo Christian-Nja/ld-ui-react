@@ -1,10 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import L from 'leaflet';
+import * as d3 from 'd3';
 import 'leaflet.markercluster/dist/leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-import 'leaflet-arrowheads';
-import 'leaflet-arc';
+
 /**
  * css
  */
@@ -16,45 +16,100 @@ import './TimeIndexedTypedLocation.css';
  */
 
 import CONFIG from './config';
-import { useMap } from '../hooks/ld-ui-hooks';
+import { useMap, usePane } from '../hooks/ld-ui-hooks';
 import tITLPopup from './tITLPopup';
-import { _getControlPoint } from '../../utilities/math';
+
+/* Define constants
+ */
+const DARK_PROVIDER = 0;
+const DAY_PROVIDER = 1;
+const GEO_JSON_LATITUDE = 1;
+const GEO_JSON_LONGITUDE = 0;
 
 /**
  *
  * @param {Object} props React properties
  */
 export default function TimeIndexedTypedLocation(props) {
-    const lines = getTimeOrientedCoordinates(props.timeIndexedTypedLocations);
-    const DARK_PROVIDER = 0;
-    const DAY_PROVIDER = 1;
+    /** mapRef */
+    const mapRef = useRef(null);
 
-    /* configuration state 
-     _______________________*/
-    const [mapProvider, setMapProvider] = useState({
+    /** initialize map */
+    useMap(mapRef, {
         url: CONFIG.MAP[DAY_PROVIDER].PROVIDER,
         attribution: CONFIG.MAP[DAY_PROVIDER].ATTRIBUTION,
     });
-    const [isDepiction, setDepiction] = useState(CONFIG.DEPICTION);
-    const [arrowState, setArrowState] = useState({
-        color: CONFIG.ARROW.COLOR,
-        headColor: CONFIG.ARROW.HEAD_COLOR,
-        fillColor: CONFIG.ARROW.FILL_COLOR,
-        size: CONFIG.ARROW.SIZE,
-    });
-    const [popupState, setPopupState] = useState({
-        open: CONFIG.POPUP.OPEN,
-        close: CONFIG.POPUP.CLOSE,
-        openCluster: CONFIG.POPUP.OPEN_CLUSTER,
-    });
+    /** initialize d3 layer */
+    usePane(mapRef, 'd3-layer');
 
-    /** refs */
-    const mapRef = useRef(null);
-    const markerRefs = useRef([]);
+    /**
+     * Prepare d3 functions
+     */
+    const projectLine = d3
+        .line()
+        .x(function (d) {
+            return getLayerPoint(d).x;
+        })
+        .y(function (d) {
+            return getLayerPoint(d).y;
+        })
+        .curve(d3.curveLinear);
 
-    useMap(mapRef, mapProvider);
+    // this is used just to get bounds of d3 layer
+    const transform = d3.geoTransform({ point: projectGeoPointToLeafletSvg }),
+        path = d3.geoPath().projection(transform); // transform and map geoJson to map
 
+    /**
+     * inputs a GeoJSON data and returns the projected leaflet svg point
+     * coordinates
+     *
+     * @param {object} d GeoJSON Point @see {@link https://en.wikipedia.org/wiki/GeoJSON|GeoJSON}
+     * @returns {object} Leaflet Point @see {@link https://leafletjs.com/reference-1.7.1.html#point|Leaflet_Point}
+     */
+    function getLayerPoint(d) {
+        var x = d.geometry.coordinates[GEO_JSON_LATITUDE];
+        var y = d.geometry.coordinates[GEO_JSON_LONGITUDE];
+        return mapRef.current.latLngToLayerPoint(new L.LatLng(x, y));
+    }
+
+    /**
+     * This function is a d3 transform @see {@link https://github.com/d3/d3-geo/blob/v2.0.0/README.md#transforms|d3-transform} for further infos
+     *
+     * You can use it like this:
+
+     * @example
+     * var transform = d3.geoTransform({ point: projectPoint })
+     * var path = d3.geoPath(transform)
+     * 
+     * You can now project points on an svg surface on a leaflet map
+     *
+     * @param {number} long Geojson point longitude
+     * @param {number} lat Geojson point latitude
+     */
+    function projectGeoPointToLeafletSvg(long, lat) {
+        var point = mapRef.current.latLngToLayerPoint(new L.LatLng(lat, long));
+        this.stream.point(point.x, point.y);
+    }
+
+    /**
+     * THE VISUALIZATION EFFECT
+     */
     useEffect(() => {
+        /* Defining an svg layer for D3 
+        ________________________________*/
+
+        var svg = d3
+            .select(mapRef.current.getPane('d3-layer'))
+            .append('svg')
+            .attr('style', 'position:relative');
+
+        var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
+
+        /* Iterating over data:
+           - Creating markers and popup (Leaflet layer) 
+           - Preparing GeoJSON for D3 Layer  @TODO: evaluate if moving markers on d3 layer
+        ___________________________________*/
+
         const mcg = L.markerClusterGroup({
             iconCreateFunction: (cluster) => {
                 return L.divIcon({
@@ -63,24 +118,34 @@ export default function TimeIndexedTypedLocation(props) {
                     iconAnchor: [15, 50],
                 });
             },
-        }).on(popupState.openCluster, function (e) {
+        }).on(CONFIG.POPUP.OPEN_CLUSTER, function (e) {
             e.layer.spiderfy();
         });
-        // .on("clustermouseout", function (e) {
-        //     // setTimeout(() => {
-        //     //     e.layer.unspiderfy();
-        //     // }, 4000);
-        //     // clear timeout
-        // });
 
-        /** display markers */
-        var bounds = L.latLngBounds();
+        let geoJSON = {
+            type: 'FeatureCollection',
+            features: [],
+        };
 
         props.timeIndexedTypedLocations.forEach((tITL, index) => {
+            geoJSON.features.push({
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [
+                        parseFloat(tITL.longitude),
+                        parseFloat(tITL.latitude),
+                    ],
+                },
+            });
+
             const markerPosition = [
-                parseFloat(tITL.latitude),
-                parseFloat(tITL.longitude),
+                geoJSON.features[index].geometry.coordinates[GEO_JSON_LATITUDE],
+                geoJSON.features[index].geometry.coordinates[
+                    GEO_JSON_LONGITUDE
+                ],
             ];
+
             const popupContent = {
                 city: tITL.city,
                 siteLabel: tITL.siteLabel,
@@ -88,45 +153,119 @@ export default function TimeIndexedTypedLocation(props) {
                     tITL.endTime !== '' ? tITL.endTime : 'Today'
                 }`,
             };
-            var popup = L.popup()
+            const popup = L.popup()
                 .setContent(tITLPopup(popupContent))
                 .setLatLng(markerPosition);
 
-            markerRefs.current[index] = L.marker(markerPosition, {
+            L.marker(markerPosition, {
                 icon: CONFIG.MARKER_ICON[0],
             })
                 .addTo(mcg)
                 .bindPopup(popup)
-                .on(popupState.open, function (e) {
+                .on(CONFIG.POPUP.OPEN, function (e) {
                     this.openPopup();
                 })
-                .on(popupState.close, function (e) {
+                .on(CONFIG.POPUP.CLOSE, function (e) {
                     this.closePopup();
                 });
-
-            bounds.extend(markerPosition);
-            //            sleep(1000, index).then(() => {});
         });
 
-        mapRef.current.fitBounds(bounds, { padding: [50, 50] });
+        /* Add marker to maps and fit zoom
+        ___________________________________ */
+        mapRef.current.fitBounds(mcg.getBounds(), { padding: [120, 120] });
         mapRef.current.addLayer(mcg);
 
-        let arrows = [];
-        for (let i = 0; i < lines.length - 1; i++) {
-            let arrow = getArrow(lines[i], lines[i + 1], arrowState);
-            arrows.push(arrow);
+        /* Draw line connecting locations  
+        ____________________________________*/
+
+        let linePath = g
+            .selectAll('.locationsLine')
+            .data([geoJSON.features])
+            .enter()
+            .append('path')
+            .attr('class', 'locationsLine')
+            .attr('style', `stroke:${CONFIG.ARROW.COLOR}`);
+
+        // This will be our traveling circle it will
+        // travel along our path
+        var travelMarker = g
+            .append('circle')
+            .attr('r', 10)
+            .attr('id', 'marker')
+            .attr('class', 'travelMarker');
+
+        mapRef.current.on('zoomend', adaptD3Layer);
+        adaptD3Layer();
+        moveCulturalProperty();
+
+        function adaptD3Layer() {
+            // Get bounding box of points
+            const bounds = path.bounds(geoJSON),
+                topLeft = bounds[0],
+                bottomRight = bounds[1];
+
+            // Setting the size and location of the overall SVG container
+            svg.attr('width', bottomRight[0] - topLeft[0] + 120)
+                .attr('height', bottomRight[1] - topLeft[1] + 120)
+                .style('left', topLeft[0] - 50 + 'px')
+                .style('top', topLeft[1] - 50 + 'px');
+
+            // translate group
+            g.attr(
+                'transform',
+                `translate(${-topLeft[0] + 50},${-topLeft[1] + 50})`
+            );
+
+            travelMarker.attr('transform', function () {
+                const START_POINT = 0;
+                var x =
+                    geoJSON.features[START_POINT].geometry.coordinates[
+                        GEO_JSON_LONGITUDE
+                    ];
+                var y =
+                    geoJSON.features[START_POINT].geometry.coordinates[
+                        GEO_JSON_LATITUDE
+                    ];
+
+                return `translate(${
+                    mapRef.current.latLngToLayerPoint(new L.LatLng(y, x)).x
+                },${mapRef.current.latLngToLayerPoint(new L.LatLng(y, x)).y})`;
+            });
+
+            linePath.attr('d', projectLine);
         }
 
-        arrows.forEach((arrow, index) => {
-            sleep(2000, index).then(() => {
-                arrow.addTo(mapRef.current);
-            });
-        });
+        function moveCulturalProperty() {
+            linePath
+                .transition()
+                .duration(CONFIG.TRANSITION_DURATION)
+                .attrTween('stroke-dasharray', tweenDash);
+        }
+
+        function tweenDash() {
+            return function (t) {
+                //total length of path (single value)
+                const l = linePath.node().getTotalLength();
+                const interpolate = d3.interpolateString(`0,${l}`, `${l},${l}`);
+
+                //t is fraction of time 0-1 since transition began
+                const marker = d3.select('#marker');
+
+                // p is the point on the line (coordinates) at a given length
+                // along the line. In this case if l=50 and we're midway through
+                // the time then this would 25.
+                const p = linePath.node().getPointAtLength(t * l);
+
+                //Move the marker to that point
+                marker.attr('transform', `translate(${p.x},${p.y})`);
+                return interpolate(t);
+            };
+        }
     }, []);
 
     return (
         <div>
-            {isDepiction ? (
+            {CONFIG.DEPICTION ? (
                 <img
                     className={'depiction'}
                     src={props.timeIndexedTypedLocations[0].depiction}
@@ -135,39 +274,4 @@ export default function TimeIndexedTypedLocation(props) {
             <div id="map"></div>
         </div>
     );
-}
-
-function getArrow(coordinates_1, coordinates_2, arrowState) {
-    return L.Polyline.Arc(coordinates_1, coordinates_2, {
-        vertices: 300,
-        className: 'arrowheads',
-        color: arrowState.color,
-    }).arrowheads({
-        yawn: 40,
-        fill: true,
-        size: arrowState.size,
-        frequency: 'endonly',
-        color: arrowState.headColor,
-        fillColor: arrowState.fillColor,
-    });
-}
-
-function getTimeOrientedCoordinates(timeIndexedTypedLocations) {
-    // here we're assuming time as years
-    // bugs my arise if you pass datetime
-    timeIndexedTypedLocations.sort((a, b) => {
-        return parseInt(a.startTime) - parseInt(b.startTime);
-    });
-    var coordinatesArray = [];
-    timeIndexedTypedLocations.forEach((element) => {
-        coordinatesArray.push([
-            parseFloat(element.latitude),
-            parseFloat(element.longitude),
-        ]);
-    });
-    return coordinatesArray;
-}
-
-function sleep(ms, index) {
-    return new Promise((resolve) => setTimeout(resolve, index * ms));
 }

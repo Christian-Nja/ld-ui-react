@@ -24,11 +24,15 @@
     height: 120px;
     left: 420px;
     top: 380px;
-    opacity: 0.6;
-    transition-property: opacity;
-    transition-duration: 0.5s;
 }
 
-.depiction:hover {
+.locationsLine {
+    fill: none;
     opacity: 1;
+    stroke-width: 3px;
+}
+
+.travelMarker {
+    fill: yellow;
+    opacity: 0.75;
 }

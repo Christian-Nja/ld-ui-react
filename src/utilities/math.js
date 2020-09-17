@@ -2,16 +2,16 @@
 const X = 0;
 const Y = 1;
 
-export function _getControlPoint(coordinates_1, coordinates_2, diff) {
-    console.log(
-        '[!] Warning function doesn\'t use formal criteria to compute the control point'
-    );
-    const midPoint = getMidpoint(coordinates_1, coordinates_2);
-    return [midPoint[X] + diff, midPoint[Y]];
-}
+/**
+ * =*=*=*=*=*=*=*=*=*=*=*=*=
+ *
+ *   Cartesian Mathematics
+ *
+ * =*=*=*=*=*=*=*=*=*=*=*=*=
+ */
 
 /**
- * Return a control point for quadratic beyez distance
+ * Returns a control point for quadratic bezier distance
  * on the segment axis
  *
  * @param {number[]} coordinates_1 point A
