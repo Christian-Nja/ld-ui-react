@@ -27,8 +27,14 @@ const GEO_JSON_LATITUDE = 1;
 const GEO_JSON_LONGITUDE = 0;
 
 /**
+ * A component to visualize TimeIndexedTypedLocation 's
+ *
  *
  * @param {Object} props React properties
+ * @param ...
+ *
+ * @TODO - describe props interface
+ *       - add style to props interface
  */
 export default function TimeIndexedTypedLocation(props) {
     /** mapRef */
@@ -186,17 +192,16 @@ export default function TimeIndexedTypedLocation(props) {
             .attr('class', 'locationsLine')
             .attr('style', `stroke:${CONFIG.ARROW.COLOR}`);
 
-        // This will be our traveling circle it will
-        // travel along our path
-        var travelMarker = g
-            .append('circle')
-            .attr('r', 10)
-            .attr('id', 'marker')
-            .attr('class', 'travelMarker');
+        const depiction = g
+            .append('svg:image')
+            .attr('x', -20)
+            .attr('y', -20)
+            .attr('height', 60)
+            .attr('width', 50)
+            .attr('xlink:href', props.timeIndexedTypedLocations[0].depiction);
 
         mapRef.current.on('zoomend', adaptD3Layer);
         adaptD3Layer();
-        moveCulturalProperty();
 
         function adaptD3Layer() {
             // Get bounding box of points
@@ -216,7 +221,7 @@ export default function TimeIndexedTypedLocation(props) {
                 `translate(${-topLeft[0] + 50},${-topLeft[1] + 50})`
             );
 
-            travelMarker.attr('transform', function () {
+            depiction.attr('transform', function () {
                 const START_POINT = 0;
                 var x =
                     geoJSON.features[START_POINT].geometry.coordinates[
@@ -233,11 +238,14 @@ export default function TimeIndexedTypedLocation(props) {
             });
 
             linePath.attr('d', projectLine);
+
+            moveCulturalProperty();
         }
 
         function moveCulturalProperty() {
             linePath
                 .transition()
+                .ease(d3.easeLinear)
                 .duration(CONFIG.TRANSITION_DURATION)
                 .attrTween('stroke-dasharray', tweenDash);
         }
@@ -248,16 +256,13 @@ export default function TimeIndexedTypedLocation(props) {
                 const l = linePath.node().getTotalLength();
                 const interpolate = d3.interpolateString(`0,${l}`, `${l},${l}`);
 
-                //t is fraction of time 0-1 since transition began
-                const marker = d3.select('#marker');
-
                 // p is the point on the line (coordinates) at a given length
                 // along the line. In this case if l=50 and we're midway through
                 // the time then this would 25.
                 const p = linePath.node().getPointAtLength(t * l);
 
-                //Move the marker to that point
-                marker.attr('transform', `translate(${p.x},${p.y})`);
+                //Move the image to that point
+                depiction.attr('transform', `translate(${p.x},${p.y})`);
                 return interpolate(t);
             };
         }

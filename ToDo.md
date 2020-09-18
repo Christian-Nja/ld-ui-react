@@ -1,16 +1,5 @@
 # ToDoS
-
--   (1) animate path
 -   (2) query URI in a configuration file
-
--   (3) mockup and thinking of new visualization
-
--   edges, arcs | for a full control you need an algorithm
-    to convert geodesic coordinates to cartesian one, calculate
-    quadratic bezier control point, and revert that to geodisc coordinates
-    alternatives: https://github.com/MAD-GooZe/Leaflet.Arc
-    an issue: https://github.com/mad-gooze/Leaflet.Arc/issues/9
-    not working well with short distance
 
 -   spiderfying issues: https://github.com/Leaflet/Leaflet.markercluster/issues/744
     https://github.com/Leaflet/Leaflet.markercluster/issues/101
