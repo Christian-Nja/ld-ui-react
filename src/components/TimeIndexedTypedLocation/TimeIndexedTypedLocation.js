@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import L from 'leaflet';
 import * as d3 from 'd3';
 import 'leaflet.markercluster/dist/leaflet.markercluster';
@@ -18,6 +18,11 @@ import './TimeIndexedTypedLocation.css';
 import CONFIG from './config';
 import { useMap, usePane } from '../hooks/ld-ui-hooks';
 import tITLPopup from './tITLPopup';
+import {
+    projectLine,
+    leafletTransform,
+    fitSvg,
+} from '../../utilities/d3leaflet';
 
 /* Define constants
  */
@@ -46,37 +51,7 @@ export default function TimeIndexedTypedLocation(props) {
         attribution: CONFIG.MAP[DAY_PROVIDER].ATTRIBUTION,
     });
     /** initialize d3 layer */
-    usePane(mapRef, 'd3-layer');
-
-    /**
-     * Prepare d3 functions
-     */
-    const projectLine = d3
-        .line()
-        .x(function (d) {
-            return getLayerPoint(d).x;
-        })
-        .y(function (d) {
-            return getLayerPoint(d).y;
-        })
-        .curve(d3.curveLinear);
-
-    // this is used just to get bounds of d3 layer
-    const transform = d3.geoTransform({ point: projectGeoPointToLeafletSvg }),
-        path = d3.geoPath().projection(transform); // transform and map geoJson to map
-
-    /**
-     * inputs a GeoJSON data and returns the projected leaflet svg point
-     * coordinates
-     *
-     * @param {object} d GeoJSON Point @see {@link https://en.wikipedia.org/wiki/GeoJSON|GeoJSON}
-     * @returns {object} Leaflet Point @see {@link https://leafletjs.com/reference-1.7.1.html#point|Leaflet_Point}
-     */
-    function getLayerPoint(d) {
-        var x = d.geometry.coordinates[GEO_JSON_LATITUDE];
-        var y = d.geometry.coordinates[GEO_JSON_LONGITUDE];
-        return mapRef.current.latLngToLayerPoint(new L.LatLng(x, y));
-    }
+    usePane(mapRef, 'd3-layer', 625);
 
     /**
      * This function is a d3 transform @see {@link https://github.com/d3/d3-geo/blob/v2.0.0/README.md#transforms|d3-transform} for further infos
@@ -96,10 +71,8 @@ export default function TimeIndexedTypedLocation(props) {
         var point = mapRef.current.latLngToLayerPoint(new L.LatLng(lat, long));
         this.stream.point(point.x, point.y);
     }
+    const path = leafletTransform(projectGeoPointToLeafletSvg);
 
-    /**
-     * THE VISUALIZATION EFFECT
-     */
     useEffect(() => {
         /* Defining an svg layer for D3 
         ________________________________*/
@@ -113,7 +86,7 @@ export default function TimeIndexedTypedLocation(props) {
 
         /* Iterating over data:
            - Creating markers and popup (Leaflet layer) 
-           - Preparing GeoJSON for D3 Layer  @TODO: evaluate if moving markers on d3 layer
+           - Preparing GeoJSON for D3 Layer  
         ___________________________________*/
 
         const mcg = L.markerClusterGroup({
@@ -204,16 +177,13 @@ export default function TimeIndexedTypedLocation(props) {
         adaptD3Layer();
 
         function adaptD3Layer() {
-            // Get bounding box of points
+            // Get bounding box of points / coordinates / data / markers in the map
             const bounds = path.bounds(geoJSON),
                 topLeft = bounds[0],
                 bottomRight = bounds[1];
 
             // Setting the size and location of the overall SVG container
-            svg.attr('width', bottomRight[0] - topLeft[0] + 120)
-                .attr('height', bottomRight[1] - topLeft[1] + 120)
-                .style('left', topLeft[0] - 50 + 'px')
-                .style('top', topLeft[1] - 50 + 'px');
+            fitSvg(svg, bounds);
 
             // translate group
             g.attr(
@@ -237,12 +207,12 @@ export default function TimeIndexedTypedLocation(props) {
                 },${mapRef.current.latLngToLayerPoint(new L.LatLng(y, x)).y})`;
             });
 
-            linePath.attr('d', projectLine);
+            linePath.attr('d', projectLine(mapRef.current));
 
-            moveCulturalProperty();
+            moveLine();
         }
 
-        function moveCulturalProperty() {
+        function moveLine() {
             linePath
                 .transition()
                 .ease(d3.easeLinear)

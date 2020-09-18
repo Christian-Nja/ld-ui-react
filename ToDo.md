@@ -1,10 +1,3 @@
-# ToDoS
--   (2) query URI in a configuration file
-
--   spiderfying issues: https://github.com/Leaflet/Leaflet.markercluster/issues/744
-    https://github.com/Leaflet/Leaflet.markercluster/issues/101
-    maybe specifying maxZoom (on map?)
-
 #Interesting libraries:
 
 maps: deck.gl + webgl + mapboxgl
