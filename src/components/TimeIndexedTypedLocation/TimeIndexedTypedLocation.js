@@ -31,6 +31,8 @@ const DAY_PROVIDER = 1;
 const GEO_JSON_LATITUDE = 1;
 const GEO_JSON_LONGITUDE = 0;
 
+const D3_ZINDEX = 625; // over markers under tooltip and popup
+
 /**
  * A component to visualize TimeIndexedTypedLocation 's
  *
@@ -51,7 +53,7 @@ export default function TimeIndexedTypedLocation(props) {
         attribution: CONFIG.MAP[DAY_PROVIDER].ATTRIBUTION,
     });
     /** initialize d3 layer */
-    usePane(mapRef, 'd3-layer', 625);
+    usePane(mapRef, 'd3-layer', D3_ZINDEX);
 
     /**
      * This function is a d3 transform @see {@link https://github.com/d3/d3-geo/blob/v2.0.0/README.md#transforms|d3-transform} for further infos
@@ -86,7 +88,7 @@ export default function TimeIndexedTypedLocation(props) {
 
         /* Iterating over data:
            - Creating markers and popup (Leaflet layer) 
-           - Preparing GeoJSON for D3 Layer  
+           - Preparing GeoJSON          (D3 Layer)  
         ___________________________________*/
 
         const mcg = L.markerClusterGroup({
@@ -240,12 +242,6 @@ export default function TimeIndexedTypedLocation(props) {
 
     return (
         <div>
-            {CONFIG.DEPICTION ? (
-                <img
-                    className={'depiction'}
-                    src={props.timeIndexedTypedLocations[0].depiction}
-                ></img>
-            ) : null}
             <div id="map"></div>
         </div>
     );
