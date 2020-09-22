@@ -12,6 +12,10 @@ import redSquatClusterMarkerIcon from './custom-html-icons/redSquatClusterMarker
 import TimeIcon from './custom-react-icons/TimeIcon';
 import MuseumIcon from './custom-react-icons/MuseumIcon';
 import LocationIcon from './custom-react-icons/LocationIcon';
+import EmptyDotIcon from './custom-react-icons/EmptyDotIcon';
+import StarIcon from './custom-react-icons/StarIcon';
+import BlackDotIcon from './custom-react-icons/BlackDotIcon';
+import SpiralOrangeIcon from './custom-react-icons/SpiralOrangeIcon';
 
 /*
  *  Leaflet icons
@@ -25,15 +29,23 @@ export { blackArrowHeadIcon };
  * Html icons
  ____________________________*/
 
-export { timeIcon };
-export { museumIcon };
-export { blueClusterMarkerIcon };
-export { redSquatClusterMarkerIcon };
+export {
+    timeIcon,
+    museumIcon,
+    blueClusterMarkerIcon,
+    redSquatClusterMarkerIcon,
+};
 
 /*
  *  React icons
  * __________________________*/
 
-export { TimeIcon };
-export { MuseumIcon };
-export { LocationIcon };
+export {
+    TimeIcon,
+    MuseumIcon,
+    LocationIcon,
+    EmptyDotIcon,
+    StarIcon,
+    BlackDotIcon,
+    SpiralOrangeIcon,
+};

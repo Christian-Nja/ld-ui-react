@@ -1,3 +1,4 @@
-import TimeIndexedTypedLocation from './components/TimeIndexedTypedLocation/TimeIndexedTypedLocation'
+import TimeIndexedTypedLocation from './components/TimeIndexedTypedLocation/TimeIndexedTypedLocation';
+import Collection from './components/Collection/Collection';
 
-export { TimeIndexedTypedLocation };
+export { Collection, TimeIndexedTypedLocation };

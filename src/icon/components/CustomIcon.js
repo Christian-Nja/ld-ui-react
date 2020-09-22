@@ -4,11 +4,18 @@ export default function CustomIcon(props) {
     return (
         <i>
             <img
-                class="ld-ui-div-icon"
                 src={props.src}
-                className={'simple-icon'}
+                className={`ld-ui-div-icon simple-icon ${
+                    props.iconClassName ? props.iconClassName : ''
+                }`}
             ></img>
-            <p className={'icon-description'}>{props.message}</p>
+            <p
+                className={`icon-description ${
+                    props.descriptionClassName ? props.descriptionClassName : ''
+                }`}
+            >
+                {props.message}
+            </p>
             <br />
         </i>
     );

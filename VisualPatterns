@@ -4,17 +4,19 @@
 # TimeIndexedTypedLocationResource
 
 - add arrowhead to vectors
-- change opacity for the depiction
 - add style as a props
 
 # CollectionEntity
 
+- make automatic display flex column when image instead of dot
+- set image size in config
+- set collection size in config
+- set padding size in config
+- set border style in config
+
 https://kar.kent.ac.uk/39007/1/STAR_paper.pdf
 http://ontologydesignpatterns.org/wiki/images/d/d2/WOP2019-slides-pattern1.pdf
 http://ceur-ws.org/Vol-2459/pattern1.pdf
-
-collection	(set, insieme)
-add a dot or a circle with image inside
 
 # other
 
