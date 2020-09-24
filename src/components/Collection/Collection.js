@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 /**
  * css
@@ -9,36 +9,45 @@ import './Collection.css';
  * internal modules
  */
 import Entity from './Entity';
-import CONFIG from './config';
+import ThemeContext, { themes, DEFAULT_CONFIG } from './config';
 
 export default function Collection(props) {
-    const style = props.style
-        ? props.style
-        : {
-            collectionLabel: {
-                color: 'black',
-                fontSize: 20,
-                textAlign: 'center',
-            },
-            collectionContainer: {
-                borderRadius: CONFIG.style.borderRadius,
-                width: CONFIG.style.containerWidth,
-            },
-        };
+    const THEME = useContext(ThemeContext);
 
     return (
-        <div>
-            <h1 style={style.collectionLabel}>
-                {props.entities[0].collectionLabel}
-            </h1>
-            <section
-                className={'collection-container container'}
-                style={style.collectionContainer}
-            >
-                {props.entities.map((entity, i) => {
-                    return <Entity entity={entity} key={i}></Entity>;
-                })}
-            </section>
-        </div>
+        <ThemeContext.Provider value={themes[DEFAULT_CONFIG]}>
+            <div>
+                <h1
+                    style={THEME.style.collectionLabel}
+                    className={props.class.collectionLabel}
+                >
+                    {props.entities[0].collectionLabel}
+                </h1>
+                <section
+                    className={`collection-container container ${props.class.collectionContainer}`}
+                    style={THEME.style.collectionContainer}
+                >
+                    {props.entities.map((entity, i) => {
+                        return (
+                            <Entity
+                                entity={entity}
+                                key={i}
+                                class={props.class}
+                            ></Entity>
+                        );
+                    })}
+                </section>
+            </div>
+        </ThemeContext.Provider>
     );
 }
+
+Collection.defaultProps = {
+    class: {
+        collectionLabel: '',
+        collectionContainer: '',
+        entityImage: '',
+        entityLabel: '',
+        entityContent: '',
+    },
+};
