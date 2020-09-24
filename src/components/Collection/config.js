@@ -20,7 +20,7 @@ const themes = {
             },
             collectionContainer: {
                 borderRadius: '9px/8px',
-                width: '50%',
+                width: '40%',
                 border: '1px solid rgba(0,0,0,0.15)',
                 gridGap: 10,
             },
@@ -37,7 +37,7 @@ const themes = {
         },
     },
     config2: {
-        itemIcon: BlackDotIcon,
+        itemIcon: EmptyDotIcon,
         style: {
             collectionLabel: {
                 color: 'black',
