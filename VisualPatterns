@@ -1,8 +1,18 @@
-1) code views not browsing functionality on data
-2) start with static data and then pass them define a ld-r query constructor
-   look at queryObject if it may be good for you (by ld-r) but it would be better to find a sparql npm module to do the queries
+# TODO
+- query uri in a config file (1 per pattern) in configs/patterns dir (ldr)
 
 # TimeIndexedTypedLocationResource
-properties: data to visualize
 
+- add arrowhead to vectors
+- add style as a props
 
+# CollectionEntity
+
+https://kar.kent.ac.uk/39007/1/STAR_paper.pdf
+http://ontologydesignpatterns.org/wiki/images/d/d2/WOP2019-slides-pattern1.pdf
+http://ceur-ws.org/Vol-2459/pattern1.pdf
+
+# other
+
+sequenza	(list)
+classification	(color | border to discriminate )

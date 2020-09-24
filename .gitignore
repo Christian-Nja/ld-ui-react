@@ -1,3 +1,10 @@
+# My files
+scripts/
+.eslintignore
+.eslintrc
+DEVELOPMENT-PROCESS
+encode-all-svg
+
 # Logs
 logs
 *.log
