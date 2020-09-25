@@ -7,7 +7,7 @@ import {
     EmptyDotIcon,
 } from '../../icon/ld-ui-icon';
 
-const DEFAULT_CONFIG = 'config1';
+const DEFAULT_CONFIG = 'config2';
 
 const themes = {
     config1: {

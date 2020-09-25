@@ -22,6 +22,7 @@ import {
     projectLine,
     leafletTransform,
     fitSvg,
+    getLayerPoint,
 } from '../../utilities/d3leaflet';
 
 /* Define constants
@@ -154,8 +155,8 @@ export default function TimeIndexedTypedLocation(props) {
         mapRef.current.fitBounds(mcg.getBounds(), { padding: [120, 120] });
         mapRef.current.addLayer(mcg);
 
-        /* Draw line connecting locations  
-        ____________________________________*/
+        /* Draw line connecting locations and arrowheads
+        _________________________________________________*/
 
         let linePath = g
             .selectAll('.locationsLine')
@@ -172,6 +173,20 @@ export default function TimeIndexedTypedLocation(props) {
             .attr('height', 60)
             .attr('width', 50)
             .attr('xlink:href', props.timeIndexedTypedLocations[0].depiction);
+
+        const arrowheads = g
+            .selectAll('.arrowheads')
+            .data(geoJSON.features)
+            .enter()
+            .append('svg:path')
+            .attr('class', 'arrowheads')
+            .attr(
+                'd',
+                d3
+                    .symbol()
+                    .type(d3.symbolTriangle)
+                    .size(CONFIG.ARROW.ARROWHEAD_SIZE)
+            );
 
         mapRef.current.on('zoomend', adaptD3Layer);
         adaptD3Layer();
@@ -207,6 +222,13 @@ export default function TimeIndexedTypedLocation(props) {
                 },${mapRef.current.latLngToLayerPoint(new L.LatLng(y, x)).y})`;
             });
 
+            // translate arrowheads
+            arrowheads.attr('transform', function (d) {
+                return `translate(${
+                    getLayerPoint(d, mapRef.current).x
+                },${getLayerPoint(d, mapRef.current).y})`;
+            });
+
             linePath.attr('d', projectLine(mapRef.current));
 
             moveLine();
@@ -233,6 +255,7 @@ export default function TimeIndexedTypedLocation(props) {
 
                 //Move the image to that point
                 depiction.attr('transform', `translate(${p.x},${p.y})`);
+
                 return interpolate(t);
             };
         }

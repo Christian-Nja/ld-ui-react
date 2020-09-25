@@ -13,6 +13,7 @@ const CONFIG = {
         HEAD_COLOR: 'blue',
         FILL_COLOR: 'blue',
         SIZE: '20px',
+        ARROWHEAD_SIZE: 50,
     },
     POPUP: {
         OPEN: 'mouseover',

@@ -44,7 +44,7 @@ export function projectLine(map) {
  * @param {object} d GeoJSON Point @see {@link https://en.wikipedia.org/wiki/GeoJSON|GeoJSON}
  * @returns {object} Leaflet Point @see {@link https://leafletjs.com/reference-1.7.1.html#point|Leaflet_Point}
  */
-function getLayerPoint(d, map) {
+export function getLayerPoint(d, map) {
     var x = d.geometry.coordinates[GEO_JSON_LATITUDE];
     var y = d.geometry.coordinates[GEO_JSON_LONGITUDE];
     return map.latLngToLayerPoint(new L.LatLng(x, y));
