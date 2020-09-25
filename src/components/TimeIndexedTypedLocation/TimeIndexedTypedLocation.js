@@ -85,6 +85,19 @@ export default function TimeIndexedTypedLocation(props) {
 
         var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
 
+        svg.append('svg:defs')
+            .append('svg:marker')
+            .attr('id', 'arrow')
+            .attr('viewBox', '0 -5 10 10')
+            .attr('refX', 0)
+            .attr('refY', 0)
+            .attr('markerWidth', 6)
+            .attr('markerHeight', 6)
+            .attr('orient', 'auto')
+            .append('path')
+            .attr('d', 'M0,-5L10,0L0,5')
+            .attr('class', 'arrowHead');
+
         /* Iterating over data:
            - Creating markers and popup (Leaflet layer) 
            - Preparing GeoJSON for D3 Layer  
@@ -174,20 +187,6 @@ export default function TimeIndexedTypedLocation(props) {
             .attr('width', 50)
             .attr('xlink:href', props.timeIndexedTypedLocations[0].depiction);
 
-        const arrowheads = g
-            .selectAll('.arrowheads')
-            .data(geoJSON.features)
-            .enter()
-            .append('svg:path')
-            .attr('class', 'arrowheads')
-            .attr(
-                'd',
-                d3
-                    .symbol()
-                    .type(d3.symbolTriangle)
-                    .size(CONFIG.ARROW.ARROWHEAD_SIZE)
-            );
-
         mapRef.current.on('zoomend', adaptD3Layer);
         adaptD3Layer();
 
@@ -222,12 +221,8 @@ export default function TimeIndexedTypedLocation(props) {
                 },${mapRef.current.latLngToLayerPoint(new L.LatLng(y, x)).y})`;
             });
 
-            // translate arrowheads
-            arrowheads.attr('transform', function (d) {
-                return `translate(${
-                    getLayerPoint(d, mapRef.current).x
-                },${getLayerPoint(d, mapRef.current).y})`;
-            });
+            linePath.attr('marker-end', 'url(#arrow)');
+            linePath.attr('marker-mid', 'url(#arrow)');
 
             linePath.attr('d', projectLine(mapRef.current));
 
