@@ -4,6 +4,7 @@ import blueMarkerIcon from './custom-leaflet-icons/blueMarkerIcon';
 import redSquatMarkerIcon from './custom-leaflet-icons/redSquatMarkerIcon';
 import blackArrowHeadIcon from './custom-leaflet-icons/blackArrowheadIcon';
 
+import locationIcon from './custom-html-icons/locationIcon';
 import timeIcon from './custom-html-icons/timeIcon';
 import museumIcon from './custom-html-icons/museumIcon';
 import blueClusterMarkerIcon from './custom-html-icons/blueClusterMarkerIcon';
@@ -34,6 +35,7 @@ export {
     museumIcon,
     blueClusterMarkerIcon,
     redSquatClusterMarkerIcon,
+    locationIcon,
 };
 
 /*

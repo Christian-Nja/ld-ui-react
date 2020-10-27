@@ -70,3 +70,15 @@ function getSlope(coordinates_1, coordinates_2) {
         );
     }
 }
+
+/**
+ * Gets two points and returns the angle they draw in a cartesian plan
+ *
+ * @param {number[]} p1 an array of x1, y1 coordinates
+ * @param {number[]} p2 an array of x2, y2 coordinates
+ */
+export function getAngle(p1, p2) {
+    const diffY = p1[Y] - p2[Y];
+    const diffX = p1[X] - p2[X];
+    return Math.atan2(diffY, diffX) * (180 / Math.PI) - 90;
+}

@@ -32,12 +32,12 @@ export default function Entity(props) {
                         descriptionClassName={'descriptionIcon'}
                     ></THEME.itemIcon>
                 )}
-                <div
+                {/* <div
                     style={THEME.style.entityLabel}
                     className={`${props.class.entityLabel}`}
                 >
                     {props.entity.entityLabel}
-                </div>
+                </div> */}
             </div>
         </article>
     );

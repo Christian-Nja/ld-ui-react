@@ -23,14 +23,16 @@ import {
     leafletTransform,
     fitSvg,
     getLayerPoint,
+    passOver,
 } from '../../utilities/d3leaflet';
+import { getAngle } from '../../utilities/math';
 
 /* Define constants
  */
-const DARK_PROVIDER = 0;
-const DAY_PROVIDER = 1;
 const GEO_JSON_LATITUDE = 1;
 const GEO_JSON_LONGITUDE = 0;
+const ORIGIN = 0;
+const FIRST_ARROWHEAD = 1;
 
 /**
  * A component to visualize TimeIndexedTypedLocation 's
@@ -48,8 +50,8 @@ export default function TimeIndexedTypedLocation(props) {
 
     /** initialize map */
     useMap(mapRef, {
-        url: CONFIG.MAP[DAY_PROVIDER].PROVIDER,
-        attribution: CONFIG.MAP[DAY_PROVIDER].ATTRIBUTION,
+        url: CONFIG.MAP[CONFIG.DEFAULT_PROVIDER].PROVIDER,
+        attribution: CONFIG.MAP[CONFIG.DEFAULT_PROVIDER].ATTRIBUTION,
     });
     /** initialize d3 layer */
     usePane(mapRef, 'd3-layer', 625);
@@ -75,6 +77,8 @@ export default function TimeIndexedTypedLocation(props) {
     const path = leafletTransform(projectGeoPointToLeafletSvg);
 
     useEffect(() => {
+        console.log(props.timeIndexedTypedLocations);
+
         /* Defining an svg layer for D3 
         ________________________________*/
 
@@ -84,19 +88,6 @@ export default function TimeIndexedTypedLocation(props) {
             .attr('style', 'position:relative');
 
         var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
-
-        svg.append('svg:defs')
-            .append('svg:marker')
-            .attr('id', 'arrow')
-            .attr('viewBox', '0 -5 10 10')
-            .attr('refX', 0)
-            .attr('refY', 0)
-            .attr('markerWidth', 6)
-            .attr('markerHeight', 6)
-            .attr('orient', 'auto')
-            .append('path')
-            .attr('d', 'M0,-5L10,0L0,5')
-            .attr('class', 'arrowHead');
 
         /* Iterating over data:
            - Creating markers and popup (Leaflet layer) 
@@ -119,6 +110,8 @@ export default function TimeIndexedTypedLocation(props) {
             type: 'FeatureCollection',
             features: [],
         };
+
+        sortByTime(props.timeIndexedTypedLocations);
 
         props.timeIndexedTypedLocations.forEach((tITL, index) => {
             geoJSON.features.push({
@@ -145,6 +138,7 @@ export default function TimeIndexedTypedLocation(props) {
                 timeInterval: `${tITL.startTime} - ${
                     tITL.endTime !== '' ? tITL.endTime : 'Today'
                 }`,
+                locationType: tITL.locationType,
             };
             const popup = L.popup()
                 .setContent(tITLPopup(popupContent))
@@ -179,6 +173,22 @@ export default function TimeIndexedTypedLocation(props) {
             .attr('class', 'locationsLine')
             .attr('style', `stroke:${CONFIG.ARROW.COLOR}`);
 
+        const arrowheads = g
+            .selectAll('.arrowheads')
+            .data(geoJSON.features)
+            .enter()
+            .append('svg:path')
+            .attr('class', 'arrowheads')
+            .attr(
+                'd',
+                d3
+                    .symbol()
+                    .type(d3.symbolTriangle)
+                    .size(CONFIG.ARROW.ARROWHEAD_SIZE)
+            )
+            .style('stroke', 'blue')
+            .style('fill', 'blue');
+
         const depiction = g
             .append('svg:image')
             .attr('x', -20)
@@ -186,6 +196,8 @@ export default function TimeIndexedTypedLocation(props) {
             .attr('height', 60)
             .attr('width', 50)
             .attr('xlink:href', props.timeIndexedTypedLocations[0].depiction);
+
+        let arrowheadsNodes;
 
         mapRef.current.on('zoomend', adaptD3Layer);
         adaptD3Layer();
@@ -206,13 +218,12 @@ export default function TimeIndexedTypedLocation(props) {
             );
 
             depiction.attr('transform', function () {
-                const START_POINT = 0;
                 var x =
-                    geoJSON.features[START_POINT].geometry.coordinates[
+                    geoJSON.features[ORIGIN].geometry.coordinates[
                         GEO_JSON_LONGITUDE
                     ];
                 var y =
-                    geoJSON.features[START_POINT].geometry.coordinates[
+                    geoJSON.features[ORIGIN].geometry.coordinates[
                         GEO_JSON_LATITUDE
                     ];
 
@@ -221,9 +232,29 @@ export default function TimeIndexedTypedLocation(props) {
                 },${mapRef.current.latLngToLayerPoint(new L.LatLng(y, x)).y})`;
             });
 
-            linePath.attr('marker-end', 'url(#arrow)');
-            linePath.attr('marker-mid', 'url(#arrow)');
+            // make arrowheads transparent
+            arrowheadsNodes = arrowheads.nodes();
+            // make arrowheads transparent at first time
+            arrowheadsNodes.forEach((a) => {
+                a.style.opacity = 0;
+            });
 
+            // translate and rotate arrowheads
+            arrowheads.attr('transform', function (d, i) {
+                if (i === ORIGIN) {
+                    return;
+                }
+                const rotationAngle = getAngle(
+                    arrowheadsNodes[i].__data__.geometry.coordinates,
+                    arrowheadsNodes[i - 1].__data__.geometry.coordinates
+                );
+
+                return `translate(${
+                    getLayerPoint(d, mapRef.current).x
+                },${getLayerPoint(d, mapRef.current).y}) rotate(${rotationAngle})`;
+            });
+
+            // https://stackoverflow.com/a/25946400/12506641 check this for arc
             linePath.attr('d', projectLine(mapRef.current));
 
             moveLine();
@@ -248,6 +279,20 @@ export default function TimeIndexedTypedLocation(props) {
                 // the time then this would 25.
                 const p = linePath.node().getPointAtLength(t * l);
 
+                // if there's some arrow to appear
+                if (arrowheadsNodes[FIRST_ARROWHEAD]) {
+                    const arrow = getLayerPoint(
+                        arrowheadsNodes[FIRST_ARROWHEAD].__data__,
+                        mapRef.current
+                    );
+                    const tolerance = 5;
+
+                    if (passOver([p.x, p.y], [arrow.x, arrow.y], tolerance)) {
+                        arrowheadsNodes[FIRST_ARROWHEAD].style.opacity = 1; // make arrowhead visible
+                        arrowheadsNodes.splice(FIRST_ARROWHEAD, 1); // remove from arrowheads to appear
+                    }
+                }
+
                 //Move the image to that point
                 depiction.attr('transform', `translate(${p.x},${p.y})`);
 
@@ -258,13 +303,20 @@ export default function TimeIndexedTypedLocation(props) {
 
     return (
         <div>
-            {CONFIG.DEPICTION ? (
-                <img
-                    className={'depiction'}
-                    src={props.timeIndexedTypedLocations[0].depiction}
-                ></img>
-            ) : null}
             <div id="map"></div>
         </div>
     );
+}
+
+/**
+ * Sort the resources by time
+ * modify the original array
+ *
+ * @param {Object[]} timeIndexedTypedLocations
+ */
+function sortByTime(timeIndexedTypedLocations) {
+    timeIndexedTypedLocations.sort((a, b) => {
+        return parseInt(a.startTime) - parseInt(b.startTime);
+    });
+    return timeIndexedTypedLocations;
 }

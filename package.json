@@ -60,7 +60,8 @@
         "overlapping-marker-spiderfier-leaflet": "^0.2.7",
         "prunecluster": "^2.1.0",
         "react": "^16.13.1",
-        "react-dom": "^16.13.1"
+        "react-dom": "^16.13.1",
+        "underscore": "^1.11.0"
     },
     "devDependencies": {
         "babel-eslint": "^10.1.0",

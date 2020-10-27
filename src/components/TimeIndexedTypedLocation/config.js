@@ -5,15 +5,17 @@ import {
     redSquatClusterMarkerIcon,
 } from '../../icon/ld-ui-icon';
 
+const DARK_PROVIDER = 0;
+const DAY_PROVIDER = 1;
+
 const CONFIG = {
-    DEPICTION: false,
     MARKER_ICON: [blueMarkerIcon, blueClusterMarkerIcon],
     ARROW: {
         COLOR: 'blue',
         HEAD_COLOR: 'blue',
         FILL_COLOR: 'blue',
         SIZE: '20px',
-        ARROWHEAD_SIZE: 50,
+        ARROWHEAD_SIZE: 100,
     },
     POPUP: {
         OPEN: 'mouseover',
@@ -34,6 +36,7 @@ const CONFIG = {
         },
     ],
     TRANSITION_DURATION: 10000,
+    DEFAULT_PROVIDER: DARK_PROVIDER,
 };
 
 export default CONFIG;

@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import L from 'leaflet';
+import _ from 'underscore';
 
 const GEO_JSON_LATITUDE = 1;
 const GEO_JSON_LONGITUDE = 0;
@@ -73,3 +74,44 @@ export function fitSvg(svg, bounds) {
         .style('left', bounds[TOP_LEFT][X] - 50 + 'px')
         .style('top', bounds[TOP_LEFT][Y] - 50 + 'px');
 }
+
+/**
+ * Check if p1 is p2 or in the square
+ * with midpoint x1 and y1 and side length
+ * tolerance
+ *
+ * @param {number[]} p1 point1 [x1, y1]
+ * @param {number[]} p2 point2 [x2, y2]
+ * @param {number} tolerance extends point 2 to a square of tolerance * p2, tolerance * p2
+ */
+export function passOver(p1, p2, tolerance = 0) {
+    const x_range = _.range(
+        parseInt(p2[X]) - tolerance,
+        parseInt(p2[X]) + tolerance
+    );
+    const y_range = _.range(
+        parseInt(p2[Y]) - tolerance,
+        parseInt(p2[Y]) + tolerance
+    );
+    if (
+        x_range.includes(parseInt(p1[X])) &&
+        y_range.includes(parseInt(p1[Y]))
+    ) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+var sqrt3 = Math.sqrt(3);
+
+// arrow =
+// export arrow {
+//   draw: function(context, size) {
+//     var y = -Math.sqrt(size / (sqrt3 * 3));
+//     context.moveTo(0, y * 2);
+//     context.lineTo(-sqrt3 * y, -y);
+//     context.lineTo(sqrt3 * y, -y);
+//     context.closePath();
+//   }
+// };

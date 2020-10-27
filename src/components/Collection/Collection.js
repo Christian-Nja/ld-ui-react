@@ -17,12 +17,12 @@ export default function Collection(props) {
     return (
         <ThemeContext.Provider value={themes[DEFAULT_CONFIG]}>
             <div>
-                <h1
+                {/* <h1
                     style={THEME.style.collectionLabel}
                     className={props.class.collectionLabel}
                 >
                     {props.entities[0].collectionLabel}
-                </h1>
+                </h1> */}
                 <section
                     className={`collection-container container ${props.class.collectionContainer}`}
                     style={THEME.style.collectionContainer}
