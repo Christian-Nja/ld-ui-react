@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 /**
  * Display a Leaflet map in react component
@@ -44,4 +44,42 @@ export function usePane(mapRef, paneName, paneZIndex = 450) {
 
         mapRef.current.getPane(paneName).style.pointerEvents = 'none';
     }, []);
+}
+
+/**
+ * Returns window dimensions, listening to resize event.
+ *
+ * Example:
+ *
+ * const Component = () => {
+ *     const { height, width } = useWindowDimensions();
+ * }
+ */
+export function useWindowDimensions() {
+    const [windowDimensions, setWindowDimensions] = useState(
+        getWindowDimensions()
+    );
+
+    useEffect(() => {
+        function handleResize() {
+            setWindowDimensions(getWindowDimensions());
+        }
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return windowDimensions;
+}
+
+/**
+ * Returns an object with browser window dimension
+ * @returns {Object} {width, height}
+ */
+function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {
+        width,
+        height,
+    };
 }

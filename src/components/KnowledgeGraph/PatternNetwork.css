@@ -1,0 +1,5 @@
+#graph-container {
+    height: 0px; /* initialized here, set inline by Component */
+    width: 0px; /* initialized here, set inline by Component */
+    background-color: burlywood;
+}
