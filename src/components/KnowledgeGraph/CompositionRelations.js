@@ -9,7 +9,6 @@ const SUPER_PATTERN = 'pattern';
 export default class CompositionRelations extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props.sigma);
         this.addRelations(props.sigma.graph, props.relations);
     }
     addRelations(g, relations) {
@@ -42,7 +41,7 @@ export default class CompositionRelations extends React.Component {
     }
 }
 
-SpecializationRelations.defaultProps = {
+CompositionRelations.defaultProps = {
     edgeColor: '#FFF',
     relations: null,
 };

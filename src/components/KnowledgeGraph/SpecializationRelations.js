@@ -2,15 +2,16 @@ import React from 'react';
 
 import { getURILabel } from '../../utilities/uri';
 
-//# define CONSTANTS
-const SUB_PATTERN = 'subPattern';
-const SUPER_PATTERN = 'pattern';
-
 export default class SpecializationRelations extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props.sigma);
-        this.addRelations(props.sigma.graph, props.relations);
+    }
+
+    componentDidUpdate() {
+        this.addRelations(this.props.sigma.graph, this.props.relations);
+        console.log(this.props.sigma.graph.nodes());
+        console.log(this.props.sigma.graph.edges());
+        this.props.sigma.refresh();
     }
     addRelations(g, relations) {
         if (relations) {
@@ -31,12 +32,13 @@ export default class SpecializationRelations extends React.Component {
                         id: edgeID,
                         source: superPattern,
                         target: subPattern,
-                        color: edgeColor,
+                        color: '#000',
                     });
                 }
             }
         }
     }
+
     render() {
         return null;
     }
