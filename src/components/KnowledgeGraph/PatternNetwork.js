@@ -16,6 +16,7 @@ import './PatternNetwork.css';
 /**
  * Internal modules
  */
+import PatternGraph from './PatternGraph';
 import { useWindowDimensions } from '../hooks/ld-ui-hooks';
 
 // define keys to semantically access elements
@@ -24,6 +25,8 @@ const SUPER_PATTERN = 'pattern';
 
 // globals
 const containerID = 'graph-container';
+const specializationEdgeColor = '#000';
+const compositionEdgeColor = '#000';
 
 export default function PatternNetwork(props) {
     const { height, width } = useWindowDimensions();
@@ -39,64 +42,68 @@ export default function PatternNetwork(props) {
         ],
         edges: [{ id: 'e0', source: 'id0', target: 'id1', label: 'eat' }],
     };
-    const [g, setGraph] = useState(new DirectedGraph());
+    const [graph, setGraph] = useState(new DirectedGraph());
 
-    useEffect(() => {
-        const updateG = new DirectedGraph();
-        if (props.patterns.patternSpecializations) {
-            // for (const specialization of props.patterns
-            //     .patternSpecializations) {
-            //     const subPattern = specialization[SUB_PATTERN];
-            //     const superPattern = specialization[SUPER_PATTERN];
-            //     if (!g.hasNode(subPattern)) {
-            //         let patternLabel = extractPatternNameFromURI(subPattern);
-            //         g.addNode(subPattern, {
-            //             label: patternLabel,
-            //         });
-            //     }
-            //     if (!g.hasNode(superPattern)) {
-            //         let patternLabel = extractPatternNameFromURI(superPattern);
-            //         g.addNode(superPattern, {
-            //             label: patternLabel,
-            //         });
-            //     }
-            //     if (!g.hasEdge(superPattern, subPattern)) {
-            //         g.addEdge(superPattern, subPattern, {});
-            //     }
-            // }
-            updateG.addNode('id0', { label: 'Tom' });
-            updateG.addNode('id1', { label: 'Jerry' });
-            updateG.addEdge('id0', 'id1');
-        }
-        console.log(updateG.asSigmaGraph());
-        setGraph(updateG);
-    }, [props.patterns.patternSpecializations]);
+    // useEffect(() => {
+    //     const g = new DirectedGraph();
+    //     if (props.patterns.patternSpecializations) {
+    //         addRelations(
+    //             g,
+    //             props.patterns.patternSpecializations,
+    //             specializationEdgeColor
+    //         );
+    //     }
+    //     if (props.patterns.patternCompositions) {
+    //         addRelations(
+    //             g,
+    //             props.patterns.patternCompositions,
+    //             compositionEdgeColor
+    //         );
+    //     }
+    //     setGraph(g);
+    // }, [props.patterns]);
 
-    return (
-        <Sigma
-            renderer="webgl"
-            style={containerStyle}
-            onOverNode={(e) => console.log('Mouse over node')}
-            graph={g.asSigmaGraph()}
-            settings={{ drawEdges: true, clone: false }}
-        >
-            <RelativeSize initialSize={15} />
-            <RandomizeNodePositions />
-        </Sigma>
-    );
+    if (props.patterns.patternSpecializations)
+        return (
+            <Sigma
+                renderer="webgl"
+                style={containerStyle}
+                onOverNode={(e) => console.log('Mouse over node')}
+                graph={{ nodes: [], edges: [] }}
+                settings={{ drawEdges: true, clone: false }}
+            >
+                <PatternGraph
+                    relations={props.patterns.patternSpecializations}
+                    edgeColor={specializationEdgeColor}
+                ></PatternGraph>
+                <RelativeSize initialSize={15} />
+                <RandomizeNodePositions />
+            </Sigma>
+        );
+    else return null;
 }
 
-/**
- * Extract name of a pattern From URI
- * it works for '/' namespaces.
- *
- * Warning: Not working for '#' namespaces yet
- *
- * @param {String} uri pattern uri
- */
-function extractPatternNameFromURI(uri) {
-    const uriChunks = uri.split('/');
-    return uriChunks[uriChunks.length - 1];
+function addRelations(g, relations, edgeColor, keys) {
+    for (const relation of relations) {
+        const subPattern = relation[SUB_PATTERN];
+        const superPattern = relation[SUPER_PATTERN];
+        if (!g.nodes(subPattern)) {
+            let patternLabel = extractPatternNameFromURI(subPattern);
+            g.addNode(subPattern, {
+                label: patternLabel,
+            });
+        }
+        if (!g.nodes(superPattern)) {
+            let patternLabel = extractPatternNameFromURI(superPattern);
+            g.addNode(superPattern, {
+                label: patternLabel,
+            });
+        }
+        if (!g.hasEdge(superPattern, subPattern)) {
+            g.addEdge(superPattern, subPattern, { color: edgeColor });
+        }
+    }
+    return g;
 }
 
 /**
