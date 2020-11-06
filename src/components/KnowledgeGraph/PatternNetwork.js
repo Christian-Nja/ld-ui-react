@@ -9,6 +9,7 @@ import '@antv/graphin/dist/index.css'; // Don't forget to import css
  */
 import './PatternNetwork.css';
 
+import Graph from '../classes/Graph';
 import { useWindowDimensions } from '../hooks/ld-ui-hooks';
 import { getURILabel } from '../../utilities/uri';
 
@@ -28,67 +29,19 @@ function PatternNetwork(props) {
         width: width,
     };
 
-    console.log(props);
-    const data = Utils.mock(10).circle().graphin();
-    console.log(data);
-    if (
-        props.patterns.patternSpecializations ||
-        props.patterns.patternCompositions
-    ) {
-        return (
-            <Graphin
-                data={transform(props.patterns.patternSpecializations)}
-            ></Graphin>
+    let graph = new Graph();
+    if (props.patterns.patternSpecializations) {
+        graph.addRelations(
+            props.patterns.patternSpecializations,
+            Graph.relType.SUB,
+            'CircleNode',
+            24
         );
-    } else {
-        return null;
+    }
+
+    if (graph.toJson()) {
+        return <Graphin data={graph.toJson()}></Graphin>;
     }
 }
 
 export default PatternNetwork;
-
-const transform = (relations) => {
-    if (relations) {
-        const nodes = [];
-        const edges = [];
-        relations.map((relation) => {
-            const subPattern = relation[SUB_PATTERN];
-            const superPattern = relation[SUPER_PATTERN];
-            if (!nodes.find((node) => node.id === subPattern)) {
-                nodes.push({
-                    id: subPattern,
-                    label: getURILabel(subPattern),
-                    data: subPattern,
-                    shape: 'CircleNode',
-                    type: 'company',
-                    style: {
-                        nodeSize: 24,
-                    },
-                });
-            }
-            if (!nodes.find((node) => node.id === superPattern)) {
-                nodes.push({
-                    id: superPattern,
-                    label: getURILabel(superPattern),
-                    data: subPattern,
-                    shape: 'CircleNode',
-                    type: 'company',
-                    style: {
-                        nodeSize: 24,
-                    },
-                });
-            }
-            const edgeId = `${subPattern}->${superPattern}`;
-            if (!edges.find((edge) => edge.id === edgeId)) {
-                edges.push({
-                    id: edgeId,
-                    data: edgeId,
-                    source: superPattern,
-                    target: subPattern,
-                });
-            }
-        });
-        console.log({ nodes: nodes, edges: edges });
-        return { nodes: nodes, edges: edges };
-    }
-};
