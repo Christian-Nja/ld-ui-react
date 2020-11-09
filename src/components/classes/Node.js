@@ -23,7 +23,7 @@ export default class Node {
      * @memberof Node
      */
     constructor(node) {
-        new RequiredParamChecker([node.id]);
+        new RequiredParamChecker([{ value: node.id, label: 'node.id' }]);
         this.id = node.id;
         this.label = node.label || getURILabel(node.id);
         this.data = node.data || node.id;

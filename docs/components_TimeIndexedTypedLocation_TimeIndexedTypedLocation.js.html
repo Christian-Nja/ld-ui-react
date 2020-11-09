@@ -1,0 +1,444 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> components/TimeIndexedTypedLocation/TimeIndexedTypedLocation.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">LD-UI-REACT</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="Edge.html">Edge</a></li><li><a href="Edge.module.exports.html">module.exports</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Graph.module.exports.html">module.exports</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="Node.html">Node</a></li><li><a href="Node.module.exports.html">module.exports</a></li><li><a href="RequiredParamChecker.html">RequiredParamChecker</a></li><li><a href="RequiredParamChecker.module.exports.html">module.exports</a></li><li><a href="RequiredParamError.html">RequiredParamError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#blueMarkerIcon">blueMarkerIcon</a></li><li><a href="global.html#defineProp">defineProp</a></li><li><a href="global.html#fitSvg">fitSvg</a></li><li><a href="global.html#getAngle">getAngle</a></li><li><a href="global.html#getLayerPoint">getLayerPoint</a></li><li><a href="global.html#getSlope">getSlope</a></li><li><a href="global.html#getURILabel">getURILabel</a></li><li><a href="global.html#getWindowDimensions">getWindowDimensions</a></li><li><a href="global.html#leafletIcon">leafletIcon</a></li><li><a href="global.html#passOver">passOver</a></li><li><a href="global.html#projectLine">projectLine</a></li><li><a href="global.html#redSquatMarkerIcon">redSquatMarkerIcon</a></li><li><a href="global.html#segmentAxis">segmentAxis</a></li><li><a href="global.html#sortByTime">sortByTime</a></li><li><a href="global.html#useMap">useMap</a></li><li><a href="global.html#usePane">usePane</a></li><li><a href="global.html#useWindowDimensions">useWindowDimensions</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>components/TimeIndexedTypedLocation/TimeIndexedTypedLocation.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useRef, useEffect } from 'react';
+import L from 'leaflet';
+import * as d3 from 'd3';
+import 'leaflet.markercluster/dist/leaflet.markercluster';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+
+/**
+ * css
+ */
+import 'leaflet/dist/leaflet.css';
+import './TimeIndexedTypedLocation.css';
+
+/**
+ * Internal modules
+ */
+
+import CONFIG from './config';
+import { useMap, usePane } from '../hooks/ld-ui-hooks';
+import tITLPopup from './tITLPopup';
+import {
+    projectLine,
+    leafletTransform,
+    fitSvg,
+    getLayerPoint,
+    passOver,
+} from '../../utilities/d3leaflet';
+import { getAngle } from '../../utilities/math';
+
+/* Define constants
+ */
+const GEO_JSON_LATITUDE = 1;
+const GEO_JSON_LONGITUDE = 0;
+const ORIGIN = 0;
+const FIRST_ARROWHEAD = 1;
+
+const D3_ZINDEX = 625; // over markers under tooltip and popup
+
+/**
+ * A component to visualize TimeIndexedTypedLocation 's
+ *
+ *
+ * @param {Object} props React properties
+ * @param ...
+ *
+ * @TODO - describe props interface
+ *       - add style to props interface
+ */
+export default function TimeIndexedTypedLocation(props) {
+    /** mapRef */
+    const mapRef = useRef(null);
+
+    /** initialize map */
+    useMap(mapRef, {
+        url: CONFIG.MAP[CONFIG.DEFAULT_PROVIDER].PROVIDER,
+        attribution: CONFIG.MAP[CONFIG.DEFAULT_PROVIDER].ATTRIBUTION,
+    });
+    /** initialize d3 layer */
+    usePane(mapRef, 'd3-layer', D3_ZINDEX);
+
+    /**
+     * This function is a d3 transform @see {@link https://github.com/d3/d3-geo/blob/v2.0.0/README.md#transforms|d3-transform} for further infos
+     *
+     * You can use it like this:
+
+     * @example
+     * var transform = d3.geoTransform({ point: projectPoint })
+     * var path = d3.geoPath(transform)
+     * 
+     * You can now project points on an svg surface on a leaflet map
+     *
+     * @param {number} long Geojson point longitude
+     * @param {number} lat Geojson point latitude
+     */
+    function projectGeoPointToLeafletSvg(long, lat) {
+        var point = mapRef.current.latLngToLayerPoint(new L.LatLng(lat, long));
+        this.stream.point(point.x, point.y);
+    }
+    const path = leafletTransform(projectGeoPointToLeafletSvg);
+
+    useEffect(() => {
+        console.log(props.timeIndexedTypedLocations);
+
+        /* Defining an svg layer for D3 
+        ________________________________*/
+
+        var svg = d3
+            .select(mapRef.current.getPane('d3-layer'))
+            .append('svg')
+            .attr('style', 'position:relative');
+
+        var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
+
+        /* Iterating over data:
+           - Creating markers and popup (Leaflet layer) 
+           - Preparing GeoJSON          (D3 Layer)  
+        ___________________________________*/
+
+        const mcg = L.markerClusterGroup({
+            iconCreateFunction: (cluster) => {
+                return L.divIcon({
+                    html: `${CONFIG.MARKER_ICON[1](cluster.getChildCount())}`,
+                    className: 'cluster-icon',
+                    iconAnchor: [15, 50],
+                });
+            },
+        }).on(CONFIG.POPUP.OPEN_CLUSTER, function (e) {
+            e.layer.spiderfy();
+        });
+
+        let geoJSON = {
+            type: 'FeatureCollection',
+            features: [],
+        };
+
+        sortByTime(props.timeIndexedTypedLocations);
+
+        props.timeIndexedTypedLocations.forEach((tITL, index) => {
+            geoJSON.features.push({
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [
+                        parseFloat(tITL.longitude),
+                        parseFloat(tITL.latitude),
+                    ],
+                },
+            });
+
+            const markerPosition = [
+                geoJSON.features[index].geometry.coordinates[GEO_JSON_LATITUDE],
+                geoJSON.features[index].geometry.coordinates[
+                    GEO_JSON_LONGITUDE
+                ],
+            ];
+
+            const popupContent = {
+                city: tITL.city,
+                siteLabel: tITL.siteLabel,
+                timeInterval: `${tITL.startTime} - ${
+                    tITL.endTime !== '' ? tITL.endTime : 'Today'
+                }`,
+                locationType: tITL.locationType,
+            };
+            const popup = L.popup()
+                .setContent(tITLPopup(popupContent))
+                .setLatLng(markerPosition);
+
+            L.marker(markerPosition, {
+                icon: CONFIG.MARKER_ICON[0],
+            })
+                .addTo(mcg)
+                .bindPopup(popup)
+                .on(CONFIG.POPUP.OPEN, function (e) {
+                    this.openPopup();
+                })
+                .on(CONFIG.POPUP.CLOSE, function (e) {
+                    this.closePopup();
+                });
+        });
+
+        /* Add marker to maps and fit zoom
+        ___________________________________ */
+        mapRef.current.fitBounds(mcg.getBounds(), { padding: [120, 120] });
+        mapRef.current.addLayer(mcg);
+
+        /* Draw line connecting locations and arrowheads
+        _________________________________________________*/
+
+        let linePath = g
+            .selectAll('.locationsLine')
+            .data([geoJSON.features])
+            .enter()
+            .append('path')
+            .attr('class', 'locationsLine')
+            .attr('style', `stroke:${CONFIG.ARROW.COLOR}`);
+
+        const arrowheads = g
+            .selectAll('.arrowheads')
+            .data(geoJSON.features)
+            .enter()
+            .append('svg:path')
+            .attr('class', 'arrowheads')
+            .attr(
+                'd',
+                d3
+                    .symbol()
+                    .type(d3.symbolTriangle)
+                    .size(CONFIG.ARROW.ARROWHEAD_SIZE)
+            )
+            .style('stroke', 'blue')
+            .style('fill', 'blue');
+
+        const depiction = g
+            .append('svg:image')
+            .attr('x', -20)
+            .attr('y', -20)
+            .attr('height', 60)
+            .attr('width', 50)
+            .attr('xlink:href', props.timeIndexedTypedLocations[0].depiction);
+
+        let arrowheadsNodes;
+
+        mapRef.current.on('zoomend', adaptD3Layer);
+        adaptD3Layer();
+
+        function adaptD3Layer() {
+            // Get bounding box of points / coordinates / data / markers in the map
+            const bounds = path.bounds(geoJSON),
+                topLeft = bounds[0],
+                bottomRight = bounds[1];
+
+            // Setting the size and location of the overall SVG container
+            fitSvg(svg, bounds);
+
+            // translate group
+            g.attr(
+                'transform',
+                `translate(${-topLeft[0] + 50},${-topLeft[1] + 50})`
+            );
+
+            depiction.attr('transform', function () {
+                var x =
+                    geoJSON.features[ORIGIN].geometry.coordinates[
+                        GEO_JSON_LONGITUDE
+                    ];
+                var y =
+                    geoJSON.features[ORIGIN].geometry.coordinates[
+                        GEO_JSON_LATITUDE
+                    ];
+
+                return `translate(${
+                    mapRef.current.latLngToLayerPoint(new L.LatLng(y, x)).x
+                },${mapRef.current.latLngToLayerPoint(new L.LatLng(y, x)).y})`;
+            });
+
+            // make arrowheads transparent
+            arrowheadsNodes = arrowheads.nodes();
+            // make arrowheads transparent at first time
+            arrowheadsNodes.forEach((a) => {
+                a.style.opacity = 0;
+            });
+
+            // translate and rotate arrowheads
+            arrowheads.attr('transform', function (d, i) {
+                if (i === ORIGIN) {
+                    return;
+                }
+                const rotationAngle = getAngle(
+                    arrowheadsNodes[i].__data__.geometry.coordinates,
+                    arrowheadsNodes[i - 1].__data__.geometry.coordinates
+                );
+
+                return `translate(${
+                    getLayerPoint(d, mapRef.current).x
+                },${getLayerPoint(d, mapRef.current).y}) rotate(${rotationAngle})`;
+            });
+
+            // https://stackoverflow.com/a/25946400/12506641 check this for arc
+            linePath.attr('d', projectLine(mapRef.current));
+
+            moveLine();
+        }
+
+        function moveLine() {
+            linePath
+                .transition()
+                .ease(d3.easeLinear)
+                .duration(CONFIG.TRANSITION_DURATION)
+                .attrTween('stroke-dasharray', tweenDash);
+        }
+
+        function tweenDash() {
+            return function (t) {
+                //total length of path (single value)
+                const l = linePath.node().getTotalLength();
+                const interpolate = d3.interpolateString(`0,${l}`, `${l},${l}`);
+
+                // p is the point on the line (coordinates) at a given length
+                // along the line. In this case if l=50 and we're midway through
+                // the time then this would 25.
+                const p = linePath.node().getPointAtLength(t * l);
+
+                // if there's some arrow to appear
+                if (arrowheadsNodes[FIRST_ARROWHEAD]) {
+                    const arrow = getLayerPoint(
+                        arrowheadsNodes[FIRST_ARROWHEAD].__data__,
+                        mapRef.current
+                    );
+                    const tolerance = 5;
+
+                    if (passOver([p.x, p.y], [arrow.x, arrow.y], tolerance)) {
+                        arrowheadsNodes[FIRST_ARROWHEAD].style.opacity = 1; // make arrowhead visible
+                        arrowheadsNodes.splice(FIRST_ARROWHEAD, 1); // remove from arrowheads to appear
+                    }
+                }
+
+                //Move the image to that point
+                depiction.attr('transform', `translate(${p.x},${p.y})`);
+
+                return interpolate(t);
+            };
+        }
+    }, []);
+
+    return (
+        &lt;div>
+            &lt;div id="map">&lt;/div>
+        &lt;/div>
+    );
+}
+
+/**
+ * Sort the resources by time
+ * modify the original array
+ *
+ * @param {Object[]} timeIndexedTypedLocations
+ */
+function sortByTime(timeIndexedTypedLocations) {
+    timeIndexedTypedLocations.sort((a, b) => {
+        return parseInt(a.startTime) - parseInt(b.startTime);
+    });
+    return timeIndexedTypedLocations;
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+</body>
+</html>

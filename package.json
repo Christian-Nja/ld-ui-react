@@ -7,7 +7,8 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "./node_modules/.bin/babel src --out-dir lib --copy-files",
         "lint": "eslint --ignore-path .gitignore -c .eslintrc \"./**/*.js\"",
-        "encode-icon": "cd ./src/icon/images && ./encode-all-svg && cd ../../.."
+        "encode-icon": "cd ./src/icon/images && ./encode-all-svg && cd ../../..",
+        "docs": "jsdoc -c jsdoc.conf.json"
     },
     "husky": {
         "hooks": {
@@ -40,7 +41,9 @@
     },
     "homepage": "https://github.com/Christian-Nja/ld-ui-react#readme",
     "dependencies": {
+        "@ant-design/icons": "^4.2.2",
         "@antv/graphin": "^1.5.0",
+        "@antv/graphin-components": "^1.5.0",
         "@babel/cli": "^7.10.5",
         "@babel/core": "^7.11.4",
         "@babel/preset-env": "^7.11.0",
@@ -60,16 +63,21 @@
         "leaflet-arrowheads": "^1.2.1",
         "leaflet.markercluster": "^1.4.1",
         "overlapping-marker-spiderfier-leaflet": "^0.2.7",
+        "prop-types": "^15.7.2",
         "prunecluster": "^2.1.0",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
+        "semantic-ui-react": "^2.0.1",
         "underscore": "^1.11.0"
     },
     "devDependencies": {
         "@babel/plugin-proposal-class-properties": "^7.12.1",
         "babel-eslint": "^10.1.0",
+        "better-docs": "^2.3.2",
+        "cssnano": "^4.1.10",
         "eslint": "^7.7.0",
         "husky": "^4.2.5",
+        "jsdoc": "^3.6.6",
         "lint-staged": "^10.2.13",
         "mini-svg-data-uri": "^1.2.3",
         "minimist": "^1.2.5",

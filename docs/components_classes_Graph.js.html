@@ -1,0 +1,247 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> components/classes/Graph.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">LD-UI-REACT</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="Edge.html">Edge</a></li><li><a href="Edge.module.exports.html">module.exports</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Graph.module.exports.html">module.exports</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="Node.html">Node</a></li><li><a href="Node.module.exports.html">module.exports</a></li><li><a href="RequiredParamChecker.html">RequiredParamChecker</a></li><li><a href="RequiredParamChecker.module.exports.html">module.exports</a></li><li><a href="RequiredParamError.html">RequiredParamError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#blueMarkerIcon">blueMarkerIcon</a></li><li><a href="global.html#defineProp">defineProp</a></li><li><a href="global.html#fitSvg">fitSvg</a></li><li><a href="global.html#getAngle">getAngle</a></li><li><a href="global.html#getLayerPoint">getLayerPoint</a></li><li><a href="global.html#getSlope">getSlope</a></li><li><a href="global.html#getURILabel">getURILabel</a></li><li><a href="global.html#getWindowDimensions">getWindowDimensions</a></li><li><a href="global.html#leafletIcon">leafletIcon</a></li><li><a href="global.html#passOver">passOver</a></li><li><a href="global.html#projectLine">projectLine</a></li><li><a href="global.html#redSquatMarkerIcon">redSquatMarkerIcon</a></li><li><a href="global.html#segmentAxis">segmentAxis</a></li><li><a href="global.html#sortByTime">sortByTime</a></li><li><a href="global.html#useMap">useMap</a></li><li><a href="global.html#usePane">usePane</a></li><li><a href="global.html#useWindowDimensions">useWindowDimensions</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>components/classes/Graph.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Node from "./Node";
+import Edge from "./Edge";
+
+/**
+ * @description A basic graph structure to handle data structured as graphs
+ * @author Christian Colonna
+ * @date 06-11-2020
+ * @export
+ * @class Graph
+ */
+export default class Graph {
+    static relType = {
+        SUB: "subPattern",
+        COMPONENT: "componentPattern",
+        SUPER_PATTERN: "pattern",
+    };
+
+    /**
+     * Creates an instance of Graph.
+     * @author Christian Colonna
+     * @date 06-11-2020
+     * @param {Node[]} [nodes]
+     * @param {Edge[]} [edges]
+     * @memberof Graph
+     */
+    constructor(nodes, edges) {
+        this.nodes = nodes || [];
+        this.edges = edges || [];
+    }
+
+    addRelations(relations, type, nodeShape, nodeSize) {
+        relations.map((relation) => {
+            this.addRelation(relation, type, nodeShape, nodeSize);
+        });
+    }
+
+    addRelation(relation, type, nodeShape, nodeSize) {
+        const subPattern = relation[type];
+        const superPattern = relation[Graph.relType.SUPER_PATTERN];
+        this.addNode(
+            new Node({
+                id: subPattern,
+                shape: nodeShape,
+                style: { nodeSize: nodeSize },
+            })
+        );
+        this.addNode(
+            new Node({
+                id: superPattern,
+                shape: nodeShape,
+                style: { nodeSize: nodeSize },
+            })
+        );
+        const edgeId = `${subPattern}->${superPattern}`;
+        this.addEdge(
+            new Edge({
+                id: edgeId,
+                source: superPattern,
+                target: subPattern,
+            })
+        );
+    }
+
+    /**
+     * @description Adds a Node to Graph if it's not duplicate
+     * @author Christian Colonna
+     * @date 06-11-2020
+     * @param {Node} node
+     * @memberof Graph
+     */
+    addNode(node) {
+        if (!this.hasNode(node.id)) this.nodes.push(node);
+    }
+
+    /**
+     * @description Adds an Edge to Graph if it's not duplicate
+     * @author Christian Colonna
+     * @date 06-11-2020
+     * @param {Edge} edge
+     * @memberof Graph
+     */
+    addEdge(edge) {
+        if (!this.hasEdge(edge.id)) this.edges.push(edge);
+    }
+
+    /**
+     * @description Check if Graph has node with given id
+     * @author Christian Colonna
+     * @date 06-11-2020
+     * @param {String} id
+     * @returns {Node} node or undefined
+     * @memberof Graph
+     */
+    hasNode(id) {
+        return this.nodes.find((node) => node.id === id);
+    }
+
+    /**
+     * @description Check if Graph has edge with given id
+     * @author Christian Colonna
+     * @date 06-11-2020
+     * @param {String} id
+     * @returns {Edge} found edge or undefined
+     * @memberof Graph
+     */
+    hasEdge(id) {
+        return this.edges.find((edge) => edge.id === id);
+    }
+
+    /**
+     * @description returns the Graph as JSON
+     * @author Christian Colonna
+     * @date 06-11-2020
+     * @returns {Object}
+     * @memberof Graph
+     */
+    toJson() {
+        return {
+            nodes: this.nodes.map((node) => {
+                return node.toJson();
+            }),
+            edges: this.edges.map((edge) => {
+                return edge.toJson();
+            }),
+        };
+    }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+</body>
+</html>

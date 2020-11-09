@@ -12,15 +12,17 @@ export default class RequiredParamChecker {
      * Creates an instance of RequiredParamChecker.
      * @author Christian Colonna
      * @date 06-11-2020
-     * @param {any[]} params
+     * @param {Object[]} params
+     * @param {any} params.value the param to check
+     * @param {String} params.label the param label
      * @param {String} errMsg optional
      * @memberof RequiredParamChecker
      */
     constructor(params, errMsg) {
         params.map((param) => {
-            if (!param)
+            if (!param.value)
                 throw new RequiredParamError(
-                    errMsg ? errMsg : `[!] ${param} is required`
+                    errMsg ? errMsg : `[!] ${param.label} is required`
                 );
         });
     }

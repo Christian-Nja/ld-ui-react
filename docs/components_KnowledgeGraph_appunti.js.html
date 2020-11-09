@@ -1,0 +1,224 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> components/KnowledgeGraph/appunti.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">LD-UI-REACT</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="Edge.html">Edge</a></li><li><a href="Edge.module.exports.html">module.exports</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Graph.module.exports.html">module.exports</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="Node.html">Node</a></li><li><a href="Node.module.exports.html">module.exports</a></li><li><a href="RequiredParamChecker.html">RequiredParamChecker</a></li><li><a href="RequiredParamChecker.module.exports.html">module.exports</a></li><li><a href="RequiredParamError.html">RequiredParamError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#blueMarkerIcon">blueMarkerIcon</a></li><li><a href="global.html#defineProp">defineProp</a></li><li><a href="global.html#fitSvg">fitSvg</a></li><li><a href="global.html#getAngle">getAngle</a></li><li><a href="global.html#getLayerPoint">getLayerPoint</a></li><li><a href="global.html#getSlope">getSlope</a></li><li><a href="global.html#getURILabel">getURILabel</a></li><li><a href="global.html#getWindowDimensions">getWindowDimensions</a></li><li><a href="global.html#leafletIcon">leafletIcon</a></li><li><a href="global.html#passOver">passOver</a></li><li><a href="global.html#projectLine">projectLine</a></li><li><a href="global.html#redSquatMarkerIcon">redSquatMarkerIcon</a></li><li><a href="global.html#segmentAxis">segmentAxis</a></li><li><a href="global.html#sortByTime">sortByTime</a></li><li><a href="global.html#useMap">useMap</a></li><li><a href="global.html#usePane">usePane</a></li><li><a href="global.html#useWindowDimensions">useWindowDimensions</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>components/KnowledgeGraph/appunti.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/* eslint-disable no-undef */
+import React from "react";
+import ReactDOM from "react-dom";
+import Graphin, { Utils } from "@antv/graphin";
+import { Toolbar } from "@antv/graphin-components";
+import { message } from "antd";
+import "@antv/graphin/dist/index.css"; // 引入Graphin CSS
+import "@antv/graphin-components/dist/index.css"; // 引入Graphin CSS
+
+const App = () => {
+    const [state, setState] = React.useState({
+        selected: [],
+        data: Utils.mock(5).circle().graphin(),
+    });
+
+    const { data, selected } = state;
+    const graphRef = React.createRef(null);
+    React.useEffect(() => {
+        const { graph } = graphRef.current;
+
+        // 按住Shift框选,按住Option键 多选，进行关系扩散
+        const onNodeSelectChange = (e) => {
+            console.log("nodeselectchange", e);
+            const nodes = e.selectedItems.nodes.map((node) => {
+                return node.get("model");
+            });
+            setState({
+                ...state,
+                selected: nodes,
+            });
+        };
+
+        graph.on("nodeselectchange", onNodeSelectChange);
+        return () => {
+            graph.off("nodeselectchange", onNodeSelectChange);
+        };
+    }, [state]);
+
+    const onExpand = () => {
+        if (selected.length === 0) {
+            message.info("请先选中/圈选节点");
+            return;
+        }
+        const count = Math.round(Math.random() * 20);
+
+        const expandData = Utils.mock(count)
+            .expand(selected)
+            .type("company")
+            .graphin();
+
+        setState({
+            ...state,
+            data: {
+                // 还需要对Node和Edge去重，这里暂不考虑
+                nodes: [...state.data.nodes, ...expandData.nodes],
+                edges: [...state.data.edges, ...expandData.edges],
+            },
+        });
+    };
+    return (
+        &lt;div className="App">
+            &lt;h3>
+                基于力导的节点扩散，支持按住Shift圈选，多个节点同时扩散
+                &lt;button
+                    onClick={onExpand}
+                    style={{
+                        float: "right",
+                        height: "28px",
+                        lineHeight: "28px",
+                    }}
+                >
+                    点击扩散
+                &lt;/button>
+            &lt;/h3>
+            &lt;Graphin
+                data={data}
+                layout={{
+                    name: "force",
+                    options: {
+                        defSpringLen: (_edge, source, target) => {
+                            /** 默认返回的是 200 的弹簧长度 */
+
+                            /** 如果你要想要产生聚类的效果，可以考虑 根据边两边节点的度数来动态设置边的初始化长度：度数越小，则边越短 */
+                            const nodeSize = 30;
+                            const Sdegree = source.data.layout?.degree;
+                            const Tdegree = target.data.layout?.degree;
+                            const minDegree = Math.min(Sdegree, Tdegree);
+                            return minDegree &lt; 3
+                                ? nodeSize * 5
+                                : minDegree * nodeSize * 2;
+                        },
+                    },
+                }}
+                ref={graphRef}
+            >
+                &lt;Toolbar
+                    style={{ position: "absolute", bottom: 28, left: 28 }}
+                />
+            &lt;/Graphin>
+        &lt;/div>
+    );
+};
+
+ReactDOM.render(&lt;App />, document.getElementById("container"));
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+</body>
+</html>

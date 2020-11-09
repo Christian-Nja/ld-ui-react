@@ -28,12 +28,34 @@ export default class Graph {
         this.edges = edges || [];
     }
 
+    /**
+     * @description Add multiple relations to the Graph
+     * @author Christian Colonna
+     * @date 09-11-2020
+     * @param {Object[]} relations
+     * @param {string} type check Graph.relType
+     * @param {string} nodeShape
+     * @param {number} nodeSize
+     * @memberof Graph
+     */
     addRelations(relations, type, nodeShape, nodeSize) {
         relations.map((relation) => {
             this.addRelation(relation, type, nodeShape, nodeSize);
         });
     }
 
+    /**
+     * @description Add a relation to the Graph : Node_1-Edge->Node_2
+     *              If nodes or edges are already in the graph they are not added
+     *
+     * @author Christian Colonna
+     * @date 09-11-2020
+     * @param {object} relation
+     * @param {string} type check Graph.relType for available relations
+     * @param {string} nodeShape default = CircleNode
+     * @param {number} nodeSize
+     * @memberof Graph
+     */
     addRelation(relation, type, nodeShape, nodeSize) {
         const subPattern = relation[type];
         const superPattern = relation[Graph.relType.SUPER_PATTERN];
@@ -55,8 +77,8 @@ export default class Graph {
         this.addEdge(
             new Edge({
                 id: edgeId,
-                source: subPattern,
-                target: superPattern,
+                source: superPattern,
+                target: subPattern,
             })
         );
     }
@@ -70,6 +92,23 @@ export default class Graph {
      */
     addNode(node) {
         if (!this.hasNode(node.id)) this.nodes.push(node);
+    }
+
+    /**
+     * @description Adds a list of Node to the Graph if they are not duplicates
+     * @author Christian Colonna
+     * @date 09-11-2020
+     * @param {Node[]} nodes
+     * @memberof Graph
+     */
+    addNodes(nodes) {
+        nodes.map((node) =>
+            this.addNode(
+                new Node({
+                    id: node.id,
+                })
+            )
+        );
     }
 
     /**
@@ -92,12 +131,6 @@ export default class Graph {
      * @memberof Graph
      */
     hasNode(id) {
-        console.log('check hasNode');
-        console.log(
-            this.nodes.find((node) => {
-                return node.id === id;
-            })
-        );
         return this.nodes.find((node) => node.id === id);
     }
 
@@ -114,10 +147,10 @@ export default class Graph {
     }
 
     /**
-     * @description
+     * @description returns the Graph as JSON
      * @author Christian Colonna
      * @date 06-11-2020
-     * @returns {Object} returns the Graph as JSON
+     * @returns {Object}
      * @memberof Graph
      */
     toJson() {

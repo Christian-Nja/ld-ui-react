@@ -1,16 +1,19 @@
-import React, { useContext } from 'react';
+import React, { useContext } from "react";
+import PropTypes from "prop-types";
+
+import "./Collection.css";
+
+import Entity from "./Entity";
+import ThemeContext, { themes, DEFAULT_CONFIG } from "./config";
 
 /**
- * css
+ * A component to show a collection of items
+ *
+ * @component
+ * @example
+ * const collections = []
+ * return <Collection collections={collections}>
  */
-import './Collection.css';
-
-/**
- * internal modules
- */
-import Entity from './Entity';
-import ThemeContext, { themes, DEFAULT_CONFIG } from './config';
-
 export default function Collection(props) {
     const THEME = useContext(ThemeContext);
 
@@ -42,12 +45,22 @@ export default function Collection(props) {
     );
 }
 
+Collection.propTypes = {
+    // List of class to custom style the component
+    class: PropTypes.string.isRequired,
+};
+
 Collection.defaultProps = {
     class: {
-        collectionLabel: '',
-        collectionContainer: '',
-        entityImage: '',
-        entityLabel: '',
-        entityContent: '',
+        collectionLabel: "",
+        collectionContainer: "",
+        entityImage: "",
+        entityLabel: "",
+        entityContent: "",
     },
 };
+
+// * description A component to show a collection of objects
+// * author Christian Colonna
+// * date 09-11-2020
+// * export

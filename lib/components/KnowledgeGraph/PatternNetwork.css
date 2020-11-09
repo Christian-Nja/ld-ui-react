@@ -3,3 +3,7 @@
     width: 0px; /* initialized here, set inline by Component */
     background-color: burlywood;
 }
+
+.ant-menu {
+    list-style-type: none;
+}

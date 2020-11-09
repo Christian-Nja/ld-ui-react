@@ -21,7 +21,10 @@ export default class Edge {
      * @memberof Edge
      */
     constructor(edge) {
-        new RequiredParamChecker([edge.source, edge.target]);
+        new RequiredParamChecker([
+            { value: edge.source, label: 'edge.source' },
+            { value: edge.target, label: 'edge.target' },
+        ]);
         const edgeId = `${edge.source}->${edge.target}`;
         this.id = edge.id || edgeId;
         this.label = edge.label;
