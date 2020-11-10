@@ -1,8 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import PropTypes, { node } from "prop-types";
 
 import SelectButton from "./SelectButton";
 import PatternMenu from "./PatternMenu";
+import { useLayout } from "../hooks/ld-ui-hooks";
 import Graph from "../classes/Graph";
 
 import Graphin from "@antv/graphin";
@@ -12,6 +13,7 @@ export default function Patterns(props) {
     const graphRef = useRef(null);
     const [selectedNodes, setSelectedNodes] = useState([]);
     const [clicked, setClicked] = useState(null);
+    const layoutHandler = useLayout();
 
     let graph = new Graph();
 
@@ -27,6 +29,15 @@ export default function Patterns(props) {
         "CircleNode",
         24
     );
+    const filter = (node, id) => {
+        node.style.primaryColor = graph.nodeGradient()[id];
+        console.log("node size");
+        console.log(node.style.nodeSize);
+        console.log("new size");
+        console.log(graph.degree(node) * node.style.nodeSize);
+        node.style.nodeSize = graph.degree(node) * node.style.nodeSize;
+    };
+    graph.breadthFirstSearch(filter);
 
     useEffect(() => {
         const { graph } = graphRef.current;
@@ -80,10 +91,15 @@ export default function Patterns(props) {
     return (
         <div style={props.graphContainerStyle}>
             <PatternMenu
+                layoutHandler={layoutHandler}
                 selectedNodes={selectedNodes}
                 getInstances={props.getInstances}
             ></PatternMenu>
-            <Graphin data={graph.toJson()} ref={graphRef}>
+            <Graphin
+                data={graph.toJson()}
+                ref={graphRef}
+                layout={layoutHandler.name}
+            >
                 <ContextMenu options={menuOptions}></ContextMenu>
             </Graphin>
         </div>

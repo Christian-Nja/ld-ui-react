@@ -1,6 +1,9 @@
 import Node from './Node';
 import Edge from './Edge';
 
+import chroma from 'chroma-js';
+import { Queue, defineProp } from '../../utilities/generics';
+
 /**
  * @description A basic graph structure to handle data structured as graphs
  * @author Christian Colonna
@@ -162,5 +165,124 @@ export default class Graph {
                 return edge.toJson();
             }),
         };
+    }
+
+    /**
+     * @description Return node count
+     * @author Christian Colonna
+     * @date 10-11-2020
+     * @returns {number}
+     * @memberof Graph
+     */
+    nodeCount() {
+        return this.nodes.length;
+    }
+
+    /**
+     * @description Returns adjacency list for a given node
+     * @author Christian Colonna
+     * @date 10-11-2020
+     * @param {Node} node
+     * @returns {String[]} node ids
+     * @memberof Graph
+     */
+    getAdjacents(node) {
+        const adjacents = [];
+        this.edges.forEach((edge) => {
+            if (edge.source === node.id) {
+                adjacents.push(this.getNodeById(edge.target));
+            } else if (edge.target === node.id) {
+                adjacents.push(this.getNodeById(edge.source));
+            }
+        });
+        return adjacents;
+    }
+
+    /**
+     * @description Return the degree of a node
+     * @author Christian Colonna
+     * @date 10-11-2020
+     * @param {Node} node
+     * @returns {number} node degree
+     * @memberof Graph
+     */
+    degree(node) {
+        return this.getAdjacents(node).length;
+    }
+
+    /**
+     * @description Return a node with given id
+     * @author Christian Colonna
+     * @date 10-11-2020
+     * @param {string} id node id
+     * @returns {Node}
+     * @memberof Graph
+     */
+    getNodeById(id) {
+        const FIRST_UNIQUE_NODE = 0;
+        return this.nodes.filter((node) => node.id === id)[FIRST_UNIQUE_NODE];
+    }
+
+    /**
+     * @description Executes BFS on Graph and if specified calls filter on every node.
+     *              You can optionally define a starting node else it's got randomly
+     * @author Christian Colonna
+     * @date 10-11-2020
+     * @param {(node, id)=>} [filter]
+     * @memberof Graph
+     */
+    breadthFirstSearch(filter) {
+        let visited = [];
+        let fltr = defineProp(filter, (node, id) => {});
+        let i = 0;
+        if (this.nodes[0]) {
+            this.nodes.forEach((node) => {
+                if (!visited.includes(node.id)) {
+                    let queue = new Queue();
+                    visited.push(node.id);
+                    queue.enqueue(node);
+                    while (!queue.isEmpty()) {
+                        let nextNode = queue.dequeue();
+                        fltr(nextNode, i);
+                        i++;
+                        const adjacents = this.getAdjacents(nextNode);
+                        adjacents.forEach((adjacent) => {
+                            if (adjacent && !visited.includes(adjacent.id)) {
+                                visited.push(adjacent.id);
+                                queue.enqueue(adjacent);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * @description Return first node matching filter condition
+     * @author Christian Colonna
+     * @date 10-11-2020
+     * @param {(node)=>{}} filter
+     * @returns {Node}
+     * @memberof Graph
+     */
+    getNode(filter) {
+        return this.nodes.find((node) => {
+            filter(node);
+        });
+    }
+
+    /**
+     * @description Return a discrete gradient of colors (length: total nodes)
+     * @author Christian Colonna
+     * @date 10-11-2020
+     * @param {string} [color1="#fafa6e"]
+     * @param {string} [color2="#2f7224"]
+     * @param {string} [mode="lrgb"]
+     * @returns {string[]} color palette
+     * @memberof Graph
+     */
+    nodeGradient(colors = ['#fafa6e', '#2f7224'], mode = 'lrgb') {
+        return chroma.scale(colors).mode(mode).colors(this.nodeCount());
     }
 }

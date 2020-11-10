@@ -1,16 +1,23 @@
-import React from 'react';
-import { Menu } from 'semantic-ui-react';
+import React from "react";
+import { Menu } from "semantic-ui-react";
 
-import InstancesButton from './InstancesButton';
+import LayoutSelector from "./LayoutSelector";
+import InstancesButton from "./InstancesButton";
 
-import { getURILabel } from '../../utilities/uri';
+import { getURILabel } from "../../utilities/uri";
 
-const menuStyle = { marginLeft: 20, marginTop: 20, height: '50vh' };
+const menuStyle = { position: "absolute", top: 70, left: 20, zIndex: 10 };
 
 export default function PatternMenu(props) {
     return (
         <div style={menuStyle}>
             <Menu vertical inverted>
+                <LayoutSelector
+                    value={props.layoutHandler.name}
+                    onClick={(newLayout) => {
+                        props.layoutHandler.setLayout(newLayout);
+                    }}
+                ></LayoutSelector>
                 <Menu.Item>
                     Selected
                     <Menu.Menu>

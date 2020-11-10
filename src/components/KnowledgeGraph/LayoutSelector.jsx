@@ -33,35 +33,31 @@ export default function LayoutSelector(props) {
     };
 
     return (
-        <div style={{ position: "absolute", top: 70, left: 20, zIndex: 10 }}>
-            <Menu vertical inverted>
-                <Menu.Item>
-                    <div
-                        style={{ cursor: "pointer" }}
-                        onClick={() => {
-                            handleOpen();
-                        }}
-                    >
-                        Layouts
-                    </div>
-                    {opened ? (
-                        <Menu.Menu>
-                            {itemMap.map((item, key) => {
-                                return (
-                                    <Menu.Item
-                                        key={key}
-                                        onClick={() => {
-                                            props.onClick(item.name);
-                                        }}
-                                    >
-                                        {item.icon} {item.name}
-                                    </Menu.Item>
-                                );
-                            })}
-                        </Menu.Menu>
-                    ) : null}
-                </Menu.Item>
-            </Menu>
-        </div>
+        <Menu.Item>
+            <div
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                    handleOpen();
+                }}
+            >
+                Layouts
+            </div>
+            {opened ? (
+                <Menu.Menu>
+                    {itemMap.map((item, key) => {
+                        return (
+                            <Menu.Item
+                                key={key}
+                                onClick={() => {
+                                    props.onClick(item.name);
+                                }}
+                            >
+                                {item.icon} {item.name}
+                            </Menu.Item>
+                        );
+                    })}
+                </Menu.Menu>
+            ) : null}
+        </Menu.Item>
     );
 }

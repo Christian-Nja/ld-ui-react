@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+import { defineProp } from '../../utilities/generics';
+
 /**
  * Display a Leaflet map in react component
  *
@@ -44,6 +46,33 @@ export function usePane(mapRef, paneName, paneZIndex = 450) {
 
         mapRef.current.getPane(paneName).style.pointerEvents = 'none';
     }, []);
+}
+
+/**
+ * @description Return layout and a function to set layout
+ * @author Christian Colonna
+ * @date 10-11-2020
+ * @export
+ * @param {Object} baseLayout
+ * @param {string} [baseLayout.name=force]
+ * @param {Object} [baseLayout.options={}]
+ * @returns {Object} layoutHandler
+ */
+export function useLayout(baseLayout) {
+    const defaultLayout = defineProp(baseLayout, {
+        name: 'force',
+        options: {},
+    });
+    const [layout, setLayout] = useState(defaultLayout);
+    return {
+        name: layout,
+        setLayout: (newLayout) => {
+            setLayout({
+                ...layout,
+                name: newLayout,
+            });
+        },
+    };
 }
 
 /**
