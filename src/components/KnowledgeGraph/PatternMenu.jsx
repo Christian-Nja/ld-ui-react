@@ -18,23 +18,27 @@ export default function PatternMenu(props) {
                         props.layoutHandler.setLayout(newLayout);
                     }}
                 ></LayoutSelector>
-                <Menu.Item>
-                    Selected
-                    <Menu.Menu>
-                        {props.selectedNodes.map((selected, key) => {
-                            return (
-                                <Menu.Item key={key}>
-                                    {getURILabel(selected)}
-                                </Menu.Item>
-                            );
-                        })}
-                    </Menu.Menu>
-                </Menu.Item>
+                {props.selectedNodes ? (
+                    <Menu.Item>
+                        Selected
+                        <Menu.Menu>
+                            {props.selectedNodes.map((selected, key) => {
+                                return (
+                                    <Menu.Item key={key}>
+                                        {getURILabel(selected)}
+                                    </Menu.Item>
+                                );
+                            })}
+                        </Menu.Menu>
+                    </Menu.Item>
+                ) : null}
             </Menu>
-            <InstancesButton
-                getInstances={props.getInstances}
-                selectedNodes={props.selectedNodes}
-            ></InstancesButton>
+            {props.selectedNodes ? (
+                <InstancesButton
+                    getInstances={props.getInstances}
+                    selectedNodes={props.selectedNodes}
+                ></InstancesButton>
+            ) : null}
         </div>
     );
 }
