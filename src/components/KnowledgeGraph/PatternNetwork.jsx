@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect } from "react";
 
 // Class and functions
 import { defineProp } from "../../utilities/generics";
+import { scale } from "../../utilities/math";
 import Graph from "../classes/Graph";
 
 // Components for Patterns
@@ -16,11 +17,7 @@ import Graphin from "@antv/graphin";
 import { ContextMenu } from "@antv/graphin-components";
 import "@antv/graphin/dist/index.css"; // Don't forget to import css
 // a defined hook for graphin layout
-import { useLayout } from "../hooks/ld-ui-hooks";
-
-// globals TODO : REMOVE and set only OCCURENCES SWITCH
-const OCCURENCES_SWITCH = 0;
-const PATTERN_DEGREE_SWITCH = 1;
+import { useLayout, useGraphinDoubleClick } from "../hooks/ld-ui-hooks";
 
 export default function PatternNetwork(props) {
     // parse and initialize props
@@ -30,13 +27,6 @@ export default function PatternNetwork(props) {
 
     // graphRef for mix React virtual DOM and graphin imperative operation on DOM
     const graphRef = useRef(null);
-
-    // node selected with right click menu
-    const [selectedNodes, setSelectedNodes] = useState([]);
-
-    // clicked node
-    const [clicked, setClicked] = useState(null);
-    const [nodeSizeSwitch, setNodeSizeSwitch] = useState(OCCURENCES_SWITCH);
 
     // pass this to PatternMenu component to have a panel to switch layouts
     const layoutHandler = useLayout();
@@ -53,89 +43,27 @@ export default function PatternNetwork(props) {
 
     // this filter is passed to a bfs algorithm to apply colors and size scaling to every node
     // we use bfs to assign similar color to semantically close nodes
-    const filter = (node, id) => {
+    const nodeColorSizeFilter = (node, id) => {
         // set colors according to a gradient
         node.style.primaryColor = graph.nodeGradient()[id];
-        // set size
-        switch (nodeSizeSwitch) {
-            case OCCURENCES_SWITCH:
-                node.style.nodeSize = graph.degree(node) * node.style.nodeSize;
-                break;
-            case PATTERN_DEGREE_SWITCH:
-                node.style.nodeSize =
-                    patternList.getOccurencesByPattern(node.id) *
-                    node.style.nodeSize;
-                break;
-        }
+
+        // set size as a proportion of occurrences
+        const occurences = patternList.getOccurencesByPattern(node.id);
+
+        node.style.nodeSize =
+            occurences < 300 ? 12 + occurences : 12 + 300 + occurences * 0.01;
+        console.log(node.style.nodeSize);
     };
-    graph.breadthFirstSearch(filter);
 
-    // effect to handle node click and selected nodes
-    useEffect(() => {
-        const { graph } = graphRef.current;
-        graph.on("node:click", (e) => {
-            const nodeId = e.item._cfg.id;
-            console.log(e);
-            // console.log("node click");
-            // console.log(e.item);
-            // console.log("graph");
-            // console.log(graphRef.current);
-            setClicked(nodeId);
-        });
-        graph.on("canvas:click", (e) => {
-            setClicked(null);
-        });
-        // on double click trigger getInstances
-        graph.on("node:dblclick", (e) => {
-            const nodeId = e.item._cfg.id;
-            props.getInstances([nodeId]);
-        });
-        // TODO: return graph.off(...registered events)
-    }, []);
+    graph.breadthFirstSearch(nodeColorSizeFilter);
 
-    // options for right-click-on-node menu
-    const menuOptions = [
-        {
-            key: "select",
-            title: "",
-            visible: true,
-            iconType: (
-                <SelectButton
-                    active={selectedNodes.includes(clicked) ? true : false}
-                ></SelectButton>
-            ),
-            onClick: (e) => {
-                // find node selected in the Graphin instance
-                const nodes = e.graph.findAllByState("node", "selected");
-                const nodeId = nodes.map((node) => node.get("id"))[0];
-                // add the node to this selection
-                if (nodeId.length === 0) {
-                    console.log(`Node not found`);
-                } else {
-                    selectedNodes.includes(nodeId)
-                        ? setSelectedNodes((selectedNodes) => {
-                              selectedNodes.splice(
-                                  selectedNodes.indexOf(nodeId),
-                                  1
-                              );
-                              setSelectedNodes((selectedNodes) => [
-                                  ...selectedNodes,
-                              ]);
-                          })
-                        : setSelectedNodes((selectedNodes) => [
-                              ...selectedNodes,
-                              nodeId,
-                          ]);
-                }
-            },
-        },
-    ];
+    // on node double click load pattern instances
+    useGraphinDoubleClick(graphRef, props.getInstances);
 
     return (
         <div style={graphContainerStyle}>
             <PatternMenu
                 layoutHandler={layoutHandler}
-                selectedNodes={selectedNodes}
                 getInstances={props.getInstances}
             ></PatternMenu>
             <Graphin

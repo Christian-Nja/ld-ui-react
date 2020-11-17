@@ -49,7 +49,7 @@ export function usePane(mapRef, paneName, paneZIndex = 450) {
 }
 
 /**
- * @description Return layout and a function to set layout
+ * @description A hook for Graphin visualization library. Returns layout and a function to set layout.
  * @author Christian Colonna
  * @date 10-11-2020
  * @export
@@ -73,6 +73,30 @@ export function useLayout(baseLayout) {
             });
         },
     };
+}
+
+/**
+ * @description A hook for Graphin visualization library. Bind filter function on node doubleclick
+ * @author Christian Colonna
+ * @date 16-11-2020
+ * @export
+ * @param {*} graphRef
+ * @param {callback} filter (node) => {}
+ */
+export function useGraphinDoubleClick(graphRef, filter) {
+    useEffect(() => {
+        const { graph } = graphRef.current;
+        const handleNodeDoubleClick = (e) => {
+            const node = e.item._cfg;
+            filter(node);
+        };
+        graph.on('node:dblclick', handleNodeDoubleClick);
+
+        // release listener when component unmount
+        return () => {
+            graph.off('node:dblclick', handleNodeDoubleClick);
+        };
+    }, []);
 }
 
 /**

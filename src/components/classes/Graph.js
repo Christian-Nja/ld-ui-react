@@ -18,17 +18,34 @@ export default class Graph {
         SUPER_PATTERN: 'pattern',
     };
 
+    static palettes = {
+        SPRING: {
+            gradient: [
+                '#fff000',
+                '#ff8300',
+                '#ff0000',
+                'green',
+                // "#9cb400",
+                '#0000c4',
+            ],
+            compositionEdge: '#2185d0',
+            specializationEdge: 'rgba(0,0,0,.87)',
+        },
+    };
+
     /**
      * Creates an instance of Graph.
      * @author Christian Colonna
      * @date 06-11-2020
      * @param {Node[]} [nodes]
      * @param {Edge[]} [edges]
+     * @param {Object} [palette]
      * @memberof Graph
      */
-    constructor(nodes, edges) {
+    constructor(nodes, edges, palette) {
         this.nodes = nodes || [];
         this.edges = edges || [];
+        this.palette = palette || Graph.palettes.SPRING;
     }
 
     /**
@@ -80,8 +97,21 @@ export default class Graph {
         this.addEdge(
             new Edge({
                 id: edgeId,
-                source: superPattern,
-                target: subPattern,
+                source: subPattern,
+                target: superPattern,
+                label:
+                    type === Graph.relType.COMPONENT
+                        ? 'hasComponent'
+                        : 'specialization',
+                style: {
+                    line: {
+                        width: 3,
+                        color:
+                            type === Graph.relType.COMPONENT
+                                ? this.palette.compositionEdge
+                                : this.palette.specializationEdge,
+                    },
+                },
             })
         );
     }
@@ -282,7 +312,7 @@ export default class Graph {
      * @returns {string[]} color palette
      * @memberof Graph
      */
-    nodeGradient(colors = ['#fafa6e', '#2f7224'], mode = 'lrgb') {
+    nodeGradient(colors = this.palette.gradient, mode = 'lrgb') {
         return chroma.scale(colors).mode(mode).colors(this.nodeCount());
     }
 }

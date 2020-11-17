@@ -18,6 +18,7 @@ export default class Edge {
      * @param {String} [edge.id]
      * @param {String} [edge.label]
      * @param {Edge} [edge.data]
+     * @param {Object} [edge.style]
      * @memberof Edge
      */
     constructor(edge) {
@@ -31,6 +32,7 @@ export default class Edge {
         this.data = edge.data || edge.id;
         this.source = edge.source;
         this.target = edge.target;
+        this.style = edge.style;
     }
 
     /**
@@ -41,12 +43,21 @@ export default class Edge {
      * @memberof Edge
      */
     toJson() {
+        console.log({
+            id: this.id,
+            label: this.label,
+            data: this.data,
+            source: this.source,
+            target: this.target,
+            style: this.style,
+        });
         return {
             id: this.id,
             label: this.label,
             data: this.data,
             source: this.source,
             target: this.target,
+            style: this.style,
         };
     }
 }

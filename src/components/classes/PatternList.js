@@ -24,14 +24,29 @@ export default class PatternList {
      * @description Returns occurences for given pattern
      * @author Christian Colonna
      * @date 11-11-2020
-     * @param {string} pattern pattern label
+     * @param {string} pattern pattern uri
      * @returns {number} pattern occurences
      * @memberof PatternList
      */
     getOccurencesByPattern(pattern) {
         const occurences = this.list.find((patternMap) => {
-            patternMap.pattern === pattern;
-        })['occurences'];
-        return occurences ? parseInt(occurences) : 0;
+            return patternMap.pattern === pattern;
+        });
+        return occurences ? parseInt(occurences['occurences']) : 1;
+    }
+
+    /**
+     * @description Returns of given pattern instance
+     * @author Christian Colonna
+     * @date 16-11-2020
+     * @param {*} pattern pattern instance uri
+     * @returns {number} count nodes belonging to given pattern instance
+     * @memberof PatternList
+     */
+    getDegreeByPattern(pattern) {
+        const degree = this.list.find((instanceMap) => {
+            return instanceMap.instance === pattern;
+        });
+        return degree ? parseInt(degree['count']) : 1;
     }
 }

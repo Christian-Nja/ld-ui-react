@@ -82,3 +82,20 @@ export function getAngle(p1, p2) {
     const diffX = p1[X] - p2[X];
     return Math.atan2(diffY, diffX) * (180 / Math.PI) - 90;
 }
+
+/**
+ * @description
+ * @author Christian Colonna
+ * @date 16-11-2020
+ * @export
+ * @param {number} x num to scale
+ * @param {number} min old range min
+ * @param {number} max old range max
+ * @param {number} scaleMin new range min
+ * @param {number} scaleMax new range max
+ * @returns {number} scaled value
+ */
+export function scale(x, min, max, scaleMin, scaleMax) {
+    const oldPercernt = (x - min) / (max - min);
+    return (scaleMax - scaleMin) * oldPercernt + scaleMin;
+}

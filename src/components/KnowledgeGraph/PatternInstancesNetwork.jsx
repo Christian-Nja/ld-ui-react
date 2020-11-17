@@ -4,21 +4,24 @@ import React, { useRef, useEffect } from "react";
 // function and classes
 import Graph from "../classes/Graph";
 import { defineProp } from "../../utilities/generics";
+import PatternList from "../classes/PatternList";
 
 // Pattern components
 import PatternMenu from "./PatternMenu";
 
 // Graphin components
 import Graphin from "@antv/graphin";
-import { useLayout } from "../hooks/ld-ui-hooks";
+import { useLayout, useGraphinDoubleClick } from "../hooks/ld-ui-hooks";
 import "@antv/graphin/dist/index.css";
 
 export default function PatternInstancesNetwork(props) {
+    console.log(props);
     // graphRef for mix React virtual DOM and graphin imperative operation on DOM
     const graphRef = useRef(null);
 
     // parse instances
     const instances = defineProp(props.patterns.instances, []);
+    const instancesList = new PatternList(instances);
 
     // pass this to Layout component to have a panel to switch layouts
     const layoutHandler = useLayout();
@@ -37,21 +40,15 @@ export default function PatternInstancesNetwork(props) {
 
     // TODO: set a color for each instance, set size based on node degree
     const filter = (node, id) => {
-        node.style.primaryColor = graph.nodeGradient()[id];
-        node.style.nodeSize = graph.degree(node) * node.style.nodeSize;
+        // node.style.primaryColor = graph.nodeGradient()[id];
+        node.style.primaryColor = graph.nodeGradient()[2];
+        const degree = instancesList.getDegreeByPattern(node.id);
+        node.style.nodeSize = degree * node.style.nodeSize;
     };
     graph.breadthFirstSearch(filter);
 
-    // effect to handle useGraphDoubleClick
-    useEffect(() => {
-        const { graph } = graphRef.current;
-        // on double click trigger getInstances
-        graph.on("node:dblclick", (e) => {
-            const nodeId = e.item._cfg.id;
-            props.getInstance(nodeId);
-        });
-        // TODO: return graph.off(...registered events)
-    }, []);
+    // on instance doubleclick visualize instance
+    useGraphinDoubleClick(graphRef, props.getInstance);
 
     return (
         <div style={graphContainerStyle}>

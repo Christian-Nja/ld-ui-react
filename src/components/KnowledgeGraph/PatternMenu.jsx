@@ -2,9 +2,6 @@ import React from "react";
 import { Menu } from "semantic-ui-react";
 
 import LayoutSelector from "./LayoutSelector";
-import InstancesButton from "./InstancesButton";
-
-import { getURILabel } from "../../utilities/uri";
 
 const menuStyle = { position: "absolute", top: 70, left: 20, zIndex: 10 };
 
@@ -18,7 +15,7 @@ export default function PatternMenu(props) {
                         props.layoutHandler.setLayout(newLayout);
                     }}
                 ></LayoutSelector>
-                {props.selectedNodes ? (
+                {/* {props.selectedNodes ? (
                     <Menu.Item>
                         Selected
                         <Menu.Menu>
@@ -31,14 +28,14 @@ export default function PatternMenu(props) {
                             })}
                         </Menu.Menu>
                     </Menu.Item>
-                ) : null}
+                ) : null} */}
             </Menu>
-            {props.selectedNodes ? (
+            {/* {props.selectedNodes ? (
                 <InstancesButton
                     getInstances={props.getInstances}
                     selectedNodes={props.selectedNodes}
                 ></InstancesButton>
-            ) : null}
+            ) : null} */}
         </div>
     );
 }
