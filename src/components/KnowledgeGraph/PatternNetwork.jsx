@@ -52,7 +52,6 @@ export default function PatternNetwork(props) {
 
         node.style.nodeSize =
             occurences < 300 ? 12 + occurences : 12 + 300 + occurences * 0.01;
-        console.log(node.style.nodeSize);
     };
 
     graph.breadthFirstSearch(nodeColorSizeFilter);

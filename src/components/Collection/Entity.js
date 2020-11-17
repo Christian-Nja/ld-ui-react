@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 
 import ThemeContext from './config';
 
+import { getURILabel } from '../../utilities/uri';
+
 const NO_MESSAGE = '';
 
 export default function Entity(props) {
@@ -32,12 +34,14 @@ export default function Entity(props) {
                         descriptionClassName={'descriptionIcon'}
                     ></THEME.itemIcon>
                 )}
-                {/* <div
+                <div
                     style={THEME.style.entityLabel}
                     className={`${props.class.entityLabel}`}
                 >
-                    {props.entity.entityLabel}
-                </div> */}
+                    {props.entity.entityLabel
+                        ? props.entity.entityLabel
+                        : getURILabel(props.entity.entity)}
+                </div>
             </div>
         </article>
     );

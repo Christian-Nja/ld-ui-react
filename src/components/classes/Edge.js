@@ -43,14 +43,6 @@ export default class Edge {
      * @memberof Edge
      */
     toJson() {
-        console.log({
-            id: this.id,
-            label: this.label,
-            data: this.data,
-            source: this.source,
-            target: this.target,
-            style: this.style,
-        });
         return {
             id: this.id,
             label: this.label,

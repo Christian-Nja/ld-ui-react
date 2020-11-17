@@ -15,7 +15,6 @@ import { useLayout, useGraphinDoubleClick } from "../hooks/ld-ui-hooks";
 import "@antv/graphin/dist/index.css";
 
 export default function PatternInstancesNetwork(props) {
-    console.log(props);
     // graphRef for mix React virtual DOM and graphin imperative operation on DOM
     const graphRef = useRef(null);
 

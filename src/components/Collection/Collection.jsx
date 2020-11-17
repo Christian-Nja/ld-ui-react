@@ -47,7 +47,7 @@ export default function Collection(props) {
 
 Collection.propTypes = {
     // List of class to custom style the component
-    class: PropTypes.string.isRequired,
+    class: PropTypes.object.isRequired,
 };
 
 Collection.defaultProps = {
