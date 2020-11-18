@@ -1,31 +1,31 @@
-import React, { useRef, useEffect } from 'react';
-import L from 'leaflet';
-import * as d3 from 'd3';
-import 'leaflet.markercluster/dist/leaflet.markercluster';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+import React, { useRef, useEffect } from "react";
+import L from "leaflet";
+import * as d3 from "d3";
+import "leaflet.markercluster/dist/leaflet.markercluster";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 /**
  * css
  */
-import 'leaflet/dist/leaflet.css';
-import './TimeIndexedTypedLocation.css';
+import "leaflet/dist/leaflet.css";
+import "./TimeIndexedTypedLocation.css";
 
 /**
  * Internal modules
  */
 
-import CONFIG from './config';
-import { useMap, usePane } from '../hooks/ld-ui-hooks';
-import tITLPopup from './tITLPopup';
+import CONFIG from "./config";
+import { useMap, usePane } from "../hooks/ld-ui-hooks";
+import tITLPopup from "./tITLPopup";
 import {
     projectLine,
     leafletTransform,
     fitSvg,
     getLayerPoint,
     passOver,
-} from '../../utilities/d3leaflet';
-import { getAngle } from '../../utilities/math';
+} from "../../utilities/d3leaflet";
+import { getAngle } from "../../utilities/math";
 
 /* Define constants
  */
@@ -56,7 +56,7 @@ export default function TimeIndexedTypedLocation(props) {
         attribution: CONFIG.MAP[CONFIG.DEFAULT_PROVIDER].ATTRIBUTION,
     });
     /** initialize d3 layer */
-    usePane(mapRef, 'd3-layer', D3_ZINDEX);
+    usePane(mapRef, "d3-layer", D3_ZINDEX);
 
     /**
      * This function is a d3 transform @see {@link https://github.com/d3/d3-geo/blob/v2.0.0/README.md#transforms|d3-transform} for further infos
@@ -83,24 +83,22 @@ export default function TimeIndexedTypedLocation(props) {
 
         /* Defining an svg layer for D3 
         ________________________________*/
-
         var svg = d3
-            .select(mapRef.current.getPane('d3-layer'))
-            .append('svg')
-            .attr('style', 'position:relative');
+            .select(mapRef.current.getPane("d3-layer"))
+            .append("svg")
+            .attr("style", "position:relative");
 
-        var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
+        var g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
         /* Iterating over data:
            - Creating markers and popup (Leaflet layer) 
            - Preparing GeoJSON          (D3 Layer)  
         ___________________________________*/
-
         const mcg = L.markerClusterGroup({
             iconCreateFunction: (cluster) => {
                 return L.divIcon({
                     html: `${CONFIG.MARKER_ICON[1](cluster.getChildCount())}`,
-                    className: 'cluster-icon',
+                    className: "cluster-icon",
                     iconAnchor: [15, 50],
                 });
             },
@@ -109,7 +107,7 @@ export default function TimeIndexedTypedLocation(props) {
         });
 
         let geoJSON = {
-            type: 'FeatureCollection',
+            type: "FeatureCollection",
             features: [],
         };
 
@@ -117,9 +115,9 @@ export default function TimeIndexedTypedLocation(props) {
 
         props.timeIndexedTypedLocations.forEach((tITL, index) => {
             geoJSON.features.push({
-                type: 'Feature',
+                type: "Feature",
                 geometry: {
-                    type: 'Point',
+                    type: "Point",
                     coordinates: [
                         parseFloat(tITL.longitude),
                         parseFloat(tITL.latitude),
@@ -138,7 +136,7 @@ export default function TimeIndexedTypedLocation(props) {
                 city: tITL.city,
                 siteLabel: tITL.siteLabel,
                 timeInterval: `${tITL.startTime} - ${
-                    tITL.endTime !== '' ? tITL.endTime : 'Today'
+                    tITL.endTime !== "" ? tITL.endTime : "Today"
                 }`,
                 locationType: tITL.locationType,
             };
@@ -168,40 +166,40 @@ export default function TimeIndexedTypedLocation(props) {
         _________________________________________________*/
 
         let linePath = g
-            .selectAll('.locationsLine')
+            .selectAll(".locationsLine")
             .data([geoJSON.features])
             .enter()
-            .append('path')
-            .attr('class', 'locationsLine')
-            .attr('style', `stroke:${CONFIG.ARROW.COLOR}`);
+            .append("path")
+            .attr("class", "locationsLine")
+            .attr("style", `stroke:${CONFIG.ARROW.COLOR}`);
 
         const arrowheads = g
-            .selectAll('.arrowheads')
+            .selectAll(".arrowheads")
             .data(geoJSON.features)
             .enter()
-            .append('svg:path')
-            .attr('class', 'arrowheads')
+            .append("svg:path")
+            .attr("class", "arrowheads")
             .attr(
-                'd',
+                "d",
                 d3
                     .symbol()
                     .type(d3.symbolTriangle)
                     .size(CONFIG.ARROW.ARROWHEAD_SIZE)
             )
-            .style('stroke', 'blue')
-            .style('fill', 'blue');
+            .style("stroke", "blue")
+            .style("fill", "blue");
 
         const depiction = g
-            .append('svg:image')
-            .attr('x', -20)
-            .attr('y', -20)
-            .attr('height', 60)
-            .attr('width', 50)
-            .attr('xlink:href', props.timeIndexedTypedLocations[0].depiction);
+            .append("svg:image")
+            .attr("x", -20)
+            .attr("y", -20)
+            .attr("height", 60)
+            .attr("width", 50)
+            .attr("xlink:href", props.timeIndexedTypedLocations[0].depiction);
 
         let arrowheadsNodes;
 
-        mapRef.current.on('zoomend', adaptD3Layer);
+        mapRef.current.on("zoomend", adaptD3Layer);
         adaptD3Layer();
 
         function adaptD3Layer() {
@@ -215,11 +213,11 @@ export default function TimeIndexedTypedLocation(props) {
 
             // translate group
             g.attr(
-                'transform',
+                "transform",
                 `translate(${-topLeft[0] + 50},${-topLeft[1] + 50})`
             );
 
-            depiction.attr('transform', function () {
+            depiction.attr("transform", function () {
                 var x =
                     geoJSON.features[ORIGIN].geometry.coordinates[
                         GEO_JSON_LONGITUDE
@@ -242,7 +240,7 @@ export default function TimeIndexedTypedLocation(props) {
             });
 
             // translate and rotate arrowheads
-            arrowheads.attr('transform', function (d, i) {
+            arrowheads.attr("transform", function (d, i) {
                 if (i === ORIGIN) {
                     return;
                 }
@@ -257,7 +255,7 @@ export default function TimeIndexedTypedLocation(props) {
             });
 
             // https://stackoverflow.com/a/25946400/12506641 check this for arc
-            linePath.attr('d', projectLine(mapRef.current));
+            linePath.attr("d", projectLine(mapRef.current));
 
             moveLine();
         }
@@ -267,7 +265,7 @@ export default function TimeIndexedTypedLocation(props) {
                 .transition()
                 .ease(d3.easeLinear)
                 .duration(CONFIG.TRANSITION_DURATION)
-                .attrTween('stroke-dasharray', tweenDash);
+                .attrTween("stroke-dasharray", tweenDash);
         }
 
         function tweenDash() {
@@ -296,7 +294,7 @@ export default function TimeIndexedTypedLocation(props) {
                 }
 
                 //Move the image to that point
-                depiction.attr('transform', `translate(${p.x},${p.y})`);
+                depiction.attr("transform", `translate(${p.x},${p.y})`);
 
                 return interpolate(t);
             };
