@@ -3,7 +3,7 @@
 <h2 align="center">LD-UI-React</h2>
 <h3 align="center">A framework for Linked Data visualization</h3>
 
-<a>Reusable components to visualize linked data, learn more on website</a>
+<p><strong><a>Reusable components to visualize linked data, learn more on website</a><srong></p>
 
 ## Description
 
