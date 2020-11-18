@@ -8,7 +8,7 @@
         "build": "./node_modules/.bin/babel src --out-dir lib --copy-files",
         "lint": "eslint --ignore-path .gitignore -c .eslintrc \"./**/*.js\"",
         "encode-icon": "cd ./src/icon/images && ./encode-all-svg && cd ../../..",
-        "docs": "jsdoc -c jsdoc.conf.json"
+        "docs": "jsdoc -c .jsdoc.conf.json"
     },
     "husky": {
         "hooks": {
