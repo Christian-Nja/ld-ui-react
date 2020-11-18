@@ -1,6 +1,6 @@
 <p align="center"><img src="./docs/ld-ui-react-logo.png" /></p>
 <br/>
-<p align="center">LD-UI-React</p>
+<h2 align="center">LD-UI-React</h2>
 <p align="center">A framework for Linked Data visualization</p>
 
 <p><strong><a href="" >Reusable components to visualize linked data, learn more on website</a><srong></p>
