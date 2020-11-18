@@ -1,10 +1,11 @@
 <p align="center"><img src="./docs/ld-ui-react-logo.png" /></p>
 <br/>
-<h3 align="center">LD-UI-React</h3>
-<h2 align="center">A framework for Linked Data visualization</h2>
+<h2 align="center">LD-UI-React</h2>
+<h3 align="center">A framework for Linked Data visualization</h3>
+
 <a>Reusable components to visualize linked data, learn more on website</a>
 
-## Description(Describe by words and images alike)
+## Description
 
 React components for structured data visualization. Project Data on maps or visualize graph like structures.
 
