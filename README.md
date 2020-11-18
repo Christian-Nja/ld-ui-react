@@ -1,41 +1,47 @@
-<div style="text-align:center"><img src="./docs/ld-ui-react-logo.png" /></div>
+<p align="center"><img src="./docs/ld-ui-react-logo.png" /></p>
 <br/>
-<h3 style="text-align:center">LD-UI-React</h3>
-<h2 style="text-align:center">A framework for Linked Data visualization</h2>
+<h3 align="center">LD-UI-React</h3>
+<h2 align="center">A framework for Linked Data visualization</h2>
 <a>Reusable components to visualize linked data, learn more on website</a>
 
-# Description(Describe by words and images alike)
+## Description(Describe by words and images alike)
 
 React components for structured data visualization. Project Data on maps or visualize graph like structures.
 
-# Demo(Images, Video links, Live Demo links)
+## Demo
 
-# Technologies Used
+Add some demo
+
+## Technologies Used
 
 Best technologies are used to render Linked Data. Leaflet, G6, React.
 
-# Highly Connected Data
+## Highly Connected Data
 
 First framework to provide special visualization for highly structured data and subgraph.
 
-# Technical Description of your project like- Installation, Setup, How to contribute.
+## Technical Description
 
-## installation
+### Installation
 
 To install it just to:
 
 `npm install ld-ui-react`
 
-## Status
+### Setup
+
+### How To Contribute
+
+### Status
 
 <p style="color:red">Project is still in development some components may not work as expected</p>
 
-# MAP providers
+## MAP providers
 
 Every component projecting data on a map is based on Leaflet technology.
 You can find interesting map on TileLayer's on: [leaflet-provider.js](http://leaflet-extras.github.io/leaflet-providers/preview/index.html) to customize your visualizations.
 
-# URI encoded icon
+## URI encoded icon
 
 You can download svg icons, uri encode and embed them directly in the html file.
 This is a good solution avoiding to struggle with webpack building configuration for
