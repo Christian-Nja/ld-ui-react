@@ -7,10 +7,8 @@ import { scale } from "../../utilities/math";
 import Graph from "../classes/Graph";
 
 // Components for Patterns
-import SelectButton from "./SelectButton";
 import PatternMenu from "./PatternMenu";
 import PatternList from "../classes/PatternList";
-import "./PatternNetwork.css";
 
 // Graphin Components
 import Graphin from "@antv/graphin";
