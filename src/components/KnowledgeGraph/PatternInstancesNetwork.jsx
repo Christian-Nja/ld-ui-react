@@ -4,7 +4,7 @@ import React, { useRef, useEffect } from "react";
 // function and classes
 import Graph from "../classes/Graph";
 import { defineProp } from "../../utilities/generics";
-import PatternList from "../classes/PatternList";
+import InstancesList from "../classes/InstancesList";
 
 // Pattern components
 import PatternMenu from "./PatternMenu";
@@ -20,7 +20,9 @@ export default function PatternInstancesNetwork(props) {
 
     // parse instances
     const instances = defineProp(props.patterns.instances, []);
-    const instancesList = new PatternList(instances);
+
+    // a list of instances and degree for each instance
+    const instancesList = new InstancesList(instances);
 
     // pass this to Layout component to have a panel to switch layouts
     const layoutHandler = useLayout();
@@ -41,7 +43,8 @@ export default function PatternInstancesNetwork(props) {
     const filter = (node, id) => {
         // node.style.primaryColor = graph.nodeGradient()[id];
         node.style.primaryColor = graph.nodeGradient()[2];
-        const degree = instancesList.getDegreeByPattern(node.id);
+        let degree = instancesList.getPatternInstanceDegree(node.id);
+        degree = degree !== 0 ? degree : 1;
         node.style.nodeSize = degree * node.style.nodeSize;
     };
     graph.breadthFirstSearch(filter);

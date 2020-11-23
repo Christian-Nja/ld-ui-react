@@ -72,7 +72,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="Edge.html">Edge</a></li><li><a href="Edge.module.exports.html">module.exports</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Graph.module.exports.html">module.exports</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="Node.html">Node</a></li><li><a href="Node.module.exports.html">module.exports</a></li><li><a href="RequiredParamChecker.html">RequiredParamChecker</a></li><li><a href="RequiredParamChecker.module.exports.html">module.exports</a></li><li><a href="RequiredParamError.html">RequiredParamError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#blueMarkerIcon">blueMarkerIcon</a></li><li><a href="global.html#defineProp">defineProp</a></li><li><a href="global.html#fitSvg">fitSvg</a></li><li><a href="global.html#getAngle">getAngle</a></li><li><a href="global.html#getLayerPoint">getLayerPoint</a></li><li><a href="global.html#getSlope">getSlope</a></li><li><a href="global.html#getURILabel">getURILabel</a></li><li><a href="global.html#getWindowDimensions">getWindowDimensions</a></li><li><a href="global.html#leafletIcon">leafletIcon</a></li><li><a href="global.html#passOver">passOver</a></li><li><a href="global.html#projectLine">projectLine</a></li><li><a href="global.html#redSquatMarkerIcon">redSquatMarkerIcon</a></li><li><a href="global.html#segmentAxis">segmentAxis</a></li><li><a href="global.html#sortByTime">sortByTime</a></li><li><a href="global.html#useMap">useMap</a></li><li><a href="global.html#usePane">usePane</a></li><li><a href="global.html#useWindowDimensions">useWindowDimensions</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="Edge.html">Edge</a></li><li><a href="Edge.module.exports.html">module.exports</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Graph.module.exports.html">module.exports</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="Node.html">Node</a></li><li><a href="Node.module.exports.html">module.exports</a></li><li><a href="PatternList.html">PatternList</a></li><li><a href="PatternList.module.exports.html">module.exports</a></li><li><a href="RequiredParamChecker.html">RequiredParamChecker</a></li><li><a href="RequiredParamChecker.module.exports.html">module.exports</a></li><li><a href="RequiredParamError.html">RequiredParamError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#blueMarkerIcon">blueMarkerIcon</a></li><li><a href="global.html#defineProp">defineProp</a></li><li><a href="global.html#fitSvg">fitSvg</a></li><li><a href="global.html#getAngle">getAngle</a></li><li><a href="global.html#getLayerPoint">getLayerPoint</a></li><li><a href="global.html#getSlope">getSlope</a></li><li><a href="global.html#getURILabel">getURILabel</a></li><li><a href="global.html#getWindowDimensions">getWindowDimensions</a></li><li><a href="global.html#leafletIcon">leafletIcon</a></li><li><a href="global.html#passOver">passOver</a></li><li><a href="global.html#projectLine">projectLine</a></li><li><a href="global.html#Queue">Queue</a></li><li><a href="global.html#redSquatMarkerIcon">redSquatMarkerIcon</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#segmentAxis">segmentAxis</a></li><li><a href="global.html#sortByTime">sortByTime</a></li><li><a href="global.html#useGraphinDoubleClick">useGraphinDoubleClick</a></li><li><a href="global.html#useLayout">useLayout</a></li><li><a href="global.html#useMap">useMap</a></li><li><a href="global.html#usePane">usePane</a></li><li><a href="global.html#useWindowDimensions">useWindowDimensions</a></li></ul></div>
                 
             </nav>
         </div>
@@ -89,8 +89,8 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import RequiredParamChecker from "./RequiredParamChecker";
-import { getURILabel } from "../../utilities/uri";
+            <pre class="prettyprint source linenums"><code>import RequiredParamChecker from './RequiredParamChecker';
+import { getURILabel } from '../../utilities/uri';
 
 /**
  * @description A basic Node class
@@ -114,12 +114,12 @@ export default class Node {
      * @memberof Node
      */
     constructor(node) {
-        new RequiredParamChecker([{ value: node.id, label: "node.id" }]);
+        new RequiredParamChecker([{ value: node.id, label: 'node.id' }]);
         this.id = node.id;
         this.label = node.label || getURILabel(node.id);
         this.data = node.data || node.id;
-        this.shape = node.shape || "CircleNode";
-        this.type = node.type || "company";
+        this.shape = node.shape || 'CircleNode';
+        this.type = node.type || 'company';
         this.style = node.style || { nodeSize: 25 };
     }
 

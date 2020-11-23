@@ -5,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> Node</title>
+  <title> PatternList</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -78,7 +78,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Class</p>
-                    <h1>Node</h1>
+                    <h1>PatternList</h1>
                 </header>
                 
 
@@ -89,7 +89,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Node<span class="signature">()</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>PatternList<span class="signature">()</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -108,12 +108,12 @@
 
 
     
-    <h4 class="name" id="Node">
-        <a class="href-link" href="#Node">#</a>
+    <h4 class="name" id="PatternList">
+        <a class="href-link" href="#PatternList">#</a>
         
         <span class="code-name">
             
-                new Node<span class="signature">()</span><span class="type-signature"></span>
+                new PatternList<span class="signature">()</span><span class="type-signature"></span>
             
         </span>
     </h4>
@@ -122,7 +122,7 @@
     
     
     <div class="description">
-        A basic Node class
+        A class to handle pattern list as a list of object representing pattern
     </div>
     
 
@@ -178,9 +178,9 @@
 
     
         <p class="tag-source">
-            <a href="components_classes_Node.js.html" class="button">View Source</a>
+            <a href="components_classes_PatternList.js.html" class="button">View Source</a>
             <span>
-                <a href="components_classes_Node.js.html">components/classes/Node.js</a>, <a href="components_classes_Node.js.html#line4">line 4</a>
+                <a href="components_classes_PatternList.js.html">components/classes/PatternList.js</a>, <a href="components_classes_PatternList.js.html#line3">line 3</a>
             </span>
         </p>
     
@@ -222,7 +222,7 @@
         <h3 class="subsection-title">Classes</h3>
 
         <dl>
-            <dt><a href="Node.module.exports.html">module.exports</a></dt>
+            <dt><a href="PatternList.module.exports.html">module.exports</a></dt>
             <dd></dd>
         </dl>
     
@@ -244,8 +244,8 @@
 
 
     
-    <h4 class="name" id=".toJson">
-        <a class="href-link" href="#.toJson">#</a>
+    <h4 class="name" id=".getDegreeByPattern">
+        <a class="href-link" href="#.getDegreeByPattern">#</a>
         
             
                 <span class='tag'>static</span>
@@ -253,7 +253,7 @@
         
         <span class="code-name">
             
-                toJson<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span>
+                getDegreeByPattern<span class="signature">(pattern)</span><span class="type-signature"> &rarr; {number}</span>
             
         </span>
     </h4>
@@ -262,7 +262,7 @@
     
     
     <div class="description">
-        Returns the class as JSON
+        Returns of given pattern instance
     </div>
     
 
@@ -273,6 +273,57 @@
 
 
 
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>pattern</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">*</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last">pattern instance uri</td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
 
 
 
@@ -318,9 +369,9 @@
 
     
         <p class="tag-source">
-            <a href="components_classes_Node.js.html" class="button">View Source</a>
+            <a href="components_classes_PatternList.js.html" class="button">View Source</a>
             <span>
-                <a href="components_classes_Node.js.html">components/classes/Node.js</a>, <a href="components_classes_Node.js.html#line42">line 42</a>
+                <a href="components_classes_PatternList.js.html">components/classes/PatternList.js</a>, <a href="components_classes_PatternList.js.html#line46">line 46</a>
             </span>
         </p>
     
@@ -351,11 +402,197 @@
 
 <div class="columns">
     
+    <div class='param-desc column is-7'>count nodes belonging to given pattern instance</div>
+    
     
     <div class='column is-5 has-text-left'>
         <label>Type: </label>
         
-<span class="param-type">Object</span>
+<span class="param-type">number</span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getOccurencesByPattern">
+        <a class="href-link" href="#.getOccurencesByPattern">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getOccurencesByPattern<span class="signature">(pattern)</span><span class="type-signature"> &rarr; {number}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        Returns occurences for given pattern
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>pattern</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last">pattern uri</td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Christian Colonna</li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="components_classes_PatternList.js.html" class="button">View Source</a>
+            <span>
+                <a href="components_classes_PatternList.js.html">components/classes/PatternList.js</a>, <a href="components_classes_PatternList.js.html#line31">line 31</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'>pattern occurences</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">number</span>
 
 
     </div>

@@ -31,6 +31,7 @@ export default function PatternNetwork(props) {
 
     // an intermidiate class that receives pattern data and creates a graph to be passed to Graphin instance
     let graph = new Graph();
+    // list of patterns with occurences for each pattern
     const patternList = new PatternList(list);
 
     // add specialization relations to graph

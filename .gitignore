@@ -1,5 +1,5 @@
 # My files
-./lib
+lib/
 scripts/
 .eslintignore
 .eslintrc

@@ -2,6 +2,34 @@ import { useState, useEffect } from 'react';
 
 import { defineProp } from '../../utilities/generics';
 
+/* LD-UI-REACT
+_____________________________________________________________ */
+
+/**
+ * @description A function to invert binary state.
+ * @example 
+ *  const [open, handleOpen] = useBinaryState(false)
+ *  const [isLoaded, handleLoaded] = useBinaryState(true) 
+
+ * @author Christian Colonna
+ * @date 22-11-2020
+ * @export
+ * @param {boolean} [open=false]
+ * @returns {function} the handler arrow function to change state set it onClick|Hover.. listeners
+ */
+export function useBinaryState(startOpen = false) {
+    const [open, setOpen] = useState(startOpen);
+
+    const handleOpen = () => {
+        let newOpen = !open;
+        setOpen(newOpen);
+    };
+    return [open, handleOpen];
+}
+
+/* LEAFLET
+_____________________________________________________________ */
+
 /**
  * Display a Leaflet map in react component
  *
@@ -47,6 +75,9 @@ export function usePane(mapRef, paneName, paneZIndex = 450) {
         mapRef.current.getPane(paneName).style.pointerEvents = 'none';
     }, []);
 }
+
+/* GRAPHIN
+_____________________________________________________________ */
 
 /**
  * @description A hook for Graphin visualization library. Returns layout and a function to set layout.
@@ -98,6 +129,9 @@ export function useGraphinDoubleClick(graphRef, filter) {
         };
     }, []);
 }
+
+/* GENERICS
+_____________________________________________________________ */
 
 /**
  * Returns window dimensions, listening to resize event.

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> Node</title>
+  <title> components/classes/PatternList.js</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -77,310 +79,71 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p>Class</p>
-                    <h1>Node</h1>
+                    <p>Source</p>
+                    <h1>components/classes/PatternList.js</h1>
                 </header>
                 
 
 
 
-
-<section>
-
-<header>
-    
-        <h2><span class="attribs"><span class="type-signature"></span></span>Node<span class="signature">()</span><span class="type-signature"></span></h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class='vertical-section'>
-                <div class="members">
-                    <div class="member">
-                        <div class=name>
-                            <span class="tag">Constructor</span>
-                        </div>
-                        
-
-
-    
-    <h4 class="name" id="Node">
-        <a class="href-link" href="#Node">#</a>
-        
-        <span class="code-name">
-            
-                new Node<span class="signature">()</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    
-    <div class="description">
-        A basic Node class
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li>Christian Colonna</li>
-        </ul>
-    </dd>
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="components_classes_Node.js.html" class="button">View Source</a>
-            <span>
-                <a href="components_classes_Node.js.html">components/classes/Node.js</a>, <a href="components_classes_Node.js.html#line4">line 4</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    </div>
-                </div>
-            </div>
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="Node.module.exports.html">module.exports</a></dt>
-            <dd></dd>
-        </dl>
-    
-
-    
-
     
-
-    
-
-    
-
-    
-        <div class='vertical-section'>
-            <h1>Methods</h1>
-            <div class="members">
-            
-                <div class="member">
-
-
-    
-    <h4 class="name" id=".toJson">
-        <a class="href-link" href="#.toJson">#</a>
-        
-            
-                <span class='tag'>static</span>
-            
-        
-        <span class="code-name">
-            
-                toJson<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span>
-            
-        </span>
-    </h4>
-    
-
-    
-    
-    <div class="description">
-        Returns the class as JSON
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li>Christian Colonna</li>
-        </ul>
-    </dd>
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="components_classes_Node.js.html" class="button">View Source</a>
-            <span>
-                <a href="components_classes_Node.js.html">components/classes/Node.js</a>, <a href="components_classes_Node.js.html#line42">line 42</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class='columns method-parameter'>
-        <div class="column is-2"><label>Returns:</label></div>
-        <div class="column is-10">
-            
-                    
-
-<div class="columns">
-    
-    
-    <div class='column is-5 has-text-left'>
-        <label>Type: </label>
-        
-<span class="param-type">Object</span>
-
-
-    </div>
-    
-</div>
-
-                
-        </div>
-    </div>
-
-
-
-
-</div>
-            
-            </div>
-        </div>
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import RequiredParamChecker from './RequiredParamChecker';
+
+/**
+ * @description A class to handle pattern list as a list of object representing pattern
+ * @author Christian Colonna
+ * @date 11-11-2020
+ * @export
+ * @class PatternList
+ */
+export default class PatternList {
+    /**
+     * Creates an instance of PatternList.
+     * @author Christian Colonna
+     * @date 11-11-2020
+     * @param {Object[]} patternList a list of pattern object
+     * @param {string} patternList.pattern pattern label
+     * @param {string} patternList.occurences pattern occurences
+     * @memberof PatternList
+     */
+    constructor(patternList) {
+        this.list = patternList;
+    }
+    /**
+     * @description Returns occurences for given pattern
+     * @author Christian Colonna
+     * @date 11-11-2020
+     * @param {string} pattern pattern uri
+     * @returns {number} pattern occurences
+     * @memberof PatternList
+     */
+    getOccurencesByPattern(pattern) {
+        const occurences = this.list.find((patternMap) => {
+            return patternMap.pattern === pattern;
+        });
+        return occurences ? parseInt(occurences['occurences']) : 1;
+    }
+
+    /**
+     * @description Returns of given pattern instance
+     * @author Christian Colonna
+     * @date 16-11-2020
+     * @param {*} pattern pattern instance uri
+     * @returns {number} count nodes belonging to given pattern instance
+     * @memberof PatternList
+     */
+    getDegreeByPattern(pattern) {
+        const degree = this.list.find((instanceMap) => {
+            return instanceMap.instance === pattern;
+        });
+        return degree ? parseInt(degree['count']) : 1;
+    }
+}
+</code></pre>
+        </article>
+    </section>
 
 
 

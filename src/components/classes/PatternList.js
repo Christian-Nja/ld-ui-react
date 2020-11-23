@@ -34,19 +34,4 @@ export default class PatternList {
         });
         return occurences ? parseInt(occurences['occurences']) : 1;
     }
-
-    /**
-     * @description Returns of given pattern instance
-     * @author Christian Colonna
-     * @date 16-11-2020
-     * @param {*} pattern pattern instance uri
-     * @returns {number} count nodes belonging to given pattern instance
-     * @memberof PatternList
-     */
-    getDegreeByPattern(pattern) {
-        const degree = this.list.find((instanceMap) => {
-            return instanceMap.instance === pattern;
-        });
-        return degree ? parseInt(degree['count']) : 1;
-    }
 }

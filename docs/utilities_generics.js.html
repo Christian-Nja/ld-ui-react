@@ -72,7 +72,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="Edge.html">Edge</a></li><li><a href="Edge.module.exports.html">module.exports</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Graph.module.exports.html">module.exports</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="Node.html">Node</a></li><li><a href="Node.module.exports.html">module.exports</a></li><li><a href="RequiredParamChecker.html">RequiredParamChecker</a></li><li><a href="RequiredParamChecker.module.exports.html">module.exports</a></li><li><a href="RequiredParamError.html">RequiredParamError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#blueMarkerIcon">blueMarkerIcon</a></li><li><a href="global.html#defineProp">defineProp</a></li><li><a href="global.html#fitSvg">fitSvg</a></li><li><a href="global.html#getAngle">getAngle</a></li><li><a href="global.html#getLayerPoint">getLayerPoint</a></li><li><a href="global.html#getSlope">getSlope</a></li><li><a href="global.html#getURILabel">getURILabel</a></li><li><a href="global.html#getWindowDimensions">getWindowDimensions</a></li><li><a href="global.html#leafletIcon">leafletIcon</a></li><li><a href="global.html#passOver">passOver</a></li><li><a href="global.html#projectLine">projectLine</a></li><li><a href="global.html#redSquatMarkerIcon">redSquatMarkerIcon</a></li><li><a href="global.html#segmentAxis">segmentAxis</a></li><li><a href="global.html#sortByTime">sortByTime</a></li><li><a href="global.html#useMap">useMap</a></li><li><a href="global.html#usePane">usePane</a></li><li><a href="global.html#useWindowDimensions">useWindowDimensions</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="Edge.html">Edge</a></li><li><a href="Edge.module.exports.html">module.exports</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Graph.module.exports.html">module.exports</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="Node.html">Node</a></li><li><a href="Node.module.exports.html">module.exports</a></li><li><a href="PatternList.html">PatternList</a></li><li><a href="PatternList.module.exports.html">module.exports</a></li><li><a href="RequiredParamChecker.html">RequiredParamChecker</a></li><li><a href="RequiredParamChecker.module.exports.html">module.exports</a></li><li><a href="RequiredParamError.html">RequiredParamError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#blueMarkerIcon">blueMarkerIcon</a></li><li><a href="global.html#defineProp">defineProp</a></li><li><a href="global.html#fitSvg">fitSvg</a></li><li><a href="global.html#getAngle">getAngle</a></li><li><a href="global.html#getLayerPoint">getLayerPoint</a></li><li><a href="global.html#getSlope">getSlope</a></li><li><a href="global.html#getURILabel">getURILabel</a></li><li><a href="global.html#getWindowDimensions">getWindowDimensions</a></li><li><a href="global.html#leafletIcon">leafletIcon</a></li><li><a href="global.html#passOver">passOver</a></li><li><a href="global.html#projectLine">projectLine</a></li><li><a href="global.html#Queue">Queue</a></li><li><a href="global.html#redSquatMarkerIcon">redSquatMarkerIcon</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#segmentAxis">segmentAxis</a></li><li><a href="global.html#sortByTime">sortByTime</a></li><li><a href="global.html#useGraphinDoubleClick">useGraphinDoubleClick</a></li><li><a href="global.html#useLayout">useLayout</a></li><li><a href="global.html#useMap">useMap</a></li><li><a href="global.html#usePane">usePane</a></li><li><a href="global.html#useWindowDimensions">useWindowDimensions</a></li></ul></div>
                 
             </nav>
         </div>
@@ -100,6 +100,41 @@
  */
 export function defineProp(prop, defaultProp) {
     return prop ? prop : defaultProp;
+}
+
+/**
+ * @description Creates a queue
+ * @author Christian Colonna
+ * @date 10-11-2020
+ */
+export function Queue() {
+    var a = [],
+        b = 0;
+    /* returns queu length */
+    this.getLength = function () {
+        return a.length - b;
+    };
+    /* check if queue is empty */
+    this.isEmpty = function () {
+        return 0 == a.length;
+    };
+
+    /* enque item */
+    this.enqueue = function (b) {
+        a.push(b);
+    };
+    /* dequeue item or undefined if empty */
+    this.dequeue = function () {
+        if (0 != a.length) {
+            var c = a[b];
+            2 * ++b >= a.length &amp;&amp; ((a = a.slice(b)), (b = 0));
+            return c;
+        }
+    };
+    /* Return first queue item without dequeying */
+    this.peek = function () {
+        return 0 &lt; a.length ? a[b] : void 0;
+    };
 }
 </code></pre>
         </article>

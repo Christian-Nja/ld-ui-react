@@ -84,7 +84,7 @@ export function getAngle(p1, p2) {
 }
 
 /**
- * @description
+ * @description A function to scale
  * @author Christian Colonna
  * @date 16-11-2020
  * @export

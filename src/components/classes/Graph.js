@@ -97,8 +97,8 @@ export default class Graph {
         this.addEdge(
             new Edge({
                 id: edgeId,
-                source: subPattern,
-                target: superPattern,
+                source: Graph.relType.COMPONENT ? superPattern : subPattern,
+                target: Graph.relType.COMPONENT ? subPattern : superPattern,
                 label:
                     type === Graph.relType.COMPONENT
                         ? 'hasComponent'
@@ -258,7 +258,7 @@ export default class Graph {
      *              You can optionally define a starting node else it's got randomly
      * @author Christian Colonna
      * @date 10-11-2020
-     * @param {(node, id)=>} [filter]
+     * @param {Object} [filter] arrow function (node, id) => {}
      * @memberof Graph
      */
     breadthFirstSearch(filter) {
@@ -292,7 +292,7 @@ export default class Graph {
      * @description Return first node matching filter condition
      * @author Christian Colonna
      * @date 10-11-2020
-     * @param {(node)=>{}} filter
+     * @param {Object} filter arrow function () => {}
      * @returns {Node}
      * @memberof Graph
      */

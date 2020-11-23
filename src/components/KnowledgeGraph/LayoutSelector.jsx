@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
 import React, { useState } from "react";
 
+import { useBinaryState } from "../hooks/ld-ui-hooks";
+
 import { Menu } from "semantic-ui-react";
 
 import {
@@ -25,24 +27,14 @@ const itemMap = [
 ];
 
 export default function LayoutSelector(props) {
-    const [opened, setOpened] = useState(false);
-
-    const handleOpen = () => {
-        let newOpened = !opened;
-        setOpened(newOpened);
-    };
+    const [open, handleOpen] = useBinaryState(false);
 
     return (
         <Menu.Item>
-            <div
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                    handleOpen();
-                }}
-            >
+            <div style={{ cursor: "pointer" }} onClick={handleOpen}>
                 Layouts
             </div>
-            {opened ? (
+            {open ? (
                 <Menu.Menu>
                     {itemMap.map((item, key) => {
                         return (
