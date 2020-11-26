@@ -60,10 +60,10 @@ export default function PatternNetwork(props) {
 
     return (
         <div style={graphContainerStyle}>
-            <PatternMenu
+            {/* <PatternMenu
                 layoutHandler={layoutHandler}
                 getInstances={props.getInstances}
-            ></PatternMenu>
+            ></PatternMenu> */}
             <Graphin
                 data={graph.toJson()}
                 ref={graphRef}

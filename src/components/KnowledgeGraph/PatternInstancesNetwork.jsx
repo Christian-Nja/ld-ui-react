@@ -1,5 +1,5 @@
 // React
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 // function and classes
 import Graph from "../classes/Graph";
@@ -9,20 +9,30 @@ import InstancesList from "../classes/InstancesList";
 // Pattern components
 import PatternMenu from "./PatternMenu";
 
+//import TimeIntervalFilter from "./facets/TimeIntervalFilter";
+
 // Graphin components
 import Graphin from "@antv/graphin";
 import { useLayout, useGraphinDoubleClick } from "../hooks/ld-ui-hooks";
 import "@antv/graphin/dist/index.css";
 
+// TODO: possible todo : instances should be in a central state store (redux) such that when components such as filters
+//                      update them you don't need to pass them down to all the filters.
+//                      Every filter should be able to trigger an action modifying the component on change/filtering
+//                      PatternInstancesNetwork observe those instances in the central state and rerender when modified
+
 export default function PatternInstancesNetwork(props) {
     // graphRef for mix React virtual DOM and graphin imperative operation on DOM
     const graphRef = useRef(null);
 
-    // parse instances
+    // parse instances. This is the initial state of this component
     const instances = defineProp(props.patterns.instances, []);
 
+    // the instancesToVisualize are the result of facet reducing and filtering
+    const [instancesToVisualize, setInstancesToVisualize] = useState(instances);
+
     // a list of instances and degree for each instance
-    const instancesList = new InstancesList(instances);
+    const instancesList = new InstancesList(instancesToVisualize);
 
     // pass this to Layout component to have a panel to switch layouts
     const layoutHandler = useLayout();
@@ -32,7 +42,7 @@ export default function PatternInstancesNetwork(props) {
 
     // add instances to Graph
     graph.addNodes(
-        instances.map((instance) => {
+        instancesToVisualize.map((instance) => {
             return {
                 id: instance.instance,
             };
@@ -52,16 +62,18 @@ export default function PatternInstancesNetwork(props) {
     // on instance doubleclick visualize instance
     useGraphinDoubleClick(graphRef, props.getInstance);
 
-    return (
-        <div style={graphContainerStyle}>
-            <PatternMenu layoutHandler={layoutHandler} />
-            <Graphin
-                data={graph.toJson()}
-                layout={layoutHandler.name}
-                ref={graphRef}
-            ></Graphin>
-        </div>
-    );
+    if (instances) {
+        return (
+            <div style={graphContainerStyle}>
+                <PatternMenu layoutHandler={layoutHandler} />
+                <Graphin
+                    data={graph.toJson()}
+                    layout={layoutHandler.name}
+                    ref={graphRef}
+                ></Graphin>
+            </div>
+        );
+    } else return null;
 }
 
 // TODO: pass this to global theme useContext react mechanism

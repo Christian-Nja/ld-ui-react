@@ -1,0 +1,82 @@
+# data
+
+instance[]      
+
+instance {
+        uri :
+        nodes[] // used to compute degree
+        type: 
+    } 
+
+node {
+        uri
+        type
+    }
+  
+timeIntervalNode {
+        startDate : 
+        endDate   :
+    }
+  
+
+timeIntervalInstance {
+    uri :
+    nodes[]
+    timeIntervalNode
+}
+
+# components
+
+<FacetFilter>  
+    props:
+    instance[] 
+    # tutti i filtri implementano una funzione che filtra le istanze se hanno nodi di un certo tipo /
+    # o eventualmente se hanno istanze con una certa struttura, anche entrambe
+    # Due scenari:
+    #    TimeIntervalFilter, può avere effetto sulle istanze con queste due interfacce:
+    #    
+    #    Tutte le istanze che hanno nodi componenti di tipo time-interval (con JSON-LD definisce URI e semantica)
+    #        la tua applicazione deve ricevere una istanza con formato es: type: time-interval
+    #        non si preoccupa dei namespace o uri. Quelli sono la prorietà @id
+    #        es: può ricevere { type: time-interval, @id: "https://example.org/time-interval-pattern"}
+    #            oppure       { type: time-interval, @id: "https://ontologydesignpatterns.org/cp/owl/time-interval-pattern"} 
+    #
+    #    instance {
+    #        uri: 
+    #        nodes[{
+    #                 type: time-interval
+    #                 startTime: ""
+    #                 endTime: ""  
+    #               }]
+    #        components(instance {
+    #            type: time-interval-pattern
+    #        })
+    #    }
+    #
+    #     instance {
+    #           uri:
+    #           nodes({
+    #                 type: time-interval
+    #                 startTime: ""
+    #                 endTime: ""  
+    #               })
+    #       }
+    #
+
+    updateFilter -> newFilteringInterval -> outFilteredTimeIntervalInstance[] // set this as state
+
+    render() se non ha istanze da filtrare ritorna null
+
+#------------------------------------
+
+<PatternInstancesNetwork>
+    props:
+    instance[] < timeIntervalInstance[]    
+    filters[] # a set of components can be mount and passed down to the menu as this.props.children example: <PatInstNet><TimeIntervalFilter /> <Map filter /> </PatInstNet> 
+
+    state:
+    instanceToVisualize[] {
+            notTimeIntervalInstance[]
+            timeIntervalInstance[]
+        }
+

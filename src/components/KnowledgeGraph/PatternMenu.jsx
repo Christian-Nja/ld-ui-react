@@ -2,7 +2,7 @@ import React from "react";
 import { Menu } from "semantic-ui-react";
 
 import LayoutSelector from "./LayoutSelector";
-import TimeInterval from "./facets/TimeInterval";
+import TimeIntervalFilter from "./facets/TimeIntervalFilter";
 
 const menuStyle = { position: "absolute", top: 70, left: 20, zIndex: 10 };
 
@@ -16,7 +16,10 @@ export default function PatternMenu(props) {
                         props.layoutHandler.setLayout(newLayout);
                     }}
                 ></LayoutSelector>
-                <TimeInterval></TimeInterval>
+                {/* <TimeIntervalFilter
+                    instances={props.instances}
+                    setInstancesToVisualize={props.setInstancesToVisualize}
+                ></TimeIntervalFilter> */}
                 {/* {props.selectedNodes ? (
                     <Menu.Item>
                         Selected

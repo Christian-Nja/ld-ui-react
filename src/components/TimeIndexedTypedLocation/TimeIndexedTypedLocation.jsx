@@ -37,18 +37,31 @@ const FIRST_ARROWHEAD = 1;
 const D3_ZINDEX = 625; // over markers under tooltip and popup
 
 /**
- * A component to visualize TimeIndexedTypedLocation 's
- *
- *
- * @param {Object} props React properties
- * @param ...
- *
- * @TODO - describe props interface
- *       - add style to props interface
+ * @typedef TimeIndexedTypedLocation
+ * @property {string} long longitude of the location as a string
+ * @property {string} lat latitude of the location as a string
+ * @property {string} startTime start time of the interval the indexed location
+ * @property {string} endTime end time of the interval of the indexed location
+ * @property {string} locationType the type of the location
  */
-export default function TimeIndexedTypedLocation(props) {
+
+/**
+ * @description A component to show time indexed typed locations in a geographical map.
+ *
+ * @author Christian Colonna
+ * @date 26-11-2020
+ * @export
+ * @component
+ * @param {{ timeIndexedTypedLocations : TimeIndexedTypedLocation [], depiction : string } }
+ */
+export default function TimeIndexedTypedLocation({
+    timeIndexedTypedLocations,
+    cPropDepiction,
+}) {
     /** mapRef */
     const mapRef = useRef(null);
+
+    console.log(timeIndexedTypedLocations);
 
     /** initialize map */
     useMap(mapRef, {
@@ -79,8 +92,6 @@ export default function TimeIndexedTypedLocation(props) {
     const path = leafletTransform(projectGeoPointToLeafletSvg);
 
     useEffect(() => {
-        console.log(props.timeIndexedTypedLocations);
-
         /* Defining an svg layer for D3 
         ________________________________*/
         var svg = d3
@@ -111,17 +122,14 @@ export default function TimeIndexedTypedLocation(props) {
             features: [],
         };
 
-        sortByTime(props.timeIndexedTypedLocations);
+        sortByTime(timeIndexedTypedLocations);
 
-        props.timeIndexedTypedLocations.forEach((tITL, index) => {
+        timeIndexedTypedLocations.forEach((tITL, index) => {
             geoJSON.features.push({
                 type: "Feature",
                 geometry: {
                     type: "Point",
-                    coordinates: [
-                        parseFloat(tITL.longitude),
-                        parseFloat(tITL.latitude),
-                    ],
+                    coordinates: [parseFloat(tITL.long), parseFloat(tITL.lat)],
                 },
             });
 
@@ -131,6 +139,9 @@ export default function TimeIndexedTypedLocation(props) {
                     GEO_JSON_LONGITUDE
                 ],
             ];
+
+            console.log("geoJson");
+            console.log(geoJSON);
 
             const popupContent = {
                 city: tITL.city,
@@ -195,7 +206,7 @@ export default function TimeIndexedTypedLocation(props) {
             .attr("y", -20)
             .attr("height", 60)
             .attr("width", 50)
-            .attr("xlink:href", props.timeIndexedTypedLocations[0].depiction);
+            .attr("xlink:href", cPropDepiction);
 
         let arrowheadsNodes;
 
