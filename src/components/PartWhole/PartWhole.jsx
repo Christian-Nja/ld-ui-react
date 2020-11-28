@@ -1,4 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+import Depiction from "../Resource/Depiction";
+import Resource from "../Resource/Resource";
+import Label from "../Resource/Label";
 
 import "./PartWhole.css";
 
@@ -17,14 +21,20 @@ import "./PartWhole.css";
  * @export
  * @param {{ parts : Resource[], whole : Resource }} { parts, whole }
  */
-export default function PartWhole({ parts, whole }) {
+export default function PartWhole({
+    parts,
+    whole,
+    onResourceClick = () => {
+        console.log("click");
+    },
+}) {
     const circleContainer = useRef(null);
 
-    console.log(parts);
+    const [depictionCount, setDepictionCount] = useState(0);
 
     useEffect(() => {
         let circle = circleContainer.current;
-        const circleElements = circle.childNodes;
+        const circleElements = circle.querySelectorAll(".circle");
 
         let angle = 360 - 90;
         let dangle = 360 / circleElements.length;
@@ -36,17 +46,75 @@ export default function PartWhole({ parts, whole }) {
                 circle.clientWidth / 2
             }px) rotate(-${angle}deg)`;
         }
-    }, [parts, whole]);
+    }, [depictionCount]);
+
+    //  TODO change this to redux , to many calls! Or find a pattern to optimize callings!
+    const onLoadedDepiction = () => {
+        setDepictionCount(depictionCount + 1);
+    };
 
     return (
-        <div className="circular-container" ref={circleContainer}>
+        <div
+            className="circular-container"
+            ref={circleContainer}
+            style={wholeStyle}
+        >
             {parts.map((part) => {
-                return <div className="circle">{part.uri}</div>;
-                // <Resource resource={part} classes={["circular"]} style={circularStyle}>
-                //     <Depiction></Depiction>
-                // </Resource>;
+                return (
+                    <Resource
+                        classes={"circle"}
+                        style={partStyle}
+                        depiction={
+                            <Depiction
+                                onClick={onResourceClick}
+                                style={partStyle}
+                                classes={"depiction"}
+                                uri={part.uri}
+                                onLoadedDepiction={onLoadedDepiction}
+                            />
+                        }
+                        label={
+                            <Label
+                                uri={part.uri}
+                                classes={"label"}
+                                style={labelStyle}
+                            />
+                        }
+                    />
+                );
             })}
-            <div className="center">{whole.uri}</div>
+            <Resource
+                classes="center"
+                style={wholeStyle}
+                depiction={
+                    <Depiction
+                        onClick={onResourceClick}
+                        style={wholeStyle}
+                        classes={"depiction"}
+                        uri={whole.uri}
+                        onLoadedDepiction={onLoadedDepiction}
+                    />
+                }
+                label={<Label uri={whole.uri} classes="label" />}
+            />
         </div>
     );
 }
+
+const partWidth = 100;
+const wholeWidth = 500;
+
+const partStyle = {
+    width: partWidth,
+    height: partWidth,
+};
+
+const wholeStyle = {
+    width: wholeWidth,
+    height: wholeWidth,
+};
+
+const labelStyle = {
+    position: "relative",
+    left: -partWidth / 2,
+};
