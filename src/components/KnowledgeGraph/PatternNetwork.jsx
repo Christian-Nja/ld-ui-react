@@ -10,6 +10,8 @@ import Graph from "../classes/Graph";
 import PatternMenu from "./PatternMenu";
 import PatternList from "../classes/PatternList";
 
+import TypeFilter from "./facets/TypeFilter";
+
 // Graphin Components
 import Graphin from "@antv/graphin";
 import { ContextMenu } from "@antv/graphin-components";
@@ -60,10 +62,18 @@ export default function PatternNetwork(props) {
 
     return (
         <div style={graphContainerStyle}>
-            {/* <PatternMenu
+            <PatternMenu
                 layoutHandler={layoutHandler}
                 getInstances={props.getInstances}
-            ></PatternMenu> */}
+            >
+                <TypeFilter
+                    types={[
+                        { title: "PartOf", value: 10, color: "#E38627" },
+                        { title: "Collection", value: 15, color: "#C13C37" },
+                        { title: "Situation", value: 20, color: "#6A2135" },
+                    ]}
+                ></TypeFilter>
+            </PatternMenu>
             <Graphin
                 data={graph.toJson()}
                 ref={graphRef}

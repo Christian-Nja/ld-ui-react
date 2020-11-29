@@ -3,6 +3,7 @@ import PatternInstancesNetwork from "./components/KnowledgeGraph/PatternInstance
 import Collection from "./components/Collection/Collection";
 import PartWhole from "./components/PartWhole/PartWhole";
 import Depiction from "./components/Resource/Depiction";
+import TypeFilter from "./components/KnowledgeGraph/facets/TypeFilter";
 /**
  * Available components
  */
@@ -12,4 +13,5 @@ export {
     PatternInstancesNetwork,
     PartWhole,
     Depiction,
+    TypeFilter,
 };

@@ -16,6 +16,14 @@ export default function PatternMenu(props) {
                         props.layoutHandler.setLayout(newLayout);
                     }}
                 ></LayoutSelector>
+                {props.children.map((child) => {
+                    // return filters
+                    return (
+                        <Menu.Item>
+                            <Menu.Menu>{child}</Menu.Menu>
+                        </Menu.Item>
+                    );
+                })}
                 {/* <TimeIntervalFilter
                     instances={props.instances}
                     setInstancesToVisualize={props.setInstancesToVisualize}

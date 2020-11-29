@@ -1,6 +1,7 @@
 .circular-container {
     position: relative;
     margin: calc(100px / 2 + 0px);
+    display: inline-block;
 }
 
 .circular-container:before {

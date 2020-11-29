@@ -101,7 +101,7 @@ export default function PartWhole({
     );
 }
 
-const partWidth = 100;
+const partWidth = 200;
 const wholeWidth = 500;
 
 const partStyle = {
