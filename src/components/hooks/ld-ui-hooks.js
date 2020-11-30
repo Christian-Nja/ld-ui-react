@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-import { defineProp } from '../../utilities/generics';
+import { defineProp } from "../../utilities/generics";
 
 /* LD-UI-REACT
 _____________________________________________________________ */
@@ -27,6 +27,34 @@ export function useBinaryState(startOpen = false) {
     return [open, handleOpen];
 }
 
+/**
+ * @description An hook for array with binary values
+ *              Returns a function to update the state.
+ *              Function accept an element as arg, if element is in state
+ *              array it removes it else it add it.
+ * @author Christian Colonna
+ * @date 30-11-2020
+ * @export
+ * @param {any[]} [initialArg=[]] initial state
+ * @returns {(item: any)=>{}} if item is in state array remove it else add it
+ */
+export function useBinaryArrayState(initialArg = []) {
+    const [state, setState] = useState(initialArg);
+
+    const updateState = (index) => {
+        state.includes(index)
+            ? // index in array then pull out
+              setState(
+                  state.filter((item) => {
+                      return item !== index;
+                  })
+              )
+            : // index not in array then push in
+              setState((state) => [...state, index]);
+    };
+    return [state, updateState];
+}
+
 /* LEAFLET
 _____________________________________________________________ */
 
@@ -41,7 +69,7 @@ _____________________________________________________________ */
 export function useMap(mapRef, mapProvider) {
     useEffect(() => {
         /** mounts map */
-        mapRef.current = L.map('map', {
+        mapRef.current = L.map("map", {
             center: [0, 0],
             zoom: 1,
             layers: [
@@ -72,7 +100,7 @@ export function usePane(mapRef, paneName, paneZIndex = 450) {
         mapRef.current.createPane(paneName);
         mapRef.current.getPane(paneName).style.zIndex = paneZIndex; // overlay-pane is 400 https://github.com/Leaflet/Leaflet/blob/v1.0.0/dist/leaflet.css#L87
 
-        mapRef.current.getPane(paneName).style.pointerEvents = 'none';
+        mapRef.current.getPane(paneName).style.pointerEvents = "none";
     }, []);
 }
 
@@ -91,7 +119,7 @@ _____________________________________________________________ */
  */
 export function useLayout(baseLayout) {
     const defaultLayout = defineProp(baseLayout, {
-        name: 'force',
+        name: "force",
         options: {},
     });
     const [layout, setLayout] = useState(defaultLayout);
@@ -121,11 +149,11 @@ export function useGraphinDoubleClick(graphRef, filter) {
             const node = e.item._cfg;
             filter(node);
         };
-        graph.on('node:dblclick', handleNodeDoubleClick);
+        graph.on("node:dblclick", handleNodeDoubleClick);
 
         // release listener when component unmount
         return () => {
-            graph.off('node:dblclick', handleNodeDoubleClick);
+            graph.off("node:dblclick", handleNodeDoubleClick);
         };
     }, []);
 }
@@ -152,8 +180,8 @@ export function useWindowDimensions() {
             setWindowDimensions(getWindowDimensions());
         }
 
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
     }, []);
 
     return windowDimensions;

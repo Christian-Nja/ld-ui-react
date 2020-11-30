@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 
 import { PieChart } from "react-minimal-pie-chart";
+import { useBinaryArrayState } from "../../hooks/ld-ui-hooks";
 
 /**
  * @description Filter data
  * @author Christian Colonna
  * @date 29-11-2020
  * @export
- * @param {[{ type : string, count : number, color : string
+ * @param {[{ type : string, count : number, color : string, uri : string
  * }]} {Object[]} { types } type: Resource type, count: number of instances, color: color
  * @param {function} onFilter callback is called every time change filtered array,
  *                            it receives as argument the array of element filtered out.
@@ -16,30 +17,24 @@ import { PieChart } from "react-minimal-pie-chart";
  */
 export default function TypeFilter({ types, onFilter = (filtered) => {} }) {
     const [hovered, setHovered] = useState(null);
-    const [filtered, setFiltered] = useState([]);
-
-    const updateState = (index) => {
-        filtered.includes(index)
-            ? // index in array then pull out
-              setFiltered(
-                  filtered.filter((item) => {
-                      return item !== index;
-                  })
-              )
-            : // index not in filtered then push in
-              setFiltered((filtered) => [...filtered, index]);
-    };
+    const [filtered, setFiltered] = useBinaryArrayState([]);
 
     useEffect(() => {
-        onFilter(filtered);
+        onFilter(
+            filtered.map((uri) => {
+                return { id: uri };
+            })
+        );
     }, [filtered]);
 
-    const data = types.map((entry, index) => {
+    const data = types.map((entry) => {
         return {
             ...entry,
-            color: filtered.includes(index) ? "grey" : entry.color,
+            color: filtered.includes(entry.uri) ? "grey" : entry.color,
         };
     });
+
+    console.log("i rerender");
 
     return (
         <PieChart
@@ -63,7 +58,7 @@ export default function TypeFilter({ types, onFilter = (filtered) => {} }) {
                 setHovered(null);
             }}
             onClick={(_, index) => {
-                updateState(index);
+                setFiltered(data[index].uri);
             }}
             lineWidth={30}
             labelPosition={0}

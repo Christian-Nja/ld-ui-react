@@ -4,9 +4,13 @@ import { Menu } from "semantic-ui-react";
 import LayoutSelector from "./LayoutSelector";
 import TimeIntervalFilter from "./facets/TimeIntervalFilter";
 
+import { useBinaryArrayState } from "../hooks/ld-ui-hooks";
+
 const menuStyle = { position: "absolute", top: 70, left: 20, zIndex: 10 };
 
 export default function PatternMenu(props) {
+    const [open, setOpen] = useBinaryArrayState([]);
+
     return (
         <div style={menuStyle}>
             <Menu vertical inverted>
@@ -17,14 +21,26 @@ export default function PatternMenu(props) {
                     }}
                 ></LayoutSelector>
                 {props.children &&
-                    React.Children.toArray(props.children).map((child) => {
-                        // return filters
-                        return (
-                            <Menu.Item>
-                                <Menu.Menu>{child}</Menu.Menu>
-                            </Menu.Item>
-                        );
-                    })}
+                    React.Children.toArray(props.children).map(
+                        (child, index) => {
+                            // return filters
+                            return (
+                                <Menu.Item>
+                                    <div
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => {
+                                            setOpen(index);
+                                        }}
+                                    >
+                                        {child.props.title}
+                                    </div>
+                                    {open.includes(index) ? (
+                                        <Menu.Menu>{child}</Menu.Menu>
+                                    ) : null}
+                                </Menu.Item>
+                            );
+                        }
+                    )}
                 {/* <TimeIntervalFilter
                     instances={props.instances}
                     setInstancesToVisualize={props.setInstancesToVisualize}

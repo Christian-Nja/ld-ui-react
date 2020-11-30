@@ -1,8 +1,8 @@
-import Node from './Node';
-import Edge from './Edge';
+import Node from "./Node";
+import Edge from "./Edge";
 
-import chroma from 'chroma-js';
-import { Queue, defineProp } from '../../utilities/generics';
+import chroma from "chroma-js";
+import { Queue, defineProp } from "../../utilities/generics";
 
 /**
  * @description A basic graph structure to handle data structured as graphs
@@ -13,23 +13,23 @@ import { Queue, defineProp } from '../../utilities/generics';
  */
 export default class Graph {
     static relType = {
-        SUB: 'subPattern',
-        COMPONENT: 'componentPattern',
-        SUPER_PATTERN: 'pattern',
+        SUB: "subPattern",
+        COMPONENT: "componentPattern",
+        SUPER_PATTERN: "pattern",
     };
 
     static palettes = {
         SPRING: {
             gradient: [
-                '#fff000',
-                '#ff8300',
-                '#ff0000',
-                'green',
+                "#fff000",
+                "#ff8300",
+                "#ff0000",
+                "green",
                 // "#9cb400",
-                '#0000c4',
+                "#0000c4",
             ],
-            compositionEdge: '#2185d0',
-            specializationEdge: 'rgba(0,0,0,.87)',
+            compositionEdge: "#2185d0",
+            specializationEdge: "rgba(0,0,0,.87)",
         },
     };
 
@@ -42,10 +42,11 @@ export default class Graph {
      * @param {Object} [palette]
      * @memberof Graph
      */
-    constructor(nodes, edges, palette) {
+    constructor(nodes, edges, filters, palette) {
         this.nodes = nodes || [];
         this.edges = edges || [];
         this.palette = palette || Graph.palettes.SPRING;
+        this.filters = filters || []; // (nodes, edges) => { return [nodes,edges] }
     }
 
     /**
@@ -101,8 +102,8 @@ export default class Graph {
                 target: Graph.relType.COMPONENT ? subPattern : superPattern,
                 label:
                     type === Graph.relType.COMPONENT
-                        ? 'hasComponent'
-                        : 'specialization',
+                        ? "hasComponent"
+                        : "specialization",
                 style: {
                     line: {
                         width: 3,
@@ -177,6 +178,64 @@ export default class Graph {
      */
     hasEdge(id) {
         return this.edges.find((edge) => edge.id === id);
+    }
+
+    addFilter(filter) {
+        const filterIdx = this.findFilterIdx(filter.key);
+        filterIdx !== -1
+            ? (this.filters[filterIdx].mask = filter.mask)
+            : this.filters.push(filter);
+    }
+    removeFilter(filterKey) {
+        this.filters.filter((entry) => {
+            return entry.key !== filterKey;
+        });
+    }
+    findFilterIdx(filterKey) {
+        return this.filters.findIndex((activeFilter) => {
+            return activeFilter.key === filterKey;
+        });
+    }
+
+    applyFilter(nodes, mask) {
+        return nodes.filter((node) => {
+            return (
+                mask.find((nodeToFilterOut) => {
+                    return node.id === nodeToFilterOut.id;
+                }) === undefined
+            );
+        });
+    }
+
+    filteredNodes() {
+        let filtered = this.nodes.slice();
+        this.filters.forEach((filter) => {
+            filtered = this.applyFilter(filtered, filter.mask);
+        });
+        return filtered;
+    }
+
+    filteredEdges(nodes) {
+        const nodeIds = nodes.map((node) => {
+            return node.id;
+        });
+        return this.edges.filter((edge) => {
+            return (
+                nodeIds.includes(edge.target) && nodeIds.includes(edge.source)
+            );
+        });
+    }
+
+    toVisual() {
+        const filtered = this.filteredNodes();
+        return {
+            nodes: filtered.map((node) => {
+                return node.toJson();
+            }),
+            edges: this.filteredEdges(filtered).map((edge) => {
+                return edge.toJson();
+            }),
+        };
     }
 
     /**
@@ -312,7 +371,7 @@ export default class Graph {
      * @returns {string[]} color palette
      * @memberof Graph
      */
-    nodeGradient(colors = this.palette.gradient, mode = 'lrgb') {
+    nodeGradient(colors = this.palette.gradient, mode = "lrgb") {
         return chroma.scale(colors).mode(mode).colors(this.nodeCount());
     }
 }
