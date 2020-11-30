@@ -57,6 +57,16 @@ export default function PatternNetwork(props) {
 
     graph.breadthFirstSearch(nodeColorSizeFilter);
 
+    const types = graph.nodes.map((node) => {
+        const occurences = patternList.getOccurencesByPattern(node.id);
+        console.log(node.toJson());
+        return {
+            title: node.label,
+            value: occurences,
+            color: node.style.primaryColor,
+        };
+    });
+
     // on node double click load pattern instances
     useGraphinDoubleClick(graphRef, props.getInstances);
 
@@ -66,13 +76,7 @@ export default function PatternNetwork(props) {
                 layoutHandler={layoutHandler}
                 getInstances={props.getInstances}
             >
-                <TypeFilter
-                    types={[
-                        { title: "PartOf", value: 10, color: "#E38627" },
-                        { title: "Collection", value: 15, color: "#C13C37" },
-                        { title: "Situation", value: 20, color: "#6A2135" },
-                    ]}
-                ></TypeFilter>
+                <TypeFilter types={types}></TypeFilter>
             </PatternMenu>
             <Graphin
                 data={graph.toJson()}

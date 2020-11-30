@@ -1,4 +1,4 @@
-import RequiredParamChecker from './RequiredParamChecker';
+import RequiredParamChecker from "./RequiredParamChecker";
 
 /**
  * @description A class to handle pattern list as a list of object representing pattern
@@ -32,6 +32,6 @@ export default class PatternList {
         const occurences = this.list.find((patternMap) => {
             return patternMap.pattern === pattern;
         });
-        return occurences ? parseInt(occurences['occurences']) : 1;
+        return occurences ? parseInt(occurences["occurences"]) : 0;
     }
 }

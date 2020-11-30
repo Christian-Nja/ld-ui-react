@@ -45,19 +45,18 @@ export default function TypeFilter({ types, onFilter = (filtered) => {} }) {
         <PieChart
             lengthAngle={-360}
             animate
+            paddingAngle={1}
             data={data}
             label={() => {
-                return data[hovered] ? data[hovered].title : null;
+                return data[hovered] ? data[hovered].value : null;
             }}
             segmentsStyle={{ transition: "stroke .3s", cursor: "pointer" }}
             labelStyle={{
-                fontSize: "10px",
+                fontSize: "20px",
                 fontFamily: "sans-serif",
                 fill: data[hovered] ? data[hovered].color : null,
             }}
             onMouseOver={(_, index) => {
-                console.log(index);
-                console.log(data[index]);
                 setHovered(index);
             }}
             onMouseOut={() => {
