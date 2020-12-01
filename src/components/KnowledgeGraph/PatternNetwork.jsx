@@ -9,7 +9,8 @@ import Graph from "../classes/Graph";
 import PatternMenu from "./PatternMenu";
 import PatternList from "../classes/PatternList";
 
-import TypeFilter from "./facets/TypeFilter";
+import PropertyFilter from "./facets/PropertyFilter";
+import SliderFilter from "./facets/SliderFilter";
 
 // Graphin Components
 import Graphin from "@antv/graphin";
@@ -17,9 +18,6 @@ import { ContextMenu } from "@antv/graphin-components";
 import "@antv/graphin/dist/index.css"; // Don't forget to import css
 // a defined hook for graphin layout
 import { useLayout, useGraphinDoubleClick } from "../hooks/ld-ui-hooks";
-
-// an intermidiate class that receives pattern data and creates a graph to be passed to Graphin instance
-let graph = new Graph();
 
 export default function PatternNetwork(props) {
     // parse and initialize props
@@ -30,7 +28,7 @@ export default function PatternNetwork(props) {
     // graphRef for mix React virtual DOM and graphin imperative operation on DOM
     const graphRef = useRef(null);
 
-    const [data, setData] = useState(graph);
+    const [graph, setGraph] = useState(new Graph());
 
     // pass this to PatternMenu component to have a panel to switch layouts
     const layoutHandler = useLayout();
@@ -53,22 +51,16 @@ export default function PatternNetwork(props) {
         // set size as a proportion of occurrences
         const occurences = patternList.getOccurencesByPattern(node.id);
 
+        // we add this as we can filter on this with slider filter
+        node.data.occurences = occurences;
+
         node.style.nodeSize =
             occurences < 300 ? 12 + occurences : 12 + 300 + occurences * 0.01;
     };
 
     graph.breadthFirstSearch(nodeColorSizeFilter);
 
-    // wtf
-    // this cause a good comparison JSON.stringify
-    //  https://stackoverflow.com/questions/54095994/react-useeffect-comparing-objects/54096391#54096391
-    // add useMemo and all the shit
-    useEffect(() => {
-        console.log("I reset all after filter");
-        setData(graph);
-    }, [JSON.stringify(graph.toVisual())]);
-
-    const types = graph.nodes.map((node) => {
+    const properties = graph.nodes.map((node) => {
         const occurences = patternList.getOccurencesByPattern(node.id);
         return {
             title: node.label,
@@ -79,16 +71,36 @@ export default function PatternNetwork(props) {
     });
 
     const handleTypeFilter = (filterNodes) => {
-        data.addFilter({ key: "type", mask: filterNodes });
-        const newData = new Graph(data.nodes, data.edges, data.filters);
-        setData(newData);
+        graph.addFilter({ key: "id", mask: filterNodes, class: "cat" });
+        const newData = new Graph(graph.nodes, graph.edges, graph.filters);
+        setGraph(newData);
     };
 
     // on node double click load pattern instances
     useGraphinDoubleClick(graphRef, props.getInstances);
 
-    // data
-    console.log("PNetwork rerender");
+    // min/max
+    let instancesRange = [0, 0];
+    let occurencesFrequency = [];
+    graph.nodes.forEach((node) => {
+        const occur = patternList.getOccurencesByPattern(node.id);
+        occurencesFrequency.push(occur);
+    });
+    occurencesFrequency.sort((a, b) => a - b);
+    instancesRange = [
+        Math.min(...occurencesFrequency),
+        Math.max(...occurencesFrequency),
+    ];
+
+    const handleSliderFilter = (range) => {
+        graph.addFilter({
+            key: "occurences",
+            range: range,
+            class: "num",
+        });
+        const newData = new Graph(graph.nodes, graph.edges, graph.filters);
+        setGraph(newData);
+    };
 
     return (
         <div style={graphContainerStyle}>
@@ -96,16 +108,23 @@ export default function PatternNetwork(props) {
                 layoutHandler={layoutHandler}
                 getInstances={props.getInstances}
             >
-                <TypeFilter
-                    types={types}
-                    title={"Filter by type"}
+                <PropertyFilter
+                    properties={properties}
+                    title={"Filter by pattern"}
                     onFilter={(filtered) => {
                         handleTypeFilter(filtered);
                     }}
-                ></TypeFilter>
+                />
+                <SliderFilter
+                    title={"Filter by number of instances"}
+                    domain={instancesRange}
+                    onFilter={(range) => {
+                        handleSliderFilter(range);
+                    }}
+                />
             </PatternMenu>
             <Graphin
-                data={data.toVisual()}
+                data={graph.toVisual()}
                 ref={graphRef}
                 layout={layoutHandler.name}
             >

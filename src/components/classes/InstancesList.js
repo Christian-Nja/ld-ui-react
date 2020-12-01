@@ -31,4 +31,12 @@ export default class InstancesList {
         });
         return degree;
     }
+    getAggregateCount(type, instanceURI) {
+        let count = 0;
+        this.list.forEach((instance) => {
+            if (instance.instance === instanceURI && instance.type === type)
+                count++;
+        });
+        return count;
+    }
 }

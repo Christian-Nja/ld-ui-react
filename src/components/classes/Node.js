@@ -1,5 +1,5 @@
-import RequiredParamChecker from './RequiredParamChecker';
-import { getURILabel } from '../../utilities/uri';
+import RequiredParamChecker from "./RequiredParamChecker";
+import { getURILabel } from "../../utilities/uri";
 
 /**
  * @description A basic Node class
@@ -23,12 +23,12 @@ export default class Node {
      * @memberof Node
      */
     constructor(node) {
-        new RequiredParamChecker([{ value: node.id, label: 'node.id' }]);
+        new RequiredParamChecker([{ value: node.id, label: "node.id" }]);
         this.id = node.id;
         this.label = node.label || getURILabel(node.id);
-        this.data = node.data || node.id;
-        this.shape = node.shape || 'CircleNode';
-        this.type = node.type || 'company';
+        this.data = node.data || { id: node.id };
+        this.shape = node.shape || "CircleNode";
+        this.type = node.type || "company";
         this.style = node.style || { nodeSize: 25 };
     }
 

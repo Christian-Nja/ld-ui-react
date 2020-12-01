@@ -46,7 +46,7 @@ export default class Graph {
         this.nodes = nodes || [];
         this.edges = edges || [];
         this.palette = palette || Graph.palettes.SPRING;
-        this.filters = filters || []; // (nodes, edges) => { return [nodes,edges] }
+        this.filters = filters || [];
     }
 
     /**
@@ -140,6 +140,7 @@ export default class Graph {
             this.addNode(
                 new Node({
                     id: node.id,
+                    data: node.data,
                 })
             )
         );
@@ -183,7 +184,7 @@ export default class Graph {
     addFilter(filter) {
         const filterIdx = this.findFilterIdx(filter.key);
         filterIdx !== -1
-            ? (this.filters[filterIdx].mask = filter.mask)
+            ? (this.filters[filterIdx] = filter)
             : this.filters.push(filter);
     }
     removeFilter(filterKey) {
@@ -197,20 +198,35 @@ export default class Graph {
         });
     }
 
-    applyFilter(nodes, mask) {
+    applyFilter(nodes, filter) {
         return nodes.filter((node) => {
-            return (
-                mask.find((nodeToFilterOut) => {
-                    return node.id === nodeToFilterOut.id;
-                }) === undefined
-            );
+            if (filter.class === "cat") {
+                return (
+                    filter.mask.find((nodeToFilterOut) => {
+                        return node.data[filter.key] === nodeToFilterOut;
+                    }) === undefined
+                );
+            } else if (filter.class === "num") {
+                return (
+                    node.data[filter.key] >= filter.range[0] &&
+                    node.data[filter.key] <= filter.range[1]
+                );
+            } else if (filter.class === "time") {
+                console.log(filter.mask);
+                console.log(filter.key);
+                return (
+                    filter.mask.find((nodeToKeep) => {
+                        return node.data[filter.key] === nodeToKeep;
+                    }) !== undefined
+                );
+            }
         });
     }
 
     filteredNodes() {
         let filtered = this.nodes.slice();
         this.filters.forEach((filter) => {
-            filtered = this.applyFilter(filtered, filter.mask);
+            filtered = this.applyFilter(filtered, filter);
         });
         return filtered;
     }

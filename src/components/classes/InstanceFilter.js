@@ -19,9 +19,8 @@ export default class InstanceFilter {
      */
     timeIntervalInstances() {
         return this.instances.filter((instance) => {
-            console.log(instance.type);
             return (
-                instance.type === 'https://w3id.org/italia/onto/TI/TimeInterval'
+                instance.type === "https://w3id.org/italia/onto/TI/TimeInterval"
             ); // TODO: move to json-ld to clear this
         });
     }
@@ -44,6 +43,7 @@ export default class InstanceFilter {
             duration:
                 new Date(timeIntervalInstance.endTime) -
                 new Date(timeIntervalInstance.startTime),
+            event: timeIntervalInstance,
             // title : timeIntervalInstance.label
             // description : timeIntervalInstance.label
         };
