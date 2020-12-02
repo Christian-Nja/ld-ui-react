@@ -1,4 +1,4 @@
-export default function htmlIcon(src, message) {
+export default function htmlIcon(src, message, customClass) {
     return `
             <i>
                 <img
@@ -6,7 +6,7 @@ export default function htmlIcon(src, message) {
                     src="${src}"
                  class="simple-icon"
                 ></img>
-                <p class="icon-description">${message}</p>
+                <p class="icon-description cultural-property-click">${message}</p>
                 <br />
             </i>
             `;

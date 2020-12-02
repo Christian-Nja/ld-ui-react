@@ -4,6 +4,7 @@ import React, { useRef, useEffect, useState } from "react";
 // function and classes
 import Graph from "../classes/Graph";
 import { defineProp } from "../../utilities/generics";
+import { baseLog } from "../../utilities/math";
 import InstancesList from "../classes/InstancesList";
 
 // Pattern components
@@ -64,9 +65,18 @@ export default function PatternInstancesNetwork(props) {
         // TODO: set a color for each instance, set size based on node degree
         const filter = (node, id) => {
             // node.style.primaryColor = graph.nodeGradient()[id];
-            node.style.primaryColor = graph.nodeGradient()[2];
+            node.style.primaryColor = props.color;
             let degree = instancesList.getPatternInstanceDegree(node.id);
+            // degree = degree !== 0 ? degree : 1;
+
+            // node.style.nodeSize =
+
             degree = degree !== 0 ? degree : 1;
+            // console.log("degree: ", degree);
+            // console.log(
+            //     "log: ",
+            //     12 + Number.parseInt(12 * baseLog(5, degree) * 0.5)
+            // );
             node.style.nodeSize = degree * node.style.nodeSize;
         };
         graph.breadthFirstSearch(filter);

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import L from "leaflet";
 import * as d3 from "d3";
 import "leaflet.markercluster/dist/leaflet.markercluster";
@@ -57,11 +57,14 @@ const D3_ZINDEX = 625; // over markers under tooltip and popup
 export default function TimeIndexedTypedLocation({
     timeIndexedTypedLocations,
     cPropDepiction,
+    onCulturalPropertyClick = () => {
+        console.log("click");
+    },
 }) {
     /** mapRef */
     const mapRef = useRef(null);
 
-    console.log(timeIndexedTypedLocations);
+    const [popupMounted, setPopupMounted] = useState(false);
 
     /** initialize map */
     useMap(mapRef, {
@@ -140,16 +143,14 @@ export default function TimeIndexedTypedLocation({
                 ],
             ];
 
-            console.log("geoJson");
-            console.log(geoJSON);
-
             const popupContent = {
                 city: tITL.city,
                 siteLabel: tITL.siteLabel,
                 timeInterval: `${tITL.startTime} - ${
                     tITL.endTime !== "" ? tITL.endTime : "Today"
                 }`,
-                locationType: tITL.locationType,
+                locationType: tITL.locationType.split("/").pop(), // at the moment we pass the uri TODO: pass the label
+                culturalProperty: timeIndexedTypedLocations[0].culturalProperty,
             };
             const popup = L.popup()
                 .setContent(tITLPopup(popupContent))
@@ -160,12 +161,17 @@ export default function TimeIndexedTypedLocation({
             })
                 .addTo(mcg)
                 .bindPopup(popup)
-                .on(CONFIG.POPUP.OPEN, function (e) {
-                    this.openPopup();
-                })
-                .on(CONFIG.POPUP.CLOSE, function (e) {
-                    this.closePopup();
-                });
+                .openPopup();
+            // .on("click", function (e) {
+            //     this.openPopup();
+            // })
+            // .openPopup();
+            // .on("mouseover", function (e) {
+            //     this.openPopup();
+            // })
+            // .on("mouseout", function (e) {
+            //     this.closePopup();
+            // });
         });
 
         /* Add marker to maps and fit zoom
@@ -310,7 +316,17 @@ export default function TimeIndexedTypedLocation({
                 return interpolate(t);
             };
         }
+
+        setPopupMounted(true);
     }, []);
+
+    useEffect(() => {
+        console.log("Cprop:");
+        const cProp = document.getElementsByClassName(
+            "cultural-property-click"
+        );
+        console.log(cProp);
+    }, [popupMounted]);
 
     return (
         <div>

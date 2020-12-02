@@ -147,7 +147,7 @@ export function useGraphinDoubleClick(graphRef, filter) {
         const { graph } = graphRef.current;
         const handleNodeDoubleClick = (e) => {
             const node = e.item._cfg;
-            filter(node);
+            if (node.model.data.occurences !== 0) filter(node);
         };
         graph.on("node:dblclick", handleNodeDoubleClick);
 

@@ -41,23 +41,19 @@ export default function TimeIntervalFilter({ instances, onFilter }) {
     //
 
     function outageEventStyleFunc(event, state) {
-        const color = "#f1a340"; // blue
         const width = event.get("duration") === 0 ? 5 : null; // assign a little width even if its punctual event
         switch (state) {
             case "normal":
                 return {
                     fill: "#002bff",
                     opacity: 1,
-                    minWidth: 5,
-                    height: 45,
-                    width: width,
+                    // width: width,
                 };
             case "hover":
                 return {
                     fill: color,
                     opacity: 0.4,
-                    minWidth: 5,
-                    width: width,
+                    // width: width,
                 };
             case "selected":
                 return {
@@ -74,7 +70,6 @@ export default function TimeIntervalFilter({ instances, onFilter }) {
 
     // Handles when the brush changes the timerange
     const handleTimeRangeChange = (timerange) => {
-        console.log(timerange);
         if (timerange) {
             setBrushRange(timerange);
         } else setBrushRange(null);
@@ -98,10 +93,6 @@ export default function TimeIntervalFilter({ instances, onFilter }) {
 
         onFilter(eventToViz);
     }, [brushrange]);
-
-    console.log("timerange");
-    console.log(timerange);
-    console.log(intervals);
 
     return (
         <div className="row">

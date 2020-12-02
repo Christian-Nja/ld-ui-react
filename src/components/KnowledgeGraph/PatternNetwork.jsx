@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from "react";
 // Class and functions
 import { defineProp } from "../../utilities/generics";
 import Graph from "../classes/Graph";
+import { baseLog } from "../../utilities/math";
 
 // Components for Patterns
 import PatternMenu from "./PatternMenu";
@@ -48,14 +49,26 @@ export default function PatternNetwork(props) {
         // set colors according to a gradient
         node.style.primaryColor = graph.nodeGradient()[id];
 
+        console.log(node.style.primaryColor);
+
         // set size as a proportion of occurrences
         const occurences = patternList.getOccurencesByPattern(node.id);
 
         // we add this as we can filter on this with slider filter
         node.data.occurences = occurences;
 
+        if (occurences !== 0) {
+            node.style.cursor = "pointer";
+        }
+        if (occurences === 0) {
+            node.style.opacity = 0.3;
+        }
+
         node.style.nodeSize =
-            occurences < 300 ? 12 + occurences : 12 + 300 + occurences * 0.01;
+            occurences !== 0
+                ? 12 +
+                  Number.parseInt(occurences * baseLog(2, occurences) * 0.5)
+                : 12;
     };
 
     graph.breadthFirstSearch(nodeColorSizeFilter);

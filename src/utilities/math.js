@@ -84,18 +84,14 @@ export function getAngle(p1, p2) {
 }
 
 /**
- * @description A function to scale
+ * @description Return log in base b of n
  * @author Christian Colonna
- * @date 16-11-2020
+ * @date 02-12-2020
  * @export
- * @param {number} x num to scale
- * @param {number} min old range min
- * @param {number} max old range max
- * @param {number} scaleMin new range min
- * @param {number} scaleMax new range max
- * @returns {number} scaled value
+ * @param {number} b base
+ * @param {number} n number
+ * @returns {number} the log in base b of n
  */
-export function scale(x, min, max, scaleMin, scaleMax) {
-    const oldPercernt = (x - min) / (max - min);
-    return (scaleMax - scaleMin) * oldPercernt + scaleMin;
+export function baseLog(b, n) {
+    return Math.log(n) / Math.log(b);
 }

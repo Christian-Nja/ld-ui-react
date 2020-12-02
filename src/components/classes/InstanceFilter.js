@@ -36,13 +36,15 @@ export default class InstanceFilter {
      * @returns {Object}
      * @memberof InstanceFilter
      */
-    timeIntervalInstanceEventToDate(timeIntervalInstance, duration = true) {
+    timeIntervalInstanceEventToDate(timeIntervalInstance) {
+        const startTime = new Date(timeIntervalInstance.startTime);
+        const endTime = new Date(timeIntervalInstance.endTime);
+        const duration = startTime - endTime;
+        console.log(duration);
         return {
-            startTime: new Date(timeIntervalInstance.startTime),
+            startTime: new Date(timeIntervalInstance.endTime),
             endTime: new Date(timeIntervalInstance.endTime),
-            duration:
-                new Date(timeIntervalInstance.endTime) -
-                new Date(timeIntervalInstance.startTime),
+            duration: duration,
             event: timeIntervalInstance,
             // title : timeIntervalInstance.label
             // description : timeIntervalInstance.label
