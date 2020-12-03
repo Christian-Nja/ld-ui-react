@@ -148,10 +148,8 @@ export default function TimeIndexedTypedLocation({
                 }`,
                 locationType: tITL.locationType.split("/").pop(), // at the moment we pass the uri TODO: pass the label
                 culturalProperty:
-                    timeIndexedTypedLocations[0].cPropLabel !== ""
-                        ? timeIndexedTypedLocations[0].cPropLabel
-                        : "Bene culturale",
-                address: timeIndexedTypedLocations[0].addressLabel,
+                    tITL.cPropLabel !== "" ? tITL.cPropLabel : "Bene culturale",
+                address: tITL.addressLabel,
             };
             const popup = L.popup()
                 .setContent(tITLPopup(popupContent))
