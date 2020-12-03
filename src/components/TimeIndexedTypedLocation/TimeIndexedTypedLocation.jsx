@@ -57,14 +57,13 @@ const D3_ZINDEX = 625; // over markers under tooltip and popup
 export default function TimeIndexedTypedLocation({
     timeIndexedTypedLocations,
     cPropDepiction,
+    cPropLabel,
     onCulturalPropertyClick = () => {
         console.log("click");
     },
 }) {
     /** mapRef */
     const mapRef = useRef(null);
-
-    const [popupMounted, setPopupMounted] = useState(false);
 
     /** initialize map */
     useMap(mapRef, {
@@ -144,13 +143,15 @@ export default function TimeIndexedTypedLocation({
             ];
 
             const popupContent = {
-                city: tITL.city,
-                siteLabel: tITL.siteLabel,
                 timeInterval: `${tITL.startTime} - ${
                     tITL.endTime !== "" ? tITL.endTime : "Today"
                 }`,
                 locationType: tITL.locationType.split("/").pop(), // at the moment we pass the uri TODO: pass the label
-                culturalProperty: timeIndexedTypedLocations[0].culturalProperty,
+                culturalProperty:
+                    timeIndexedTypedLocations[0].cPropLabel !== ""
+                        ? timeIndexedTypedLocations[0].cPropLabel
+                        : "Bene culturale",
+                address: timeIndexedTypedLocations[0].addressLabel,
             };
             const popup = L.popup()
                 .setContent(tITLPopup(popupContent))
@@ -163,14 +164,15 @@ export default function TimeIndexedTypedLocation({
                 .bindPopup(popup)
                 .on("click", function (e) {
                     this.openPopup();
+                    const cProp = document.getElementsByClassName(
+                        "cultural-property"
+                    );
+                    console.log(cProp);
+                    cProp[0].style.cursor = "pointer";
+                    cProp[0].addEventListener("click", function (e) {
+                        onCulturalPropertyClick();
+                    });
                 });
-            // .openPopup();
-            // .on("mouseover", function (e) {
-            //     this.openPopup();
-            // })
-            // .on("mouseout", function (e) {
-            //     this.closePopup();
-            // });
         });
 
         /* Add marker to maps and fit zoom
@@ -205,12 +207,17 @@ export default function TimeIndexedTypedLocation({
             .style("stroke", "blue")
             .style("fill", "blue");
 
+        // check if the depiction has been put between timeIndexTypedLocation pattern data
+        cPropDepiction = cPropDepiction
+            ? cPropDepiction
+            : timeIndexedTypedLocations[0].depiction;
+
         const depiction = g
             .append("svg:image")
             .attr("x", -20)
             .attr("y", -20)
-            .attr("height", 60)
-            .attr("width", 50)
+            .attr("height", 120)
+            .attr("width", 60)
             .attr("xlink:href", cPropDepiction);
 
         let arrowheadsNodes;
@@ -315,17 +322,7 @@ export default function TimeIndexedTypedLocation({
                 return interpolate(t);
             };
         }
-
-        setPopupMounted(true);
     }, []);
-
-    useEffect(() => {
-        console.log("Cprop:");
-        const cProp = document.getElementsByClassName(
-            "cultural-property-click"
-        );
-        console.log(cProp);
-    }, [popupMounted]);
 
     return (
         <div>

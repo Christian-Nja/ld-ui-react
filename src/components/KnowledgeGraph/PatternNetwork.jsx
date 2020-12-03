@@ -49,8 +49,6 @@ export default function PatternNetwork(props) {
         // set colors according to a gradient
         node.style.primaryColor = graph.nodeGradient()[id];
 
-        console.log(node.style.primaryColor);
-
         // set size as a proportion of occurrences
         const occurences = patternList.getOccurencesByPattern(node.id);
 
