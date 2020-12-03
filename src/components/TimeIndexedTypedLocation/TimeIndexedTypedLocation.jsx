@@ -161,10 +161,9 @@ export default function TimeIndexedTypedLocation({
             })
                 .addTo(mcg)
                 .bindPopup(popup)
-                .openPopup();
-            // .on("click", function (e) {
-            //     this.openPopup();
-            // })
+                .on("click", function (e) {
+                    this.openPopup();
+                });
             // .openPopup();
             // .on("mouseover", function (e) {
             //     this.openPopup();

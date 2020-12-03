@@ -18,8 +18,8 @@ export default function Label({ uri, classes, style = {} }) {
         })();
     }
     return label ? (
-        <p className={classes} style={style}>
+        <div className={classes} style={style}>
             {label}
-        </p>
+        </div>
     ) : null;
 }

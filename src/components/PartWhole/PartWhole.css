@@ -23,6 +23,10 @@
     border-radius: 50%;
 }
 
+.circular-container .circle:hover {
+    z-index: 5;
+}
+
 .center {
     border-radius: 50%;
     z-index: 1;
@@ -32,12 +36,25 @@
 .depiction {
     border-radius: 50%;
     cursor: pointer;
+    transition: 0.2s;
+    /* position: absolute; */
+    z-index: 1;
+}
+
+.part-depiction:hover {
+    transform: scale(4);
+    z-index: 4;
+}
+
+.whole-depiction:hover {
+    transform: scale(2);
+    z-index: 4;
 }
 
 .label {
     opacity: 0;
     min-width: 200px;
-    z-index: 3;
+    z-index: 1;
     background: white;
     border-radius: 10px/20px;
     padding: 5px;
@@ -47,9 +64,11 @@
 .center:hover .label,
 .circle:hover .label {
     opacity: 1;
+    /* z-index: 5; */
 }
 
 .center .label:hover,
 .circle .label:hover {
+    z-index: 5;
     opacity: 0;
 }

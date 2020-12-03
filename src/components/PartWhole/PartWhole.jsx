@@ -57,7 +57,8 @@ export default function PartWhole({
         <div
             className="circular-container"
             ref={circleContainer}
-            style={wholeStyle}
+            style={wholeContainerStyle}
+            classes={"center"}
         >
             {parts.map((part) => {
                 return (
@@ -68,7 +69,7 @@ export default function PartWhole({
                             <Depiction
                                 onClick={onResourceClick}
                                 style={partStyle}
-                                classes={"depiction"}
+                                classes={"depiction part-depiction"}
                                 uri={part.uri}
                                 onLoadedDepiction={onLoadedDepiction}
                             />
@@ -83,38 +84,54 @@ export default function PartWhole({
                     />
                 );
             })}
-            <Resource
-                classes="center"
-                style={wholeStyle}
-                depiction={
-                    <Depiction
-                        onClick={onResourceClick}
-                        style={wholeStyle}
-                        classes={"depiction"}
-                        uri={whole.uri}
-                        onLoadedDepiction={onLoadedDepiction}
-                    />
-                }
-                label={<Label uri={whole.uri} classes="label" />}
-            />
+            <div style={centerStyle}>
+                <Resource
+                    // classes="center"
+                    style={centerStyle}
+                    depiction={
+                        <Depiction
+                            onClick={onResourceClick}
+                            style={centerStyle}
+                            classes={"depiction whole-depiction"}
+                            uri={whole.uri}
+                            onLoadedDepiction={onLoadedDepiction}
+                        />
+                    }
+                    label={<Label uri={whole.uri} classes="label" />}
+                />
+            </div>
         </div>
     );
 }
 
-const partWidth = 200;
-const wholeWidth = 500;
+const partWidth = 100;
+const wholeWidth = 700;
+const imgWidth = 500;
 
 const partStyle = {
     width: partWidth,
     height: partWidth,
 };
 
-const wholeStyle = {
+const wholeContainerStyle = {
     width: wholeWidth,
     height: wholeWidth,
+};
+
+const centerStyle = {
+    width: imgWidth,
+    height: imgWidth,
+    margin: "auto",
+    /* top: 0; */
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
 };
 
 const labelStyle = {
     position: "relative",
     left: -partWidth / 2,
+    top: partWidth,
 };
