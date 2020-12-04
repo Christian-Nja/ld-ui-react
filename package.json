@@ -75,6 +75,7 @@
         "react-compound-slider": "^3.3.1",
         "react-dom": "^16.13.1",
         "react-minimal-pie-chart": "^8.1.0",
+        "react-timeseries-charts": "file:react-timeseries-charts",
         "semantic-ui-react": "^2.0.1",
         "underscore": "^1.12.0"
     },

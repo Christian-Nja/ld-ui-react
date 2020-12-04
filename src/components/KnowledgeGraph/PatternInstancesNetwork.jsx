@@ -11,7 +11,7 @@ import InstancesList from "../classes/InstancesList";
 import PatternMenu from "./PatternMenu";
 import PropertyFilter from "./facets/PropertyFilter";
 
-//import TimeIntervalFilter from "./facets/TimeIntervalFilter";
+import TimeIntervalFilter from "./facets/TimeIntervalFilter";
 
 // Graphin components
 import Graphin from "@antv/graphin";
@@ -182,15 +182,14 @@ export default function PatternInstancesNetwork(props) {
     return (
         <div style={graphContainerStyle}>
             <PatternMenu layoutHandler={layoutHandler}>
-                {/* {hardcodedPatternIf ===
+                {hardcodedPatternIf ===
                 "https://w3id.org/arco/ontology/location/time-indexed-typed-location" ? (
                     <TimeIntervalFilter
                         instances={instances}
                         title={"Filter by time interval"}
                         onFilter={handleTimeFilter}
                     />
-                ) : null} */}
-
+                ) : null}
                 {hardcodedPatternIf ===
                 "https://w3id.org/arco/ontology/location/time-indexed-typed-location" ? (
                     <PropertyFilter
