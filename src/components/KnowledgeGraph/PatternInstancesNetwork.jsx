@@ -18,7 +18,8 @@ import Graphin from "@antv/graphin";
 import { useLayout, useGraphinDoubleClick } from "../hooks/ld-ui-hooks";
 import "@antv/graphin/dist/index.css";
 import SliderFilter from "./facets/SliderFilter";
-import TimeIntervalFilter from "./facets/TimeIntervalFilter";
+
+//import TimeIntervalFilter from "./facets/TimeIntervalFilter";
 
 // TODO: possible todo : instances should be in a central state store (redux) such that when components such as filters
 //                      update them you don't need to pass them down to all the filters.
@@ -181,14 +182,14 @@ export default function PatternInstancesNetwork(props) {
     return (
         <div style={graphContainerStyle}>
             <PatternMenu layoutHandler={layoutHandler}>
-                {hardcodedPatternIf ===
+                {/* {hardcodedPatternIf ===
                 "https://w3id.org/arco/ontology/location/time-indexed-typed-location" ? (
                     <TimeIntervalFilter
                         instances={instances}
                         title={"Filter by time interval"}
                         onFilter={handleTimeFilter}
                     />
-                ) : null}
+                ) : null} */}
 
                 {hardcodedPatternIf ===
                 "https://w3id.org/arco/ontology/location/time-indexed-typed-location" ? (
