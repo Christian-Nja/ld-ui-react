@@ -24,7 +24,8 @@ import "./PartWhole.css";
 export default function PartWhole({
     parts,
     whole,
-    onResourceClick = () => {
+    onResourceClick = (e) => {
+        console.log(e.target);
         console.log("click");
     },
 }) {
@@ -53,6 +54,10 @@ export default function PartWhole({
         setDepictionCount(depictionCount + 1);
     };
 
+    console.log("Parts & Whole:");
+    console.log(parts);
+    console.log(whole);
+
     return (
         <div
             className="circular-container"
@@ -65,9 +70,11 @@ export default function PartWhole({
                     <Resource
                         classes={"circle"}
                         style={partStyle}
+                        onClick={() => {
+                            onResourceClick(part.uri);
+                        }}
                         depiction={
                             <Depiction
-                                onClick={onResourceClick}
                                 style={partStyle}
                                 classes={"depiction part-depiction"}
                                 uri={part.uri}
@@ -86,18 +93,26 @@ export default function PartWhole({
             })}
             <div style={centerStyle}>
                 <Resource
-                    // classes="center"
+                    classes="center"
                     style={centerStyle}
+                    onClick={() => {
+                        onResourceClick(whole.uri);
+                    }}
                     depiction={
                         <Depiction
-                            onClick={onResourceClick}
                             style={centerStyle}
                             classes={"depiction whole-depiction"}
                             uri={whole.uri}
                             onLoadedDepiction={onLoadedDepiction}
                         />
                     }
-                    label={<Label uri={whole.uri} classes="label" />}
+                    label={
+                        <Label
+                            uri={whole.uri}
+                            classes="label"
+                            style={centerLabelStyle}
+                        />
+                    }
                 />
             </div>
         </div>
@@ -131,7 +146,11 @@ const centerStyle = {
 };
 
 const labelStyle = {
-    position: "relative",
+    // position: "relative",
     left: -partWidth / 2,
     top: partWidth,
+};
+
+const centerLabelStyle = {
+    top: imgWidth - 50,
 };
