@@ -12,9 +12,11 @@ import {
     EventChart,
 } from "react-timeseries-charts";
 
-export default function TimeIntervalFilter({ instances, onFilter }) {
-    const [open, handleOpen] = useBinaryState(true);
+// find min time interval / find max
+// ask tick count
+//
 
+export default function TimeIntervalFilter({ instances, onFilter }) {
     const instanceFilter = new InstanceFilter(instances);
     const timeIntervalInstances = instanceFilter.timeIntervalInstances();
 
@@ -118,6 +120,7 @@ export default function TimeIntervalFilter({ instances, onFilter }) {
                             pointerEvents: "none",
                         },
                     }} // format="month"
+                    hideTimeAxis={true}
                     paddingLeft={10}
                     paddingRight={10}
                     maxTime={timerange.end()}
@@ -140,6 +143,38 @@ export default function TimeIntervalFilter({ instances, onFilter }) {
                         </Charts>
                     </ChartRow>
                 </ChartContainer>
+                <div
+                    style={{
+                        width: 175,
+                        backgroundColor: "green",
+                        height: 3,
+                        marginLeft: 10,
+                    }}
+                ></div>
+                <div
+                    style={{
+                        width: 175,
+                        height: 3,
+                        marginLeft: 10,
+                    }}
+                >
+                    <div
+                        style={{
+                            float: "left",
+                            marginTop: 2,
+                        }}
+                    >
+                        {intervals[0].startTime.getFullYear()}
+                    </div>
+                    <div
+                        style={{
+                            float: "right",
+                            marginTop: 2,
+                        }}
+                    >
+                        {intervals[intervals.length - 1].endTime.getFullYear()}
+                    </div>
+                </div>
             </div>
         </div>
     );
