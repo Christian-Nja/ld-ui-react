@@ -18,7 +18,13 @@ import Graphin from "@antv/graphin";
 import { ContextMenu } from "@antv/graphin-components";
 import "@antv/graphin/dist/index.css"; // Don't forget to import css
 // a defined hook for graphin layout
-import { useLayout, useGraphinDoubleClick } from "../hooks/ld-ui-hooks";
+import {
+    useLayout,
+    useGraphinDoubleClick,
+    useGraphinHover,
+} from "../hooks/ld-ui-hooks";
+
+import "./PatternNetwork.css";
 
 export default function PatternNetwork(props) {
     // parse and initialize props
@@ -90,6 +96,8 @@ export default function PatternNetwork(props) {
     // on node double click load pattern instances
     useGraphinDoubleClick(graphRef, props.getInstances);
 
+    useGraphinHover(graphRef);
+
     // min/max
     let instancesRange = [0, 0];
     let occurencesFrequency = [];
@@ -138,6 +146,21 @@ export default function PatternNetwork(props) {
                 data={graph.toVisual()}
                 ref={graphRef}
                 layout={layoutHandler.name}
+                options={{
+                    modes: {
+                        default: [
+                            {
+                                type: "tooltip",
+                                formatText(model) {
+                                    const { label, id } = model;
+                                    console.log(model);
+                                    const text = `occurrences:<br/> ${model.data.occurences}`;
+                                    return text;
+                                },
+                            },
+                        ],
+                    },
+                }}
             >
                 <ContextMenu></ContextMenu>
             </Graphin>

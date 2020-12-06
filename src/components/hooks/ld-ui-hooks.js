@@ -158,6 +158,76 @@ export function useGraphinDoubleClick(graphRef, filter) {
     }, []);
 }
 
+export function useGraphinHover(graphRef) {
+    useEffect(() => {
+        const { graph } = graphRef.current;
+
+        const clearAllStats = () => {
+            graph.setAutoPaint(false);
+            graph.getNodes().forEach(function (node) {
+                graph.clearItemStates(node);
+            });
+            graph.getEdges().forEach(function (edge) {
+                graph.clearItemStates(edge);
+            });
+            graph.paint();
+            graph.setAutoPaint(true);
+        };
+        const onMouseEnter = (e) => {
+            const item = e.item;
+            graph.setAutoPaint(false);
+            graph.getNodes().forEach(function (node) {
+                graph.clearItemStates(node);
+                graph.setItemState(node, "highlight.dark", true);
+            });
+            graph.setItemState(item, "highlight.dark", false);
+            graph.setItemState(item, "highlight.light", true);
+            graph.getEdges().forEach(function (edge) {
+                if (edge.getSource() === item) {
+                    graph.setItemState(
+                        edge.getTarget(),
+                        "highlight.dark",
+                        false
+                    );
+                    graph.setItemState(
+                        edge.getTarget(),
+                        "highlight.light",
+                        true
+                    );
+                    graph.setItemState(edge, "highlight.light", true);
+                    edge.toFront();
+                } else if (edge.getTarget() === item) {
+                    graph.setItemState(
+                        edge.getSource(),
+                        "highlight.dark",
+                        false
+                    );
+                    graph.setItemState(
+                        edge.getSource(),
+                        "highlight.light",
+                        true
+                    );
+                    graph.setItemState(edge, "highlight.light", true);
+                    edge.toFront();
+                } else {
+                    graph.setItemState(edge, "highlight.light", false);
+                }
+            });
+            graph.paint();
+            graph.setAutoPaint(true);
+        };
+        graph.on("node:mouseenter", onMouseEnter);
+        graph.on("node:mouseleave", clearAllStats);
+        graph.on("canvas:click", clearAllStats);
+
+        return () => {
+            graph.off("node:mouseenter", onMouseEnter);
+            graph.on("node:mouseleave", clearAllStats);
+            graph.on("canvas:click", clearAllStats);
+        };
+    }, []);
+}
+
 /* GENERICS
 _____________________________________________________________ */
 
