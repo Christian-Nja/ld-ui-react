@@ -1,27 +1,27 @@
-import React from 'react';
+import React from "react";
 
 import {
     StarIcon,
     SpiralOrangeIcon,
     BlackDotIcon,
     EmptyDotIcon,
-} from '../../icon/ld-ui-icon';
+} from "../../icon/ld-ui-icon";
 
-const DEFAULT_CONFIG = 'config2';
+const DEFAULT_CONFIG = "config2";
 
 const themes = {
     config1: {
         itemIcon: BlackDotIcon,
         style: {
             collectionLabel: {
-                color: 'black',
+                color: "black",
                 fontSize: 20,
-                textAlign: 'center',
+                textAlign: "center",
             },
             collectionContainer: {
-                borderRadius: '9px/8px',
-                width: '40%',
-                border: '1px solid rgba(0,0,0,0.15)',
+                borderRadius: "9px/8px",
+                width: "40%",
+                border: "1px solid rgba(0,0,0,0.15)",
                 gridGap: 10,
             },
             entityImage: {
@@ -29,10 +29,10 @@ const themes = {
                 height: 60,
             },
             entityLabel: {
-                color: 'black',
+                color: "black",
             },
             entityContent: {
-                color: 'black',
+                color: "black",
             },
         },
     },
@@ -40,26 +40,26 @@ const themes = {
         itemIcon: EmptyDotIcon,
         style: {
             collectionLabel: {
-                color: 'black',
+                color: "black",
                 fontSize: 20,
-                textAlign: 'center',
+                textAlign: "center",
             },
             collectionContainer: {
-                borderRadius: '9px/8px',
-                width: '60%',
-                border: '1px solid rgba(0,0,0,0.15)',
-                gridGap: '55px',
-                padding: '50px',
+                borderRadius: "9px/8px",
+                width: "60%",
+                border: "1px solid rgba(0,0,0,0.15)",
+                gridGap: "55px",
+                padding: "50px",
             },
             entityImage: {
-                width: 120,
-                height: 120,
+                width: 60,
+                height: 60,
             },
             entityLabel: {
-                color: 'black',
+                color: "black",
             },
             entityContent: {
-                color: 'black',
+                color: "black",
             },
         },
     },

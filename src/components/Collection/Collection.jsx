@@ -7,14 +7,20 @@ import Entity from "./Entity";
 import ThemeContext, { themes, DEFAULT_CONFIG } from "./config";
 
 /**
- * A component to show a collection of items
- *
- * @component
- * @example
- * const collections = []
- * return <Collection collections={collections}>
+ * @typedef Member
+ * @property {string} uri the uri of the resource
+ * @property {string} label label of the resource
  */
-export default function Collection(props) {
+
+/**
+ * @description A component to render a collection of elements
+ * @author Christian Colonna
+ * @date 04-12-2020
+ * @export
+ * @param {Member[]} {members}
+ * @returns {JSX.Element}
+ */
+export default function Collection({ members, classes }) {
     const THEME = useContext(ThemeContext);
 
     return (
@@ -27,15 +33,15 @@ export default function Collection(props) {
                     {props.entities[0].collectionLabel}
                 </h1> */}
                 <section
-                    className={`collection-container container ${props.class.collectionContainer}`}
+                    className={`collection-container container ${classes.collectionContainer}`}
                     style={THEME.style.collectionContainer}
                 >
-                    {props.entities.map((entity, i) => {
+                    {members.map((entity, i) => {
                         return (
                             <Entity
                                 entity={entity}
                                 key={i}
-                                class={props.class}
+                                class={classes}
                             ></Entity>
                         );
                     })}
@@ -47,11 +53,11 @@ export default function Collection(props) {
 
 Collection.propTypes = {
     // List of class to custom style the component
-    class: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
 };
 
 Collection.defaultProps = {
-    class: {
+    classes: {
         collectionLabel: "",
         collectionContainer: "",
         entityImage: "",
@@ -59,8 +65,3 @@ Collection.defaultProps = {
         entityContent: "",
     },
 };
-
-// * description A component to show a collection of objects
-// * author Christian Colonna
-// * date 09-11-2020
-// * export

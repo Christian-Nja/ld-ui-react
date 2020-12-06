@@ -8,9 +8,10 @@ export default function Depiction({
     classes,
     onLoadedDepiction,
     onClick,
+    depiction = null,
     style = {},
 }) {
-    const [depiction, setDepiction] = useState(null);
+    const [image, setImage] = useState(depiction);
 
     const cProp = path.create({
         subject: namedNode(uri),
@@ -20,21 +21,16 @@ export default function Depiction({
     if (onLoadedDepiction) {
         useEffect(() => {
             onLoadedDepiction();
-        }, [depiction]);
+        }, [image]);
     }
 
-    if (!depiction) {
+    if (!image) {
         (async function fetchDepiction() {
-            const depiction = await cProp.depiction;
-            setDepiction(depiction);
+            const image = await cProp.depiction;
+            setImage(image);
         })();
     }
-    return depiction ? (
-        <img
-            onClick={onClick}
-            src={depiction}
-            className={classes}
-            style={style}
-        />
+    return image ? (
+        <img onClick={onClick} src={image} className={classes} style={style} />
     ) : null;
 }

@@ -1,20 +1,20 @@
-import React, { useContext } from 'react';
+import React, { useContext } from "react";
 
-import ThemeContext from './config';
+import ThemeContext from "./config";
 
-import { getURILabel } from '../../utilities/uri';
+import { getURILabel } from "../../utilities/uri";
 
-const NO_MESSAGE = '';
+const NO_MESSAGE = "";
 
 export default function Entity(props) {
     const THEME = useContext(ThemeContext);
 
     const flexFlow = props.entity.depiction
-        ? { flexFlow: 'column' }
-        : { flexFlow: 'row' };
+        ? { flexFlow: "column" }
+        : { flexFlow: "row" };
 
     return (
-        <article className={'entity-container'}>
+        <article className={"entity-container"}>
             <div
                 className={`entity-content ${props.class.entityContent}`}
                 style={{ ...THEME.style.entityContent, ...flexFlow }}
@@ -30,16 +30,16 @@ export default function Entity(props) {
                 ) : (
                     <THEME.itemIcon
                         message={NO_MESSAGE}
-                        iconClassName={'collectionIcon'}
-                        descriptionClassName={'descriptionIcon'}
+                        iconClassName={"collectionIcon"}
+                        descriptionClassName={"descriptionIcon"}
                     ></THEME.itemIcon>
                 )}
                 <div
                     style={THEME.style.entityLabel}
                     className={`${props.class.entityLabel}`}
                 >
-                    {props.entity.entityLabel
-                        ? props.entity.entityLabel
+                    {props.entity.label
+                        ? props.entity.label
                         : getURILabel(props.entity.entity)}
                 </div>
             </div>
@@ -49,8 +49,8 @@ export default function Entity(props) {
 
 Entity.defaultProps = {
     class: {
-        entityImage: '',
-        entityLabel: '',
-        entityContent: '',
+        entityImage: "",
+        entityLabel: "",
+        entityContent: "",
     },
 };
