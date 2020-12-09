@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from "react";
 // Class and functions
 import { defineProp } from "../../utilities/generics";
 import Graph from "../classes/Graph";
-import { baseLog } from "../../utilities/math";
+import { scaleData } from "../../utilities/math";
 
 // Components for Patterns
 import PatternMenu from "./PatternMenu";
@@ -68,11 +68,9 @@ export default function PatternNetwork(props) {
             node.style.opacity = 0.3;
         }
 
-        node.style.nodeSize =
-            occurences !== 0
-                ? 12 +
-                  Number.parseInt(occurences * baseLog(2, occurences) * 0.5)
-                : 12;
+        // compute dynamically max and min degree
+        // with 0 occurrences -> -Infinity
+        node.style.nodeSize = Math.round(scaleData(occurences, 0, 600, 12, 70));
     };
 
     graph.breadthFirstSearch(nodeColorSizeFilter);
@@ -153,7 +151,6 @@ export default function PatternNetwork(props) {
                                 type: "tooltip",
                                 formatText(model) {
                                     const { label, id } = model;
-                                    console.log(model);
                                     const text = `occurrences:<br/> ${model.data.occurences}`;
                                     return text;
                                 },

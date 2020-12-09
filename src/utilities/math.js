@@ -95,3 +95,21 @@ export function getAngle(p1, p2) {
 export function baseLog(b, n) {
     return Math.log(n) / Math.log(b);
 }
+
+/**
+ * @description Scale a number x (number in a range minD, maxD) projecting it to a range (minV, maxV)
+ * @author Christian Colonna
+ * @date 08-12-2020
+ * @export
+ * @param {number} x input value
+ * @param {number} minD minimum value in data
+ * @param {number} maxD max value in data
+ * @param {number} minV minimum value x can be scaled
+ * @param {number} maxV maximum value x can be scaled
+ * @returns {number} scaled output
+ */
+export function scaleData(x, minD, maxD, minV, maxV) {
+    // log base
+    const b = Math.pow(maxD - minD, 1 / (maxV - minV));
+    return minV + baseLog(b, x - minD);
+}

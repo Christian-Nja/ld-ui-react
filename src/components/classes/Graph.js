@@ -219,6 +219,10 @@ export default class Graph {
                         return node.data[filter.key] === nodeToKeep;
                     }) !== undefined
                 );
+            } else if (filter.class === "search") {
+                return node.data[filter.key]
+                    .toLowerCase()
+                    .includes(filter.mask.toLowerCase());
             }
         });
     }

@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useState } from "react";
 // function and classes
 import Graph from "../classes/Graph";
 import { defineProp } from "../../utilities/generics";
-import { baseLog } from "../../utilities/math";
+import { scaleData } from "../../utilities/math";
 import InstancesList from "../classes/InstancesList";
 
 // Pattern components
@@ -18,6 +18,7 @@ import Graphin from "@antv/graphin";
 import { useLayout, useGraphinDoubleClick } from "../hooks/ld-ui-hooks";
 import "@antv/graphin/dist/index.css";
 import SliderFilter from "./facets/SliderFilter";
+import SearchBarFilter from "./facets/SearchBarFilter";
 
 //import TimeIntervalFilter from "./facets/TimeIntervalFilter";
 
@@ -37,6 +38,46 @@ export default function PatternInstancesNetwork(props) {
 
     // parse instances. This is the initial state of this component
     let instances = defineProp(props.patterns.instances, []);
+
+    let initialStartTime = 1400;
+    let initialEndTime = 1450;
+    // filtering instances !
+    instances = instances.filter((instance) => {
+        if (
+            instance.pattern ===
+            "https://w3id.org/arco/ontology/location/time-indexed-typed-location"
+        ) {
+            console.log("time index instance");
+            console.log(instance);
+            if (instance.startTime === "") {
+                instance.startTime = initialStartTime;
+                initialStartTime++;
+            }
+            if (instance.endTime === "") {
+                instance.endTime = initialEndTime;
+                initialEndTime++;
+            }
+            return (
+                (instance.lat !== "" && instance.long !== "") ||
+                instance.type === "https://w3id.org/italia/onto/TI/TimeInterval"
+                // instance.startTime !== ""
+            );
+        }
+        if (
+            instance.pattern ===
+            "https://w3id.org/arco/ontology/denotative-description/measurement-collection"
+        ) {
+            return instance;
+        }
+        if (
+            instance.pattern ===
+            "https://w3id.org/arco/ontology/location/cultural-property-component-of"
+        ) {
+            return instance;
+        }
+    });
+    console.log("Cleaned instances:");
+    console.log(instances);
 
     // a list of instances and degree for each instance
     const instancesList = new InstancesList(instances);
@@ -68,17 +109,9 @@ export default function PatternInstancesNetwork(props) {
             // node.style.primaryColor = graph.nodeGradient()[id];
             node.style.primaryColor = props.color;
             let degree = instancesList.getPatternInstanceDegree(node.id);
-            // degree = degree !== 0 ? degree : 1;
 
-            // node.style.nodeSize =
-
-            degree = degree !== 0 ? degree : 1;
-            // console.log("degree: ", degree);
-            // console.log(
-            //     "log: ",
-            //     12 + Number.parseInt(12 * baseLog(5, degree) * 0.5)
-            // );
-            node.style.nodeSize = degree * node.style.nodeSize;
+            // compute dynamically max and min degree
+            node.style.nodeSize = Math.round(scaleData(degree, 1, 50, 12, 70));
         };
         graph.breadthFirstSearch(filter);
     }, []);
@@ -179,6 +212,12 @@ export default function PatternInstancesNetwork(props) {
         setGraph(newData);
     };
 
+    const handleSearchFilter = (search) => {
+        graph.addFilter({ key: "siteAddress", mask: search, class: "search" });
+        const newData = new Graph(graph.nodes, graph.edges, graph.filters);
+        setGraph(newData);
+    };
+
     return (
         <div style={graphContainerStyle}>
             <PatternMenu layoutHandler={layoutHandler}>
@@ -192,8 +231,15 @@ export default function PatternInstancesNetwork(props) {
                 ) : null}
                 {hardcodedPatternIf ===
                 "https://w3id.org/arco/ontology/location/time-indexed-typed-location" ? (
+                    <SearchBarFilter
+                        title={"Filter by address"}
+                        onFilter={handleSearchFilter}
+                    />
+                ) : null}
+                {hardcodedPatternIf ===
+                "https://w3id.org/arco/ontology/location/time-indexed-typed-location" ? (
                     <PropertyFilter
-                        title={"Filter by location"}
+                        title={"Filter by location type"}
                         properties={properties}
                         onFilter={handleLocationTypeFilter}
                     />
@@ -201,13 +247,21 @@ export default function PatternInstancesNetwork(props) {
                 {hardcodedPatternIf ===
                 "https://w3id.org/arco/ontology/denotative-description/measurement-collection" ? (
                     <SliderFilter
-                        title={"Filter by measurements"}
+                        title={"Filter by number of measurements"}
                         onFilter={handleSliderFilterMeasurements}
                         domain={measRange}
-                    ></SliderFilter>
+                    />
                 ) : null}
                 {hardcodedPatternIf ===
-                "http://www.ontologydesignpatterns.org/cp/owl/cultural-property-component-of" ? (
+                "https://w3id.org/arco/ontology/denotative-description/measurement-collection" ? (
+                    <SliderFilter
+                        title={"Filter by "}
+                        onFilter={handleSliderFilterMeasurements}
+                        domain={measRange}
+                    />
+                ) : null}
+                {hardcodedPatternIf ===
+                "https://w3id.org/arco/ontology/location/cultural-property-component-of" ? (
                     <SliderFilter
                         title={"Filter by parts"}
                         onFilter={handleSliderFilterParts}

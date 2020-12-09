@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import L from "leaflet";
+import L, { marker } from "leaflet";
 import * as d3 from "d3";
 import "leaflet.markercluster/dist/leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
@@ -58,9 +58,7 @@ export default function TimeIndexedTypedLocation({
     timeIndexedTypedLocations,
     cPropDepiction,
     cPropLabel,
-    onCulturalPropertyClick = () => {
-        console.log("click");
-    },
+    onCulturalPropertyClick = () => {},
 }) {
     /** mapRef */
     const mapRef = useRef(null);
@@ -94,231 +92,259 @@ export default function TimeIndexedTypedLocation({
     const path = leafletTransform(projectGeoPointToLeafletSvg);
 
     useEffect(() => {
-        /* Defining an svg layer for D3 
+        // check on Data // TODO: move this outside useEffect and return null such that user can decide to render another component
+        let geometries = true;
+        timeIndexedTypedLocations.forEach((tITL, index) => {
+            if (tITL.lat === "" || tITL.long === "") {
+                geometries = false;
+            }
+        });
+
+        if (geometries) {
+            /* Defining an svg layer for D3 
         ________________________________*/
-        var svg = d3
-            .select(mapRef.current.getPane("d3-layer"))
-            .append("svg")
-            .attr("style", "position:relative");
 
-        var g = svg.append("g").attr("class", "leaflet-zoom-hide");
+            var svg = d3
+                .select(mapRef.current.getPane("d3-layer"))
+                .append("svg")
+                .attr("style", "position:relative");
 
-        /* Iterating over data:
+            var g = svg.append("g").attr("class", "leaflet-zoom-hide");
+
+            /* Iterating over data:
            - Creating markers and popup (Leaflet layer) 
            - Preparing GeoJSON          (D3 Layer)  
         ___________________________________*/
-        const mcg = L.markerClusterGroup({
-            iconCreateFunction: (cluster) => {
-                return L.divIcon({
-                    html: `${CONFIG.MARKER_ICON[1](cluster.getChildCount())}`,
-                    className: "cluster-icon",
-                    iconAnchor: [15, 50],
-                });
-            },
-        }).on(CONFIG.POPUP.OPEN_CLUSTER, function (e) {
-            e.layer.spiderfy();
-        });
-
-        let geoJSON = {
-            type: "FeatureCollection",
-            features: [],
-        };
-
-        sortByTime(timeIndexedTypedLocations);
-
-        timeIndexedTypedLocations.forEach((tITL, index) => {
-            geoJSON.features.push({
-                type: "Feature",
-                geometry: {
-                    type: "Point",
-                    coordinates: [parseFloat(tITL.long), parseFloat(tITL.lat)],
+            const mcg = L.markerClusterGroup({
+                iconCreateFunction: (cluster) => {
+                    return L.divIcon({
+                        html: `${CONFIG.MARKER_ICON[1](
+                            cluster.getChildCount()
+                        )}`,
+                        className: "cluster-icon",
+                        iconAnchor: [15, 50],
+                    });
                 },
+            }).on(CONFIG.POPUP.OPEN_CLUSTER, function (e) {
+                e.layer.spiderfy();
             });
 
-            const markerPosition = [
-                geoJSON.features[index].geometry.coordinates[GEO_JSON_LATITUDE],
-                geoJSON.features[index].geometry.coordinates[
-                    GEO_JSON_LONGITUDE
-                ],
-            ];
-
-            const popupContent = {
-                timeInterval: `${tITL.startTime} - ${
-                    tITL.endTime !== "" ? tITL.endTime : "Today"
-                }`,
-                locationType: tITL.locationType.split("/").pop(), // at the moment we pass the uri TODO: pass the label
-                culturalProperty:
-                    tITL.cPropLabel !== "" ? tITL.cPropLabel : "Bene culturale",
-                address: tITL.addressLabel,
+            let geoJSON = {
+                type: "FeatureCollection",
+                features: [],
             };
-            const popup = L.popup()
-                .setContent(tITLPopup(popupContent))
-                .setLatLng(markerPosition);
 
-            L.marker(markerPosition, {
-                icon: CONFIG.MARKER_ICON[0],
-            })
-                .addTo(mcg)
-                .bindPopup(popup)
-                .on("click", function (e) {
-                    this.openPopup();
-                    const cProp = document.getElementsByClassName(
-                        "cultural-property"
-                    );
-                    console.log(cProp);
-                    cProp[0].style.cursor = "pointer";
-                    cProp[0].addEventListener("click", function (e) {
-                        onCulturalPropertyClick();
-                    });
+            sortByTime(timeIndexedTypedLocations);
+
+            timeIndexedTypedLocations.forEach((tITL, index) => {
+                geoJSON.features.push({
+                    type: "Feature",
+                    geometry: {
+                        type: "Point",
+                        coordinates: [
+                            parseFloat(tITL.long),
+                            parseFloat(tITL.lat),
+                        ],
+                    },
                 });
-        });
 
-        /* Add marker to maps and fit zoom
+                const markerPosition = [
+                    geoJSON.features[index].geometry.coordinates[
+                        GEO_JSON_LATITUDE
+                    ],
+                    geoJSON.features[index].geometry.coordinates[
+                        GEO_JSON_LONGITUDE
+                    ],
+                ];
+
+                const popupContent = {
+                    timeInterval: `${tITL.startTime} - ${
+                        tITL.endTime !== "" ? tITL.endTime : "Today"
+                    }`,
+                    locationType: tITL.locationType.split("/").pop(), // at the moment we pass the uri TODO: pass the label
+                    culturalProperty:
+                        tITL.cPropLabel !== ""
+                            ? tITL.cPropLabel
+                            : "Bene culturale",
+                    address: tITL.addressLabel,
+                };
+                const popup = L.popup()
+                    .setContent(tITLPopup(popupContent))
+                    .setLatLng(markerPosition);
+
+                L.marker(markerPosition, {
+                    icon: CONFIG.MARKER_ICON[0],
+                })
+                    .addTo(mcg)
+                    .bindPopup(popup)
+                    .on("click", function (e) {
+                        this.openPopup();
+                        const cProp = document.getElementsByClassName(
+                            "cultural-property"
+                        );
+                        console.log(cProp);
+                        cProp[0].style.cursor = "pointer";
+                        cProp[0].addEventListener("click", function (e) {
+                            onCulturalPropertyClick();
+                        });
+                    });
+            });
+
+            /* Add marker to maps and fit zoom
         ___________________________________ */
-        mapRef.current.fitBounds(mcg.getBounds(), { padding: [120, 120] });
-        mapRef.current.addLayer(mcg);
+            mapRef.current.fitBounds(mcg.getBounds(), {
+                padding: [120, 120],
+                maxZoom: 6,
+            });
+            mapRef.current.addLayer(mcg);
 
-        /* Draw line connecting locations and arrowheads
+            /* Draw line connecting locations and arrowheads
         _________________________________________________*/
 
-        let linePath = g
-            .selectAll(".locationsLine")
-            .data([geoJSON.features])
-            .enter()
-            .append("path")
-            .attr("class", "locationsLine")
-            .attr("style", `stroke:${CONFIG.ARROW.COLOR}`);
+            let linePath = g
+                .selectAll(".locationsLine")
+                .data([geoJSON.features])
+                .enter()
+                .append("path")
+                .attr("class", "locationsLine")
+                .attr("style", `stroke:${CONFIG.ARROW.COLOR}`);
 
-        const arrowheads = g
-            .selectAll(".arrowheads")
-            .data(geoJSON.features)
-            .enter()
-            .append("svg:path")
-            .attr("class", "arrowheads")
-            .attr(
-                "d",
-                d3
-                    .symbol()
-                    .type(d3.symbolTriangle)
-                    .size(CONFIG.ARROW.ARROWHEAD_SIZE)
-            )
-            .style("stroke", "blue")
-            .style("fill", "blue");
+            const arrowheads = g
+                .selectAll(".arrowheads")
+                .data(geoJSON.features)
+                .enter()
+                .append("svg:path")
+                .attr("class", "arrowheads")
+                .attr(
+                    "d",
+                    d3
+                        .symbol()
+                        .type(d3.symbolTriangle)
+                        .size(CONFIG.ARROW.ARROWHEAD_SIZE)
+                )
+                .style("stroke", "blue")
+                .style("fill", "blue");
 
-        // check if the depiction has been put between timeIndexTypedLocation pattern data
-        cPropDepiction = cPropDepiction
-            ? cPropDepiction
-            : timeIndexedTypedLocations[0].depiction;
+            // check if the depiction has been put between timeIndexTypedLocation pattern data
+            cPropDepiction = cPropDepiction
+                ? cPropDepiction
+                : timeIndexedTypedLocations[0].depiction;
 
-        const depiction = g
-            .append("svg:image")
-            .attr("x", -20)
-            .attr("y", -20)
-            .attr("height", 120)
-            .attr("width", 60)
-            .attr("xlink:href", cPropDepiction);
+            const depiction = g
+                .append("svg:image")
+                .attr("x", -20)
+                .attr("y", -20)
+                .attr("height", 120)
+                .attr("width", 60)
+                .attr("xlink:href", cPropDepiction);
 
-        let arrowheadsNodes;
+            let arrowheadsNodes;
 
-        mapRef.current.on("zoomend", adaptD3Layer);
-        adaptD3Layer();
+            mapRef.current.on("zoomend", adaptD3Layer);
+            adaptD3Layer();
 
-        function adaptD3Layer() {
-            // Get bounding box of points / coordinates / data / markers in the map
-            const bounds = path.bounds(geoJSON),
-                topLeft = bounds[0],
-                bottomRight = bounds[1];
+            function adaptD3Layer() {
+                // Get bounding box of points / coordinates / data / markers in the map
+                const bounds = path.bounds(geoJSON),
+                    topLeft = bounds[0],
+                    bottomRight = bounds[1];
 
-            // Setting the size and location of the overall SVG container
-            fitSvg(svg, bounds);
+                // Setting the size and location of the overall SVG container
+                fitSvg(svg, bounds);
 
-            // translate group
-            g.attr(
-                "transform",
-                `translate(${-topLeft[0] + 50},${-topLeft[1] + 50})`
-            );
-
-            depiction.attr("transform", function () {
-                var x =
-                    geoJSON.features[ORIGIN].geometry.coordinates[
-                        GEO_JSON_LONGITUDE
-                    ];
-                var y =
-                    geoJSON.features[ORIGIN].geometry.coordinates[
-                        GEO_JSON_LATITUDE
-                    ];
-
-                return `translate(${
-                    mapRef.current.latLngToLayerPoint(new L.LatLng(y, x)).x
-                },${mapRef.current.latLngToLayerPoint(new L.LatLng(y, x)).y})`;
-            });
-
-            // make arrowheads transparent
-            arrowheadsNodes = arrowheads.nodes();
-            // make arrowheads transparent at first time
-            arrowheadsNodes.forEach((a) => {
-                a.style.opacity = 0;
-            });
-
-            // translate and rotate arrowheads
-            arrowheads.attr("transform", function (d, i) {
-                if (i === ORIGIN) {
-                    return;
-                }
-                const rotationAngle = getAngle(
-                    arrowheadsNodes[i].__data__.geometry.coordinates,
-                    arrowheadsNodes[i - 1].__data__.geometry.coordinates
+                // translate group
+                g.attr(
+                    "transform",
+                    `translate(${-topLeft[0] + 50},${-topLeft[1] + 50})`
                 );
 
-                return `translate(${
-                    getLayerPoint(d, mapRef.current).x
-                },${getLayerPoint(d, mapRef.current).y}) rotate(${rotationAngle})`;
-            });
+                depiction.attr("transform", function () {
+                    var x =
+                        geoJSON.features[ORIGIN].geometry.coordinates[
+                            GEO_JSON_LONGITUDE
+                        ];
+                    var y =
+                        geoJSON.features[ORIGIN].geometry.coordinates[
+                            GEO_JSON_LATITUDE
+                        ];
 
-            // https://stackoverflow.com/a/25946400/12506641 check this for arc
-            linePath.attr("d", projectLine(mapRef.current));
+                    return `translate(${
+                        mapRef.current.latLngToLayerPoint(new L.LatLng(y, x)).x
+                    },${mapRef.current.latLngToLayerPoint(new L.LatLng(y, x)).y})`;
+                });
 
-            moveLine();
-        }
+                // make arrowheads transparent
+                arrowheadsNodes = arrowheads.nodes();
+                // make arrowheads transparent at first time
+                arrowheadsNodes.forEach((a) => {
+                    a.style.opacity = 0;
+                });
 
-        function moveLine() {
-            linePath
-                .transition()
-                .ease(d3.easeLinear)
-                .duration(CONFIG.TRANSITION_DURATION)
-                .attrTween("stroke-dasharray", tweenDash);
-        }
-
-        function tweenDash() {
-            return function (t) {
-                //total length of path (single value)
-                const l = linePath.node().getTotalLength();
-                const interpolate = d3.interpolateString(`0,${l}`, `${l},${l}`);
-
-                // p is the point on the line (coordinates) at a given length
-                // along the line. In this case if l=50 and we're midway through
-                // the time then this would 25.
-                const p = linePath.node().getPointAtLength(t * l);
-
-                // if there's some arrow to appear
-                if (arrowheadsNodes[FIRST_ARROWHEAD]) {
-                    const arrow = getLayerPoint(
-                        arrowheadsNodes[FIRST_ARROWHEAD].__data__,
-                        mapRef.current
-                    );
-                    const tolerance = 5;
-
-                    if (passOver([p.x, p.y], [arrow.x, arrow.y], tolerance)) {
-                        arrowheadsNodes[FIRST_ARROWHEAD].style.opacity = 1; // make arrowhead visible
-                        arrowheadsNodes.splice(FIRST_ARROWHEAD, 1); // remove from arrowheads to appear
+                // translate and rotate arrowheads
+                arrowheads.attr("transform", function (d, i) {
+                    if (i === ORIGIN) {
+                        return;
                     }
-                }
+                    const rotationAngle = getAngle(
+                        arrowheadsNodes[i].__data__.geometry.coordinates,
+                        arrowheadsNodes[i - 1].__data__.geometry.coordinates
+                    );
 
-                //Move the image to that point
-                depiction.attr("transform", `translate(${p.x},${p.y})`);
+                    return `translate(${
+                        getLayerPoint(d, mapRef.current).x
+                    },${getLayerPoint(d, mapRef.current).y}) rotate(${rotationAngle})`;
+                });
 
-                return interpolate(t);
-            };
+                // https://stackoverflow.com/a/25946400/12506641 check this for arc
+                linePath.attr("d", projectLine(mapRef.current));
+
+                moveLine();
+            }
+
+            function moveLine() {
+                linePath
+                    .transition()
+                    .ease(d3.easeLinear)
+                    .duration(CONFIG.TRANSITION_DURATION)
+                    .attrTween("stroke-dasharray", tweenDash);
+            }
+
+            function tweenDash() {
+                return function (t) {
+                    //total length of path (single value)
+                    const l = linePath.node().getTotalLength();
+                    const interpolate = d3.interpolateString(
+                        `0,${l}`,
+                        `${l},${l}`
+                    );
+
+                    // p is the point on the line (coordinates) at a given length
+                    // along the line. In this case if l=50 and we're midway through
+                    // the time then this would 25.
+                    const p = linePath.node().getPointAtLength(t * l);
+
+                    // if there's some arrow to appear
+                    if (arrowheadsNodes[FIRST_ARROWHEAD]) {
+                        const arrow = getLayerPoint(
+                            arrowheadsNodes[FIRST_ARROWHEAD].__data__,
+                            mapRef.current
+                        );
+                        const tolerance = 5;
+
+                        if (
+                            passOver([p.x, p.y], [arrow.x, arrow.y], tolerance)
+                        ) {
+                            arrowheadsNodes[FIRST_ARROWHEAD].style.opacity = 1; // make arrowhead visible
+                            arrowheadsNodes.splice(FIRST_ARROWHEAD, 1); // remove from arrowheads to appear
+                        }
+                    }
+
+                    //Move the image to that point
+                    depiction.attr("transform", `translate(${p.x},${p.y})`);
+
+                    return interpolate(t);
+                };
+            }
         }
     }, []);
 

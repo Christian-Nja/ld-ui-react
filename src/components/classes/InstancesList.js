@@ -32,11 +32,16 @@ export default class InstancesList {
         return degree;
     }
     getAggregateCount(type, instanceURI) {
-        let count = 0;
+        let set = new Set();
         this.list.forEach((instance) => {
             if (instance.instance === instanceURI && instance.type === type)
-                count++;
+                if (
+                    instance.type ===
+                    "https://w3id.org/arco/ontology/denotative-description/Measurement"
+                )
+                    set.add(instance.node.split("-").pop());
+                else set.add(instance.node);
         });
-        return count;
+        return set.size;
     }
 }

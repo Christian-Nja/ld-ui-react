@@ -35,6 +35,9 @@ export default function TimeIntervalFilter({ instances, onFilter }) {
         ({ startTime, endTime, ...data }) =>
             new TimeRangeEvent(new TimeRange(startTime, endTime), data)
     );
+    console.log("time interval");
+    console.log(intervals);
+    console.log(events);
 
     const series = new TimeSeries({ name: "timeIntervals", events });
 

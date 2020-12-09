@@ -19,6 +19,10 @@ export default class InstanceFilter {
      */
     timeIntervalInstances() {
         return this.instances.filter((instance) => {
+            let s = new Set();
+            console.log("filtered instance type");
+            s.add(instance.type);
+            console.log(s);
             return (
                 instance.type === "https://w3id.org/italia/onto/TI/TimeInterval"
             ); // TODO: move to json-ld to clear this
