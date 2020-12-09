@@ -253,14 +253,6 @@ export default function PatternInstancesNetwork(props) {
                     />
                 ) : null}
                 {hardcodedPatternIf ===
-                "https://w3id.org/arco/ontology/denotative-description/measurement-collection" ? (
-                    <SliderFilter
-                        title={"Filter by "}
-                        onFilter={handleSliderFilterMeasurements}
-                        domain={measRange}
-                    />
-                ) : null}
-                {hardcodedPatternIf ===
                 "https://w3id.org/arco/ontology/location/cultural-property-component-of" ? (
                     <SliderFilter
                         title={"Filter by parts"}
