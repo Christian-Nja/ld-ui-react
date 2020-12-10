@@ -233,10 +233,10 @@ export default function TimeIndexedTypedLocation({
             const depiction = g
                 .append("svg:image")
                 .attr("x", -20)
-                .attr("y", -20)
-                .attr("height", 120)
-                .attr("width", 60)
-                .attr("xlink:href", cPropDepiction);
+                .attr("y", -20);
+            // .attr("height", 120)
+            // .attr("width", 60)
+            // .attr("xlink:href", cPropDepiction);
 
             let arrowheadsNodes;
 
