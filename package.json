@@ -3,10 +3,14 @@
     "version": "1.0.1",
     "description": "React UIs to visualize Linked Data, especially Ontology Design Patterns",
     "main": "lib/index.js",
+    "module": "es/index.js",
+    "jsnext:main": "es/index.js",
     "scripts": {
         "dev": "watch 'npm run build' ./src",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "./node_modules/.bin/babel src --out-dir lib --copy-files",
+        "build:commonjs": "rm -rf ./lib && cross-env BABEL_ENV=commonjs ./node_modules/.bin/babel src --out-dir lib --copy-files",
+        "build:es": "rm -rf ./es && cross-env BABEL_ENV=es babel src --out-dir es",
+        "build": "npm run build:commonjs && npm run build:es",
         "lint": "eslint --ignore-path .gitignore -c .eslintrc \"./**/*.js\"",
         "encode-icon": "cd ./src/icon/images && ./encode-all-svg && cd ../../..",
         "docs": "jsdoc -c .jsdoc.conf.json"
@@ -61,7 +65,6 @@
         "@rdfjs/data-model": "^1.2.0",
         "chroma-js": "^2.1.0",
         "d3": "^6.2.0",
-        "graphology": "^0.19.2",
         "ldflex": "^2.11.1",
         "leaflet": "^1.7.1",
         "leaflet-arc": "^1.0.2",
@@ -75,7 +78,6 @@
         "react-compound-slider": "^3.3.1",
         "react-dom": "^16.13.1",
         "react-minimal-pie-chart": "^8.1.0",
-        "react-timeseries-charts": "file:react-timeseries-charts",
         "semantic-ui-react": "^2.0.1",
         "underscore": "^1.12.0"
     },
