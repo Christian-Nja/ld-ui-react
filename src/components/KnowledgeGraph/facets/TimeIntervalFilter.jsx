@@ -20,8 +20,6 @@ export default function TimeIntervalFilter({ instances, onFilter }) {
     const instanceFilter = new InstanceFilter(instances);
     const timeIntervalInstances = instanceFilter.timeIntervalInstances();
 
-    nonExistingFunc();
-
     const intervals = timeIntervalInstances.map((instance) => {
         return instanceFilter.timeIntervalInstanceEventToDate(instance);
     });
