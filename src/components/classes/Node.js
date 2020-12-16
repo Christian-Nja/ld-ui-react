@@ -25,7 +25,7 @@ export default class Node {
     constructor(node) {
         new RequiredParamChecker([{ value: node.id, label: "node.id" }]);
         this.id = node.id;
-        this.label = node.label || getURILabel(node.id);
+        this.label = node.data.label || getURILabel(node.id);
         this.data = node.data || { id: node.id };
         this.shape = node.shape || "CircleNode";
         this.type = node.type || "company";
@@ -40,6 +40,7 @@ export default class Node {
      * @memberof Node
      */
     toJson() {
+        const self = this;
         return {
             id: this.id,
             label: this.label,
@@ -47,6 +48,13 @@ export default class Node {
             shape: this.shape,
             type: this.type,
             style: this.style,
+            toCustomNode: function toCustomNode(
+                formatter = (node) => {
+                    return node;
+                }
+            ) {
+                return formatter(self);
+            },
         };
     }
 }

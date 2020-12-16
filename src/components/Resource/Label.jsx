@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const { namedNode } = require("@rdfjs/data-model");
 
@@ -11,12 +11,15 @@ export default function Label({ uri, classes, style = {} }) {
         subject: namedNode(uri),
     });
 
-    if (!label) {
-        (async function fetchLabel() {
-            const label = await cProp.label.value;
-            setLabel(label);
-        })();
-    }
+    useEffect(() => {
+        if (!label) {
+            (async function fetchLabel() {
+                const label = await cProp.label.value;
+                setLabel(label);
+            })();
+        }
+    }, []);
+
     return label ? (
         <div className={classes} style={style}>
             {label}

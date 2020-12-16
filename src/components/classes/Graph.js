@@ -13,8 +13,8 @@ import { Queue, defineProp } from "../../utilities/generics";
  */
 export default class Graph {
     static relType = {
-        SUB: "subPattern",
-        COMPONENT: "componentPattern",
+        // SUB: "subPattern",
+        COMPONENT: "has component",
         SUPER_PATTERN: "pattern",
     };
 
@@ -77,44 +77,12 @@ export default class Graph {
      * @param {number} nodeSize
      * @memberof Graph
      */
-    addRelation(relation, type, nodeShape, nodeSize) {
-        const subPattern = relation[type];
-        const superPattern = relation[Graph.relType.SUPER_PATTERN];
-        this.addNode(
-            new Node({
-                id: subPattern,
-                shape: nodeShape,
-                style: { nodeSize: nodeSize },
-            })
-        );
-        this.addNode(
-            new Node({
-                id: superPattern,
-                shape: nodeShape,
-                style: { nodeSize: nodeSize },
-            })
-        );
-        const edgeId = `${subPattern}->${superPattern}`;
-        this.addEdge(
-            new Edge({
-                id: edgeId,
-                source: Graph.relType.COMPONENT ? superPattern : subPattern,
-                target: Graph.relType.COMPONENT ? subPattern : superPattern,
-                label:
-                    type === Graph.relType.COMPONENT
-                        ? "hasComponent"
-                        : "specialization",
-                style: {
-                    line: {
-                        width: 3,
-                        color:
-                            type === Graph.relType.COMPONENT
-                                ? this.palette.compositionEdge
-                                : this.palette.specializationEdge,
-                    },
-                },
-            })
-        );
+    addRelation(triple) {
+        // add s
+        this.addNode(triple.s);
+        // add o
+        this.addNode(triple.o);
+        this.addEdge(triple);
     }
 
     /**
@@ -124,8 +92,16 @@ export default class Graph {
      * @param {Node} node
      * @memberof Graph
      */
-    addNode(node) {
-        if (!this.hasNode(node.id)) this.nodes.push(node);
+    addNode(node, shape) {
+        if (!this.hasNode(node.id))
+            this.nodes.push(
+                new Node({
+                    id: node.id,
+                    shape: shape,
+                    style: node.style,
+                    data: node,
+                })
+            );
     }
 
     /**
@@ -136,14 +112,7 @@ export default class Graph {
      * @memberof Graph
      */
     addNodes(nodes) {
-        nodes.map((node) =>
-            this.addNode(
-                new Node({
-                    id: node.id,
-                    data: node.data,
-                })
-            )
-        );
+        nodes.map((node) => this.addNode(node));
     }
 
     /**
@@ -153,8 +122,27 @@ export default class Graph {
      * @param {Edge} edge
      * @memberof Graph
      */
-    addEdge(edge) {
-        if (!this.hasEdge(edge.id)) this.edges.push(edge);
+    addEdge(triple) {
+        const edgeId = `${triple.s.id}->${triple.o.id}`;
+        if (!this.hasEdge(edgeId))
+            this.edges.push(
+                new Edge({
+                    id: edgeId,
+                    source: triple.s.id, //Graph.relType.COMPONENT ? superPattern : subPattern,
+                    target: triple.o.id, //Graph.relType.COMPONENT ? subPattern : superPattern,
+                    label: triple.p,
+                    data: triple,
+                    style: {
+                        line: {
+                            width: 3,
+                            color:
+                                triple.p === Graph.relType.COMPONENT
+                                    ? this.palette.compositionEdge
+                                    : this.palette.specializationEdge,
+                        },
+                    },
+                })
+            );
     }
 
     /**
@@ -181,58 +169,19 @@ export default class Graph {
         return this.edges.find((edge) => edge.id === id);
     }
 
-    addFilter(filter) {
-        const filterIdx = this.findFilterIdx(filter.key);
-        filterIdx !== -1
-            ? (this.filters[filterIdx] = filter)
-            : this.filters.push(filter);
-    }
-    removeFilter(filterKey) {
-        this.filters.filter((entry) => {
-            return entry.key !== filterKey;
-        });
-    }
-    findFilterIdx(filterKey) {
-        return this.filters.findIndex((activeFilter) => {
-            return activeFilter.key === filterKey;
-        });
-    }
-
-    applyFilter(nodes, filter) {
-        return nodes.filter((node) => {
-            if (filter.class === "cat") {
-                return (
-                    filter.mask.find((nodeToFilterOut) => {
-                        return node.data[filter.key] === nodeToFilterOut;
-                    }) === undefined
-                );
-            } else if (filter.class === "num") {
-                return (
-                    node.data[filter.key] >= filter.range[0] &&
-                    node.data[filter.key] <= filter.range[1]
-                );
-            } else if (filter.class === "time") {
-                console.log(filter.mask);
-                console.log(filter.key);
-                return (
-                    filter.mask.find((nodeToKeep) => {
-                        return node.data[filter.key] === nodeToKeep;
-                    }) !== undefined
-                );
-            } else if (filter.class === "search") {
-                return node.data[filter.key]
-                    .toLowerCase()
-                    .includes(filter.mask.toLowerCase());
-            }
-        });
-    }
-
-    filteredNodes() {
-        let filtered = this.nodes.slice();
-        this.filters.forEach((filter) => {
-            filtered = this.applyFilter(filtered, filter);
-        });
-        return filtered;
+    filteredNodes(removedNodes) {
+        if (removedNodes.size > 0) {
+            const filtered = this.nodes.filter((node) => {
+                let filterValues = removedNodes.get(node.id);
+                if (
+                    Array.from(filterValues.values()).every((v) => {
+                        return v;
+                    })
+                )
+                    return node;
+            });
+            return filtered;
+        } else return this.nodes;
     }
 
     filteredEdges(nodes) {
@@ -246,8 +195,8 @@ export default class Graph {
         });
     }
 
-    toVisual() {
-        const filtered = this.filteredNodes();
+    toVisual(removedNodes = []) {
+        const filtered = this.filteredNodes(removedNodes);
         return {
             nodes: filtered.map((node) => {
                 return node.toJson();

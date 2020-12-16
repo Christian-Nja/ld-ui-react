@@ -2,24 +2,45 @@ import React from "react";
 import { Menu } from "semantic-ui-react";
 
 import LayoutSelector from "./LayoutSelector";
-import TimeIntervalFilter from "./facets/TimeIntervalFilter";
+import LayoutToggle from "./LayoutToggle";
 
-import { useBinaryArrayState } from "../hooks/ld-ui-hooks";
+import { useBinaryArrayState, useBinaryState } from "../hooks/ld-ui-hooks";
 
 const menuStyle = { position: "absolute", top: 70, left: 20, zIndex: 10 };
 
 export default function PatternMenu(props) {
     const [open, setOpen] = useBinaryArrayState([]);
+    const [layoutButton, setLayoutButton] = useBinaryState();
 
     return (
         <div style={menuStyle}>
             <Menu vertical inverted>
-                <LayoutSelector
-                    value={props.layoutHandler.name}
-                    onClick={(newLayout) => {
-                        props.layoutHandler.setLayout(newLayout);
-                    }}
-                ></LayoutSelector>
+                {
+                    <Menu.Item>
+                        <div
+                            style={{ cursor: "pointer" }}
+                            onClick={setLayoutButton}
+                        >
+                            Layout
+                        </div>
+                        {layoutButton ? (
+                            <Menu.Menu>
+                                <LayoutToggle
+                                    setLayoutOptions={props.setLayoutOptions}
+                                    layoutOptions={props.layoutOptions}
+                                ></LayoutToggle>
+                            </Menu.Menu>
+                        ) : null}
+                    </Menu.Item>
+                }
+                {props.layoutOptions.graphLayout && (
+                    <LayoutSelector
+                        value={props.layoutHandler.name}
+                        onClick={(newLayout) => {
+                            props.layoutHandler.setLayout(newLayout);
+                        }}
+                    ></LayoutSelector>
+                )}
                 {props.children &&
                     React.Children.toArray(props.children).map(
                         (child, index) => {

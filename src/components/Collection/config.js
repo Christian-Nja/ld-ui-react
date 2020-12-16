@@ -46,7 +46,7 @@ const themes = {
             },
             collectionContainer: {
                 borderRadius: "9px/8px",
-                width: "60%",
+                width: "100%",
                 border: "1px solid rgba(0,0,0,0.15)",
                 gridGap: "55px",
                 padding: "50px",

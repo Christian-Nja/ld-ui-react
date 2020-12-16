@@ -1,14 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 
 import { PieChart } from "react-minimal-pie-chart";
 import { useBinaryArrayState } from "../../hooks/ld-ui-hooks";
+import { Context } from "../Context";
+
+import { cloneDeep } from "lodash";
+
+PropertyFilter.defaultProps = {
+    options: {
+        key: "pie",
+    },
+};
 
 /**
  * @description Filter data
  * @author Christian Colonna
  * @date 29-11-2020
  * @export
- * @param {[{ label : string, count : number, color : string, uri : string
+ * @param {[{ label : string, count : number, color : string, id : string
  * }]} {Object[]} { properties } label: Property label, count: number of instances, color: color
  * @param {function} onFilter callback is called every time change filtered array,
  *                            it receives as argument the array of element filtered out.
@@ -18,19 +27,36 @@ import { useBinaryArrayState } from "../../hooks/ld-ui-hooks";
 export default function PropertyFilter({
     properties,
     onFilter = (filtered) => {},
+    options = {
+        key: "pie",
+    },
 }) {
+    // listen to local central state
+    const [context, setContext] = useContext(Context);
+
     const [hovered, setHovered] = useState(null);
     const [filtered, setFiltered] = useBinaryArrayState([]);
 
     useEffect(() => {
-        console.log(filtered);
-        onFilter(filtered);
+        let newRemovedNodes = cloneDeep(context.removedNodes);
+        properties.forEach((node) => {
+            let nodeState = newRemovedNodes.get(node.id);
+            if (filtered.includes(node.id)) {
+                nodeState.set(options.key, false);
+            } else {
+                nodeState.set(options.key, true);
+            }
+        });
+        setContext({ ...context, removedNodes: newRemovedNodes });
     }, [filtered]);
+
+    console.log("global state");
+    console.log(context);
 
     const data = properties.map((entry) => {
         return {
             ...entry,
-            color: filtered.includes(entry.uri) ? "grey" : entry.color,
+            color: filtered.includes(entry.id) ? "grey" : entry.color,
         };
     });
 
@@ -56,28 +82,10 @@ export default function PropertyFilter({
                 setHovered(null);
             }}
             onClick={(_, index) => {
-                setFiltered(data[index].uri);
+                setFiltered(data[index].id);
             }}
             lineWidth={30}
             labelPosition={0}
         />
     );
 }
-
-/**
- * node.id  ----> id del pattern  WRONG come dice misael c'è già il node
- *
- * { nodi con varie proprietà
- * }
- *
- * filtro
- * {
- *  proprietà : id
- * }
- *
- *
- * graph.filter(nodi.data)
- *
- * ritorna tutti nodi con la proprietà non selezionata
- *
- */
