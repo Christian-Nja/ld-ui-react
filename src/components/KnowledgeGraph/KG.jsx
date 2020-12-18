@@ -8,6 +8,7 @@ import { Context } from "./Context";
 // Graphin Components
 import Graphin from "@antv/graphin";
 import "@antv/graphin/dist/index.css"; // Don't forget to import css
+import "./KG.css";
 
 // a defined hook for graphin layout
 import { useLayout, useGraphinDoubleClick } from "../hooks/ld-ui-hooks";
