@@ -120,7 +120,10 @@ _____________________________________________________________ */
 export function useLayout(baseLayout) {
     const defaultLayout = defineProp(baseLayout, {
         name: "force",
-        options: {},
+        options: {
+            animation: false,
+            enableWorker: true,
+        },
     });
     const [layout, setLayout] = useState(defaultLayout);
     return {

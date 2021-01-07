@@ -1,0 +1,7 @@
+.close-filter {
+    display: none;
+}
+
+.active-filter {
+    color: green;
+}

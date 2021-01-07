@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useMemo } from "react";
+import React, { useContext, useState, useEffect, useMemo, useRef } from "react";
 import { Context } from "../Context";
 
 import { Tick, Track, Handle } from "./SliderComponents";
@@ -15,50 +15,80 @@ import { cloneDeep } from "lodash";
  */
 
 TimeIntervalFilter.defaultProps = {
-    options: {
-        key: "time",
-    },
+    id: "time",
+    options: {},
 };
 
-export default function TimeIntervalFilter({
-    nodes,
-    options = {
-        key: "time",
-    },
-}) {
-    // listen to local central state
+export default function TimeIntervalFilter({ id = "time", options = {} }) {
+    // listen to global context
     const [context, setContext] = useContext(Context);
+    // read nodes from global context
+    const nodes = context.nodes;
+    const active = context.filterConfig[id].state;
+
     // if domain not in options compute it
     let domain = options.domain
         ? options.domain
         : useMemo(() => findMinMax(nodes), [nodes]);
     // if initial filtering range not in option set domain as state
     const [values, setValues] = useState(
-        options.initialRange ? options.initialRange : domain
+        context.filterConfig[id].options.domain
+            ? context.filterConfig[id].options.domain
+            : domain
     );
 
     const onChange = (values) => {
         setValues(values);
     };
 
+    // run this effect only on component update
+    const isMounted = useRef(false);
     useEffect(() => {
-        let newRemovedNodes = cloneDeep(context.removedNodes);
-        nodes.forEach((node) => {
-            // touch only nodes with time
-            if (node.startTime && node.endTime) {
-                // get node in map
-                let nodeState = newRemovedNodes.get(node.id);
-                if (node.startTime >= values[0] && node.endTime <= values[1]) {
-                    // node inside time interval set true
-                    nodeState.set(options.key, true);
-                } else {
-                    // node not in range set false
-                    nodeState.set(options.key, false);
-                }
+        if (isMounted) {
+            let newRemovedNodes = cloneDeep(context.removedNodes);
+            let newFilterConfig = cloneDeep(context.filterConfig);
+            // if filter active it works
+            if (active) {
+                nodes.forEach((node) => {
+                    // touch only nodes with time
+                    if (node.startTime && node.endTime) {
+                        // get node in map
+                        let nodeState = newRemovedNodes.get(node.id);
+                        if (
+                            node.startTime >= values[0] &&
+                            node.endTime <= values[1]
+                        ) {
+                            // node inside time interval set true
+                            nodeState.set(id, true);
+                        } else {
+                            // node not in range set false
+                            nodeState.set(id, false);
+                        }
+                    } else {
+                        // remove all nodes without startTime and endTime
+                        let nodeState = newRemovedNodes.get(node.id);
+                        nodeState.set(id, false);
+                    }
+                });
+            } else {
+                // filter inactive
+                // every node is true on this filter key
+                // this filter hasn't effect on nodes
+                nodes.forEach((node) => {
+                    let nodeState = newRemovedNodes.get(node.id);
+                    nodeState.set(id, true);
+                });
             }
-        });
-        setContext({ ...context, removedNodes: newRemovedNodes });
-    }, [values]);
+            newFilterConfig[id].options.domain = values;
+            setContext({
+                ...context,
+                removedNodes: newRemovedNodes,
+                filterConfig: newFilterConfig,
+            });
+        } else {
+            isMounted.current = true;
+        }
+    }, [values, active]);
 
     return nodes.length !== 0 ? (
         <div style={{ height: 40, width: "100%", marginTop: 20 }}>

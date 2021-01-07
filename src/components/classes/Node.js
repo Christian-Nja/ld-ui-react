@@ -48,13 +48,6 @@ export default class Node {
             shape: this.shape,
             type: this.type,
             style: this.style,
-            toCustomNode: function toCustomNode(
-                formatter = (node) => {
-                    return node;
-                }
-            ) {
-                return formatter(self);
-            },
         };
     }
 }

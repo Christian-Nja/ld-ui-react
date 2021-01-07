@@ -8,32 +8,17 @@ import { orderBy, fromPairs, map, filter } from "lodash";
 
 const stringSimilarity = require("string-similarity");
 
-// individual row render for ReactList items
-// function renderRow(index, key) {
-//     let entry = this.state.scores[index];
-//     let userName = entry.userName;
-//     let score = entry.score;
-//     return (
-//         <tr key={key}>
-//             <td className="name">{userName}</td>
-//             <td className="score">{score}</td>
-//         </tr>
-//     );
-// }
-
 export default function List({
-    graph,
+    list,
     onItemClick = (node) => {},
     searchBarPlaceholder = "Search an item",
     itemTooltip = null,
     threshold = 0.23,
-    tableFormatter,
 }) {
     // keys will be used to render header and access node information
-    const keys =
-        graph.nodes.length > 0
-            ? Object.keys(graph.nodes[0].toCustomNode(tableFormatter))
-            : [];
+    let keys = list.length > 0 ? Object.keys(list[0]) : [];
+    // remove id key from rendered elements
+    keys.splice(keys.indexOf("id"), 1);
 
     const [inputValue, setInputValue] = useState("");
 
@@ -43,33 +28,59 @@ export default function List({
     };
 
     useEffect(() => {
-        setNodeList([...graph.nodes]);
-    }, [graph.nodes]);
+        setNodeList([...list]);
+    }, [list]);
 
     useEffect(() => {
         if (inputValue === "") {
             // reset if user clears search bar and array is empty
-            setNodeList([...graph.nodes]);
+            setNodeList([...list]);
         }
         if (inputValue !== "") {
             // apply effect only after 3 seconds the user stopped typing
             const delayDebounceFn = setTimeout(() => {
                 const result = stringSimilarity.findBestMatch(
-                    inputValue,
-                    graph.nodes.map((node) => {
-                        return node.label;
+                    inputValue.toLowerCase(),
+                    list.map((node) => {
+                        // concatenate list values inside label
+                        // node.id will be used to split and create an index
+                        let propsChain;
+                        keys.forEach((k) => {
+                            propsChain += ` ${node[k]}`;
+                        });
+                        propsChain = propsChain.toLowerCase();
+                        return `${node.id} ${propsChain}`;
                     })
                 );
-                const index = fromPairs(
-                    map(result.ratings, (x, i) => [x.target, x.rating])
-                );
-                const filtered = filter(graph.nodes, (n) => {
-                    if (index[n.label] >= threshold) return n;
+                // if string exact match of a substring set ratings to 1
+                result.ratings.forEach((r) => {
+                    if (
+                        r.target
+                            .toLowerCase()
+                            .includes(inputValue.toLowerCase())
+                    ) {
+                        r.rating = 1;
+                    }
                 });
-                const sorted = orderBy(filtered, (x) => index[x.label], [
-                    "desc",
-                ]);
+                const index = fromPairs(
+                    map(result.ratings, (x, i) => [
+                        x.target.split(" ")[0],
+                        x.rating,
+                    ])
+                );
+                console.log("index");
+                console.log(index);
+                console.log("Filtering");
+                const filtered = filter(list, (n) => {
+                    console.log(n);
+                    if (index[n.id] >= threshold) return n;
+                });
+                console.log("filtered");
+                console.log(filtered);
+                const sorted = orderBy(filtered, (x) => index[x.id], ["desc"]);
+                console.log("ratings & sorted");
                 console.log(result.ratings);
+                console.log(sorted);
                 setNodeList(sorted);
             }, 400);
             return () => clearTimeout(delayDebounceFn);
@@ -77,25 +88,28 @@ export default function List({
     }, [inputValue]);
 
     const renderRow = (index, key) => {
-        return (
-            <div
-                title={itemTooltip}
-                key={key}
-                className="table-item body-row"
-                style={key % 2 == 0 ? { backgroundColor: "#f5f5f5" } : null}
-                onClick={() => {
-                    onItemClick(nodes[index]);
-                }}
-            >
-                {keys.map((k) => {
-                    return (
-                        <div className="body-cell">
-                            {nodes[index].toCustomNode(tableFormatter)[k]}
-                        </div>
-                    );
-                })}
-            </div>
-        );
+        if (nodes.length > 0) {
+            return (
+                <div
+                    title={itemTooltip}
+                    key={key}
+                    className="table-item body-row"
+                    style={key % 2 == 0 ? { backgroundColor: "#f5f5f5" } : null}
+                    onClick={() => {
+                        onItemClick(nodes[index]);
+                    }}
+                >
+                    {keys.map((k) => {
+                        if (nodes[index])
+                            return (
+                                <div className="body-cell">
+                                    {nodes[index][k]}
+                                </div>
+                            );
+                    })}
+                </div>
+            );
+        }
     };
 
     return (
@@ -134,7 +148,7 @@ export default function List({
                         // itemsRenderer={(items, ref) => renderTable(items, ref)}
                         itemRenderer={renderRow}
                         length={nodes.length}
-                        type="uniform"
+                        type="variable"
                     />
                 </div>
             </div>

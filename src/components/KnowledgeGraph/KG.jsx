@@ -16,17 +16,20 @@ import { useLayout, useGraphinDoubleClick } from "../hooks/ld-ui-hooks";
 // import { Map } from "immutable";
 
 export default function KG({
-    tableFormatter = (node) => {
-        return node;
+    data = {
+        graph: { nodes: [], edges: [] },
+        list: [],
+        nodes: [],
     },
     children,
-    graph,
+    onContextChange = (context) => {},
     onNodeDoubleClick = (node) => {},
     onItemClick = (node) => {},
     textOnNodeHover = (model) => {
         return ``;
     },
     itemTooltip = null,
+    defaultConfig,
     defaultLayoutOptions = {
         menu: true,
         help: true,
@@ -35,14 +38,12 @@ export default function KG({
         currentLayout: "graph",
     },
 }) {
-    if (graph.nodes) {
+    if (data.graph.nodes) {
         // pass this to PatternMenu component to have a panel to switch layouts
         const layoutHandler = useLayout();
         const [layoutOptions, setLayoutOptions] = useState(
             defaultLayoutOptions
         );
-
-        console.log(graph.nodes);
 
         useEffect(() => {
             let graphContainer = document.getElementById("graphin-container");
@@ -58,24 +59,62 @@ export default function KG({
 
         // set default mask TODO: change this from global config to have a persistent state on browser ecc.
         let defaultFiltering = [];
-        React.Children.toArray(children).map((child) => {
-            defaultFiltering.push([child.props.options.key, true]);
+        let filterConfig = {};
+        const defaultFilterConfig = defaultConfig
+            ? defaultConfig.filterConfig
+            : {};
+        const defaultRemovedNodes = defaultConfig
+            ? defaultConfig.removedNodes
+            : null;
+        React.Children.toArray(children).forEach((child) => {
+            filterConfig[child.props.id] = {
+                state: defaultFilterConfig[child.props.id]
+                    ? defaultFilterConfig[child.props.id].state
+                    : false,
+                options: defaultFilterConfig[child.props.id]
+                    ? defaultFilterConfig[child.props.id].options
+                    : child.props.options,
+            };
+            defaultFiltering.push([child.props.id, true]);
         });
 
         // every node has a map by filters: <node_id_5> : [ <time> : True , <searchbar> : False , ... ]
-        let map = [];
-        graph.nodes.forEach((node) => {
-            map.push([node.id, new Map(defaultFiltering)]);
+        let removedNodes = [];
+        data.graph.nodes.forEach((node) => {
+            removedNodes.push([node.id, new Map(defaultFiltering)]);
         });
 
-        const initialState = { removedNodes: new Map(map) };
+        const initialState = {
+            nodes: data.nodes,
+            removedNodes: defaultRemovedNodes || new Map(removedNodes),
+            filterConfig: filterConfig,
+        };
         const [context, setContext] = useState(initialState); // todo setContext as useReducer with setRemovedNodes actions, setConfigurations ...
 
-        // const [];
-        // set graph parameters : event handler, colors, shape
+        console.log("initial context");
+        console.log(context);
 
-        // on node double click
+        useEffect(() => {
+            onContextChange(context);
+        }, [context]);
+
         useGraphinDoubleClick(graphRef, onNodeDoubleClick);
+
+        // duplicate logic, we need to abstract some Data or Dataset interface
+        // this interface can be represented as Graph or List, filtering should
+        // act only one
+        // Consider using Graphology lib to represent Data or Dataset
+        // or better the representation best for performance (hashmap?)
+        const filteredList = data.list.filter((node) => {
+            let filterValues = context.removedNodes.get(node.id);
+            if (
+                Array.from(filterValues.values()).every((v) => {
+                    return v;
+                })
+            ) {
+                return node;
+            }
+        });
 
         return (
             <Context.Provider value={[context, setContext]}>
@@ -91,7 +130,7 @@ export default function KG({
                         </PatternMenu>
                     ) : null}
                     <Graphin
-                        data={graph.toVisual(context.removedNodes)}
+                        data={data.graph.toVisual(context.removedNodes)}
                         ref={graphRef}
                         layout={layoutHandler.name}
                         options={{
@@ -114,8 +153,7 @@ export default function KG({
                             <List
                                 itemTooltip={itemTooltip}
                                 onItemClick={onItemClick}
-                                tableFormatter={tableFormatter}
-                                graph={graph.toVisual(context.removedNodes)}
+                                list={filteredList}
                             ></List>
                         </div>
                     )}

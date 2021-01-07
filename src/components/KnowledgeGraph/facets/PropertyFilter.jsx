@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 
 import { PieChart } from "react-minimal-pie-chart";
 import { useBinaryArrayState } from "../../hooks/ld-ui-hooks";
@@ -7,9 +7,8 @@ import { Context } from "../Context";
 import { cloneDeep } from "lodash";
 
 PropertyFilter.defaultProps = {
-    options: {
-        key: "pie",
-    },
+    id: "pie",
+    options: {},
 };
 
 /**
@@ -25,33 +24,61 @@ PropertyFilter.defaultProps = {
  * @returns {JSX.Element}
  */
 export default function PropertyFilter({
-    properties,
     onFilter = (filtered) => {},
-    options = {
-        key: "pie",
-    },
+    id = "pie",
+    options = {},
 }) {
     // listen to local central state
     const [context, setContext] = useContext(Context);
 
     const [hovered, setHovered] = useState(null);
-    const [filtered, setFiltered] = useBinaryArrayState([]);
+    const [filtered, setFiltered] = useBinaryArrayState(
+        context.filterConfig[id].options.filtered || []
+    );
 
+    const properties = context.nodes;
+    const active = context.filterConfig[id].state;
+
+    // run this effect only on component update
+    const isMounted = useRef(false);
     useEffect(() => {
-        let newRemovedNodes = cloneDeep(context.removedNodes);
-        properties.forEach((node) => {
-            let nodeState = newRemovedNodes.get(node.id);
-            if (filtered.includes(node.id)) {
-                nodeState.set(options.key, false);
-            } else {
-                nodeState.set(options.key, true);
-            }
-        });
-        setContext({ ...context, removedNodes: newRemovedNodes });
-    }, [filtered]);
+        if (isMounted.current) {
+            let newRemovedNodes = cloneDeep(context.removedNodes);
+            let newFilterConfig = cloneDeep(context.filterConfig);
+            if (active) {
+                // if filter active it works
 
-    console.log("global state");
-    console.log(context);
+                properties.forEach((node) => {
+                    let nodeState = newRemovedNodes.get(node.id);
+                    // remove every node with 0 occurences
+                    if (node.value === 0) {
+                        nodeState.set(id, false);
+                    } else {
+                        // remove node filtered out by the user
+                        if (filtered.includes(node.id)) {
+                            nodeState.set(id, false);
+                        } else {
+                            nodeState.set(id, true);
+                        }
+                    }
+                });
+            } else {
+                // filter inactive every node should be set to true for this filter
+                properties.forEach((node) => {
+                    let nodeState = newRemovedNodes.get(node.id);
+                    nodeState.set(id, true);
+                });
+            }
+            newFilterConfig[id].options.filtered = filtered;
+            setContext({
+                ...context,
+                removedNodes: newRemovedNodes,
+                filterConfig: newFilterConfig,
+            });
+        } else {
+            isMounted.current = true;
+        }
+    }, [filtered, active]);
 
     const data = properties.map((entry) => {
         return {
