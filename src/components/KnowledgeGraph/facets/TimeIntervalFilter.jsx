@@ -1,184 +1,184 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useMemo, useRef } from "react";
+import { Context } from "../Context";
 
-import { useBinaryState } from "../../hooks/ld-ui-hooks";
+import { Tick, Track, Handle } from "./SliderComponents";
+import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 
-import InstanceFilter from "../../classes/InstanceFilter";
-import { TimeSeries, TimeRange, TimeRangeEvent } from "pondjs";
-import {
-    Charts,
-    ChartContainer,
-    ChartRow,
-    Brush,
-    EventChart,
-} from "react-timeseries-charts";
+import { cloneDeep } from "lodash";
 
-// find min time interval / find max
-// ask tick count
-//
+/**
+ * node {
+ *     id: uri
+ *     startTime: startTime
+ *     endTime: endTime
+ * }
+ */
 
-export default function TimeIntervalFilter({ instances, onFilter }) {
-    const instanceFilter = new InstanceFilter(instances);
-    const timeIntervalInstances = instanceFilter.timeIntervalInstances();
+TimeIntervalFilter.defaultProps = {
+    id: "time",
+    options: {},
+};
 
-    const intervals = timeIntervalInstances.map((instance) => {
-        return instanceFilter.timeIntervalInstanceEventToDate(instance);
-    });
-    // sort order chronologically
-    intervals.sort((a, b) => {
-        return a.startTime - b.startTime;
-    });
+export default function TimeIntervalFilter({ id = "time", options = {} }) {
+    // listen to global context
+    const [context, setContext] = useContext(Context);
+    // read nodes from global context
+    const nodes = context.nodes;
+    const active = context.filterConfig[id].state;
 
-    //
-    // Turn data into TimeSeries
-    //
-    const events = intervals.map(
-        ({ startTime, endTime, ...data }) =>
-            new TimeRangeEvent(new TimeRange(startTime, endTime), data)
+    // if domain not in options compute it
+    let domain = options.domain
+        ? options.domain
+        : useMemo(() => findMinMax(nodes), [nodes]);
+    // if initial filtering range not in option set domain as state
+    const [values, setValues] = useState(
+        context.filterConfig[id].options.domain
+            ? context.filterConfig[id].options.domain
+            : domain
     );
-    console.log("time interval");
-    console.log(intervals);
-    console.log(events);
 
-    const series = new TimeSeries({ name: "timeIntervals", events });
+    const onChange = (values) => {
+        setValues(values);
+    };
 
-    //
-    // Render event chart
-    //
+    // run this effect only on component update
+    const isMounted = useRef(false);
+    useEffect(() => {
+        if (isMounted) {
+            let newRemovedNodes = cloneDeep(context.removedNodes);
+            let newFilterConfig = cloneDeep(context.filterConfig);
+            // if filter active it works
+            if (active) {
+                nodes.forEach((node) => {
+                    // touch only nodes with time
+                    if (node.startTime && node.endTime) {
+                        // get node in map
+                        let nodeState = newRemovedNodes.get(node.id);
+                        if (
+                            node.startTime >= values[0] &&
+                            node.endTime <= values[1]
+                        ) {
+                            // node inside time interval set true
+                            nodeState.set(id, true);
+                        } else {
+                            // node not in range set false
+                            nodeState.set(id, false);
+                        }
+                    } else {
+                        // remove all nodes without startTime and endTime
+                        let nodeState = newRemovedNodes.get(node.id);
+                        nodeState.set(id, false);
+                    }
+                });
+            } else {
+                // filter inactive
+                // every node is true on this filter key
+                // this filter hasn't effect on nodes
+                nodes.forEach((node) => {
+                    let nodeState = newRemovedNodes.get(node.id);
+                    nodeState.set(id, true);
+                });
+            }
+            newFilterConfig[id].options.domain = values;
+            setContext({
+                ...context,
+                removedNodes: newRemovedNodes,
+                filterConfig: newFilterConfig,
+            });
+        } else {
+            isMounted.current = true;
+        }
+    }, [values, active]);
 
-    function outageEventStyleFunc(event, state) {
-        const width = event.get("duration") === 0 ? 5 : null; // assign a little width even if its punctual event
-        switch (state) {
-            case "normal":
-                return {
-                    fill: "#002bff",
-                    opacity: 1,
-                    // width: width,
-                };
-            case "hover":
-                return {
-                    fill: color,
-                    opacity: 0.4,
-                    // width: width,
-                };
-            case "selected":
-                return {
-                    fill: color,
-                    minWidth: 5,
-                };
-            default:
-            //pass
+    return nodes.length !== 0 ? (
+        <div style={{ height: 40, width: "100%", marginTop: 20 }}>
+            <Slider
+                mode={1}
+                step={1}
+                domain={domain}
+                rootStyle={sliderStyle}
+                onChange={onChange}
+                values={values}
+            >
+                <Rail>
+                    {({ getRailProps }) => (
+                        <div style={railStyle} {...getRailProps()} />
+                    )}
+                </Rail>
+                <Handles>
+                    {({ handles, getHandleProps }) => (
+                        <div className="slider-handles">
+                            {handles.map((handle) => (
+                                <Handle
+                                    key={handle.id}
+                                    handle={handle}
+                                    domain={domain}
+                                    getHandleProps={getHandleProps}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </Handles>
+                <Tracks left={false} right={false}>
+                    {({ tracks, getTrackProps }) => (
+                        <div className="slider-tracks">
+                            {tracks.map(({ id, source, target }) => (
+                                <Track
+                                    key={id}
+                                    source={source}
+                                    target={target}
+                                    getTrackProps={getTrackProps}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </Tracks>
+                <Ticks values={domain}>
+                    {({ ticks }) => (
+                        <div className="slider-ticks">
+                            {ticks.map((tick) => (
+                                <Tick
+                                    key={tick.id}
+                                    tick={tick}
+                                    count={ticks.length}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </Ticks>
+            </Slider>
+        </div>
+    ) : null;
+}
+
+function findMinMax(arr) {
+    let min, max;
+    for (let i = 1, len = arr.length; i < len; i++) {
+        if (arr[i].startTime) {
+            let s = Number.parseInt(arr[i].startTime);
+            if (min === undefined) min = s;
+            else min = s < min ? s : min;
+        }
+        if (arr[i].endTime) {
+            let e = Number.parseInt(arr[i].endTime);
+            if (max === undefined) max = e;
+            else max = e > max ? e : max;
         }
     }
-
-    const [timerange, setTimeRange] = useState(series.range());
-    const [brushrange, setBrushRange] = useState(series.range());
-
-    // Handles when the brush changes the timerange
-    const handleTimeRangeChange = (timerange) => {
-        if (timerange) {
-            setBrushRange(timerange);
-        } else setBrushRange(null);
-    };
-
-    const brushStyle = {
-        boxShadow: "inset 0px 2px 5px -2px rgba(189, 189, 189, 0.75)",
-        background: "green",
-        paddingTop: 10,
-    };
-
-    useEffect(() => {
-        const eventToViz = [];
-
-        for (let event of series.events()) {
-            const timerange = event.timerange();
-            if (brushrange && brushrange.contains(timerange)) {
-                eventToViz.push(event.get("event").instance);
-            }
-        }
-
-        onFilter(eventToViz);
-    }, [brushrange]);
-
-    return (
-        <div className="row">
-            <div className="col-md-12">
-                <ChartContainer
-                    width={190}
-                    timeRange={timerange}
-                    onTimeRangeChanged={handleTimeRangeChange}
-                    timeAxisStyle={{
-                        axis: {
-                            fill: "none",
-                            stroke: "#C0C0C0",
-                            pointerEvents: "none",
-                        },
-                        ticks: {
-                            fill: "none",
-                            stroke: "#C0C0C0",
-                            pointerEvents: "none",
-                        },
-                        values: {
-                            fill: "none",
-                            stroke: "#C0C0C0",
-                            pointerEvents: "none",
-                        },
-                    }} // format="month"
-                    hideTimeAxis={true}
-                    paddingLeft={10}
-                    paddingRight={10}
-                    maxTime={timerange.end()}
-                    minTime={timerange.begin()}
-                >
-                    <ChartRow height="50">
-                        <Brush
-                            timeRange={brushrange}
-                            allowSelectionClear
-                            style={brushStyle}
-                            onTimeRangeChanged={handleTimeRangeChange}
-                        />
-                        <Charts>
-                            <EventChart
-                                series={series}
-                                size={45}
-                                style={outageEventStyleFunc}
-                                label={(e) => e.get("title")}
-                            />
-                        </Charts>
-                    </ChartRow>
-                </ChartContainer>
-                <div
-                    style={{
-                        width: 175,
-                        backgroundColor: "green",
-                        height: 3,
-                        marginLeft: 10,
-                    }}
-                ></div>
-                <div
-                    style={{
-                        width: 175,
-                        height: 3,
-                        marginLeft: 10,
-                    }}
-                >
-                    <div
-                        style={{
-                            float: "left",
-                            marginTop: 2,
-                        }}
-                    >
-                        {intervals[0].startTime.getFullYear()}
-                    </div>
-                    <div
-                        style={{
-                            float: "right",
-                            marginTop: 2,
-                        }}
-                    >
-                        {intervals[intervals.length - 1].endTime.getFullYear()}
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+    return [min, max];
 }
+
+const sliderStyle = {
+    margin: "5%",
+    position: "relative",
+    width: "90%",
+};
+
+const railStyle = {
+    position: "absolute",
+    width: "100%",
+    height: 14,
+    borderRadius: 7,
+    cursor: "pointer",
+    backgroundColor: "rgb(155,155,155)",
+};

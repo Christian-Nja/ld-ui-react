@@ -31,8 +31,12 @@ export default function LayoutSelector(props) {
 
     return (
         <Menu.Item>
-            <div style={{ cursor: "pointer" }} onClick={handleOpen}>
-                Layouts
+            <div
+                style={{ cursor: "pointer" }}
+                onClick={handleOpen}
+                title={"Change graph disposition"}
+            >
+                Graph Layouts
             </div>
             {open ? (
                 <Menu.Menu>

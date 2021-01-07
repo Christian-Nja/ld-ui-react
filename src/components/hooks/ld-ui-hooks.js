@@ -120,7 +120,10 @@ _____________________________________________________________ */
 export function useLayout(baseLayout) {
     const defaultLayout = defineProp(baseLayout, {
         name: "force",
-        options: {},
+        options: {
+            animation: false,
+            enableWorker: true,
+        },
     });
     const [layout, setLayout] = useState(defaultLayout);
     return {
@@ -142,19 +145,21 @@ export function useLayout(baseLayout) {
  * @param {*} graphRef
  * @param {callback} filter (node) => {}
  */
-export function useGraphinDoubleClick(graphRef, filter) {
+export function useGraphinDoubleClick(graphRef, filter, depArray) {
     useEffect(() => {
-        const { graph } = graphRef.current;
-        const handleNodeDoubleClick = (e) => {
-            const node = e.item._cfg;
-            if (node.model.data.occurences !== 0) filter(node);
-        };
-        graph.on("node:dblclick", handleNodeDoubleClick);
+        if (graphRef.current) {
+            const { graph } = graphRef.current;
+            const handleNodeDoubleClick = (e) => {
+                const node = e.item._cfg;
+                filter(node);
+            };
+            graph.on("node:dblclick", handleNodeDoubleClick);
 
-        // release listener when component unmount
-        return () => {
-            graph.off("node:dblclick", handleNodeDoubleClick);
-        };
+            // release listener when component unmount
+            return () => {
+                graph.off("node:dblclick", handleNodeDoubleClick);
+            };
+        }
     }, []);
 }
 

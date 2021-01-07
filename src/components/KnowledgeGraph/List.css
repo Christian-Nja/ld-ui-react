@@ -1,0 +1,52 @@
+.table-item {
+    padding: 10px;
+    font-family: "OpenSans-Regular";
+    cursor: pointer;
+}
+
+.search-item {
+    font-family: "OpenSans-Regular";
+    margin: auto;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+i.search-icon {
+    margin-left: 20px;
+    margin-right: 10px;
+}
+
+.list-table {
+    width: 100%;
+}
+
+.table {
+    border: 1px solid rgb(54, 48, 74);
+    padding: 5px;
+}
+
+.header {
+    border: 1px solid rgb(54, 48, 74);
+    margin-bottom: 5px;
+}
+
+.header-row,
+.body-row {
+    display: flex;
+}
+
+.header-cell,
+.body-cell {
+    flex: 1;
+    padding: 10px;
+}
+
+.header-cell {
+    font-weight: bold;
+}
+
+.body {
+    border: 1px solid rgb(54, 48, 74);
+    max-height: 400px;
+    overflow: auto;
+}

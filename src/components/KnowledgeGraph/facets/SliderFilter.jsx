@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useMemo, useRef } from "react";
 
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
+import { Tick, Track, Handle } from "./SliderComponents";
+
+import { Context } from "../Context";
+
+import { cloneDeep } from "lodash";
 
 const sliderStyle = {
     margin: "5%",
@@ -17,154 +22,178 @@ const railStyle = {
     backgroundColor: "rgb(155,155,155)",
 };
 
-export default function SliderFilter({ domain, onFilter = (values) => {} }) {
-    const [values, setValues] = useState(domain);
+SliderFilter.defaultProps = {
+    id: "slider",
+    options: {},
+    valueKey: "occurences",
+};
 
-    const onChange = (values) => {
-        setValues(values);
-    };
-    useEffect(() => {
-        onFilter(values);
-    }, [values]);
+const MIN = 0;
+const MAX = 1;
 
-    return (
-        <div style={{ height: 40, width: "100%", marginTop: 20 }}>
-            <Slider
-                mode={1}
-                step={1}
-                domain={domain}
-                rootStyle={sliderStyle}
-                onChange={onChange}
-                values={values}
-            >
-                <Rail>
-                    {({ getRailProps }) => (
-                        <div style={railStyle} {...getRailProps()} />
-                    )}
-                </Rail>
-                <Handles>
-                    {({ handles, getHandleProps }) => (
-                        <div className="slider-handles">
-                            {handles.map((handle) => (
-                                <Handle
-                                    key={handle.id}
-                                    handle={handle}
-                                    domain={domain}
-                                    getHandleProps={getHandleProps}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </Handles>
-                <Tracks left={false} right={false}>
-                    {({ tracks, getTrackProps }) => (
-                        <div className="slider-tracks">
-                            {tracks.map(({ id, source, target }) => (
-                                <Track
-                                    key={id}
-                                    source={source}
-                                    target={target}
-                                    getTrackProps={getTrackProps}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </Tracks>
-                <Ticks values={domain}>
-                    {({ ticks }) => (
-                        <div className="slider-ticks">
-                            {ticks.map((tick) => (
-                                <Tick
-                                    key={tick.id}
-                                    tick={tick}
-                                    count={ticks.length}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </Ticks>
-            </Slider>
-        </div>
-    );
+export default function SliderFilter({
+    id = "slider",
+    options = {},
+    valueKey,
+}) {
+    // listen to global context
+    const [context, setContext] = useContext(Context);
+    // read nodes from global context
+    const nodes = context.nodes;
+    // filter cannot work with one node
+    if (nodes.length < 2) {
+        return null;
+    } else {
+        const active = context.filterConfig[id].state;
+
+        // if domain not in options compute it
+        let domain = options.domain
+            ? options.domain
+            : useMemo(() => findMinMax(nodes, valueKey), [nodes]);
+        // if initial filtering range not in option set domain as state
+        const [values, setValues] = useState(
+            context.filterConfig[id].options.domain
+                ? context.filterConfig[id].options.domain
+                : domain
+        );
+
+        const onChange = (values) => {
+            setValues(values);
+        };
+
+        // run this effect only on component update
+        const isMounted = useRef(false);
+        useEffect(() => {
+            if (isMounted) {
+                let newRemovedNodes = cloneDeep(context.removedNodes);
+                let newFilterConfig = cloneDeep(context.filterConfig);
+                console.log("slider filter called");
+                console.log(context);
+                // if filter active it works
+                if (active) {
+                    nodes.forEach((node) => {
+                        // disable every node without the value key
+                        if (!node[valueKey]) {
+                            let nodeState = newRemovedNodes.get(node.id);
+                            nodeState.set(id, false);
+                        }
+                        // touch only nodes with time
+                        if (node[valueKey]) {
+                            // get node in map
+                            let nodeState = newRemovedNodes.get(node.id);
+                            if (
+                                node[valueKey] >= values[MIN] &&
+                                node[valueKey] <= values[MAX]
+                            ) {
+                                // node inside time interval set true
+                                nodeState.set(id, true);
+                            } else {
+                                // node not in range set false
+                                nodeState.set(id, false);
+                            }
+                        }
+                    });
+                } else {
+                    // filter inactive
+                    // every node is true on this filter key
+                    // this filter hasn't effect on nodes
+                    nodes.forEach((node) => {
+                        let nodeState = newRemovedNodes.get(node.id);
+                        nodeState.set(id, true);
+                    });
+                }
+                newFilterConfig[id].options.domain = values;
+                setContext({
+                    ...context,
+                    removedNodes: newRemovedNodes,
+                    filterConfig: newFilterConfig,
+                });
+            } else {
+                isMounted.current = true;
+            }
+        }, [values, active]);
+
+        if (domain[MIN] < domain[MAX]) {
+            return (
+                <div style={{ height: 40, width: "100%", marginTop: 20 }}>
+                    <Slider
+                        mode={1}
+                        step={1}
+                        domain={domain}
+                        rootStyle={sliderStyle}
+                        onChange={onChange}
+                        values={values}
+                    >
+                        <Rail>
+                            {({ getRailProps }) => (
+                                <div style={railStyle} {...getRailProps()} />
+                            )}
+                        </Rail>
+                        <Handles>
+                            {({ handles, getHandleProps }) => (
+                                <div className="slider-handles">
+                                    {handles.map((handle) => (
+                                        <Handle
+                                            key={handle.id}
+                                            handle={handle}
+                                            domain={domain}
+                                            getHandleProps={getHandleProps}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </Handles>
+                        <Tracks left={false} right={false}>
+                            {({ tracks, getTrackProps }) => (
+                                <div className="slider-tracks">
+                                    {tracks.map(({ id, source, target }) => (
+                                        <Track
+                                            key={id}
+                                            source={source}
+                                            target={target}
+                                            getTrackProps={getTrackProps}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </Tracks>
+                        <Ticks values={domain}>
+                            {({ ticks }) => (
+                                <div className="slider-ticks">
+                                    {ticks.map((tick) => (
+                                        <Tick
+                                            key={tick.id}
+                                            tick={tick}
+                                            count={ticks.length}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </Ticks>
+                    </Slider>
+                </div>
+            );
+        } else return null;
+    }
 }
 
-// *******************************************************
-// HANDLE COMPONENT
-// *******************************************************
-const Handle = ({
-    domain: [min, max],
-    handle: { id, value, percent },
-    getHandleProps,
-}) => (
-    <div
-        role="slider"
-        aria-valuemin={min}
-        aria-valuemax={max}
-        aria-valuenow={value}
-        style={{
-            left: `${percent}%`,
-            position: "absolute",
-            marginLeft: "-11px",
-            marginTop: "-6px",
-            zIndex: 2,
-            width: 24,
-            height: 24,
-            cursor: "pointer",
-            borderRadius: "50%",
-            boxShadow: "1px 1px 1px 1px rgba(0, 0, 0, 0.2)",
-            backgroundColor: "#34568f",
-        }}
-        {...getHandleProps(id)}
-    />
-);
-
-// *******************************************************
-// TRACK COMPONENT
-// *******************************************************
-
-const Track = ({ source, target, getTrackProps }) => (
-    <div
-        style={{
-            position: "absolute",
-            height: 14,
-            zIndex: 1,
-            backgroundColor: "#7aa0c4",
-            borderRadius: 7,
-            cursor: "pointer",
-            left: `${source.percent}%`,
-            width: `${target.percent - source.percent}%`,
-        }}
-        {...getTrackProps()}
-    />
-);
-
-// *******************************************************
-// TICK COMPONENT
-// *******************************************************
-const Tick = ({ tick, count }) => (
-    <div>
-        <div
-            style={{
-                position: "absolute",
-                marginTop: 14,
-                width: 1,
-                height: 5,
-                backgroundColor: "rgb(200,200,200)",
-                left: `${tick.percent}%`,
-            }}
-        />
-        <div
-            style={{
-                position: "absolute",
-                marginTop: 22,
-                fontSize: 10,
-                textAlign: "center",
-                marginLeft: `${-(100 / count) / 2}%`,
-                width: `${100 / count}%`,
-                left: `${tick.percent}%`,
-            }}
-        >
-            {tick.value}
-        </div>
-    </div>
-);
+function findMinMax(arr, valueKey) {
+    let min, max;
+    for (let i = 0, len = arr.length; i < len; i++) {
+        if (arr[i][valueKey]) {
+            let n = Number.parseInt(arr[i][valueKey]);
+            if (min === undefined) {
+                min = n;
+                max = n;
+            } else {
+                if (n < min) {
+                    min = n;
+                }
+                if (n > max) {
+                    max = n;
+                }
+            }
+        }
+    }
+    return [min, max];
+}

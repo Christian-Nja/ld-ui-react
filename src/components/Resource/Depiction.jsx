@@ -24,12 +24,15 @@ export default function Depiction({
         }, [image]);
     }
 
-    if (!image) {
-        (async function fetchDepiction() {
-            const image = await cProp.depiction;
-            setImage(image);
-        })();
-    }
+    useEffect(() => {
+        if (!image) {
+            (async function fetchDepiction() {
+                const image = await cProp.depiction;
+                setImage(image);
+            })();
+        }
+    }, []);
+
     return image ? (
         <img onClick={onClick} src={image} className={classes} style={style} />
     ) : null;

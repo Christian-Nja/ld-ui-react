@@ -1,0 +1,7 @@
+.property-value-item {
+    display: flex;
+    justify-content: space-between;
+    font-family: "OpenSans-Regular";
+    cursor: pointer;
+    padding: 10px;
+}
