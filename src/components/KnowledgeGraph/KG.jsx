@@ -49,8 +49,11 @@ export default function KG({
             let graphContainer = document.getElementById("graphin-container");
             if (layoutOptions.currentLayout === "graph") {
                 graphContainer.style.display = "";
+                // listContainer.style.display = "none"
             } else {
+                let listContainer = document.getElementById("list-container");
                 graphContainer.style.display = "none";
+                listContainer.style.display = "";
             }
         }, [layoutOptions]);
 
@@ -134,6 +137,9 @@ export default function KG({
                         ref={graphRef}
                         layout={layoutHandler.name}
                         options={{
+                            //keyShapeZoom: 0.001,
+                            fitView: true,
+                            fitViewPadding: 100,
                             modes: {
                                 default: [
                                     {
@@ -149,7 +155,10 @@ export default function KG({
                         }}
                     ></Graphin>
                     {layoutOptions.currentLayout === "list" && (
-                        <div style={{ ...listContainerStyle }}>
+                        <div
+                            style={{ ...listContainerStyle }}
+                            id="list-container"
+                        >
                             <List
                                 itemTooltip={itemTooltip}
                                 onItemClick={onItemClick}
@@ -175,4 +184,5 @@ const listContainerStyle = {
     marginTop: 40,
     marginLeft: 100,
     width: 900,
+    display: "none",
 };

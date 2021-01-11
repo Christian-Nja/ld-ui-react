@@ -1,7 +1,7 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
 import { Context } from "../Context";
 
-import { Map, TileLayer, FeatureGroup } from "react-leaflet";
+import { Map, TileLayer, FeatureGroup, GeoJSON } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import L from "leaflet";
 
@@ -49,8 +49,6 @@ export default function GeoFilter({ id = "geo", options = {} }) {
             mcg.clearLayers();
 
             nodes.forEach((node) => {
-                let customPopup =
-                    "<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/440px-Map_pin_icon.svg.png'></img>";
                 if (node.lat && node.long) {
                     L.marker([node.lat, node.long], {
                         icon: blueMarkerIcon,
@@ -60,6 +58,7 @@ export default function GeoFilter({ id = "geo", options = {} }) {
             });
             map.fitBounds(mcg.getBounds(), {
                 padding: [120, 120],
+                maxZoom: 8,
             });
             map.addLayer(mcg);
         }
@@ -90,7 +89,7 @@ export default function GeoFilter({ id = "geo", options = {} }) {
     );
 
     const ZOOM_LEVEL = 12;
-    const MAX_ZOOM = 12;
+    const MAX_ZOOM = 8;
     const [center, setCenter] = useState({ lat: 24.2, lng: 54.37 });
 
     // run this effect only on component update
@@ -202,15 +201,20 @@ export default function GeoFilter({ id = "geo", options = {} }) {
     };
 
     const onDeleted = (e) => {
-        let newFeatureGroup = cloneDeep(featureGroup);
-        e.layers.eachLayer((l) => {
-            const id = L.stamp(l);
-            // remove modified feature by id
-            newFeatureGroup.features = newFeatureGroup.features.filter((f) => {
-                return f.properties.id !== id;
-            });
-        });
-        setFeatureGroup(newFeatureGroup);
+        // with the commented approach there are problems with session featureGroup
+        // cancel remove them by leaflet map (html), but are not removed by sessionStorage
+        // as cancel is cancel all
+        // we reinitialize the layer to 0 featureGroups
+
+        // let newFeatureGroup = cloneDeep(featureGroup);
+        // e.layers.eachLayer((l) => {
+        //     const id = L.stamp(l);
+        //     // remove modified feature by id
+        //     newFeatureGroup.features = newFeatureGroup.features.filter((f) => {
+        //         return f.properties.id !== id;
+        //     });
+        // });
+        setFeatureGroup(initialFeatureGroup);
     };
 
     // https://github.com/simonepri/geojson-geometries-lookup#geojsongeometrieslookuphascontainersgeometry-options--boolean
@@ -249,6 +253,7 @@ export default function GeoFilter({ id = "geo", options = {} }) {
                         circle: true,
                     }}
                 />
+                <GeoJSON data={featureGroup} />
             </FeatureGroup>
             <TileLayer
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

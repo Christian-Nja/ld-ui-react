@@ -96,6 +96,8 @@ export default function List({
                     className="table-item body-row"
                     style={key % 2 == 0 ? { backgroundColor: "#f5f5f5" } : null}
                     onClick={() => {
+                        console.log("On list click");
+                        console.log(nodes[index]);
                         onItemClick(nodes[index]);
                     }}
                 >
