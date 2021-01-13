@@ -14,6 +14,7 @@ export default function List({
     searchBarPlaceholder = "Search an item",
     itemTooltip = null,
     threshold = 0.23,
+    title,
 }) {
     // keys will be used to render header and access node information
     let keys = list.length > 0 ? Object.keys(list[0]) : [];
@@ -126,7 +127,7 @@ export default function List({
                     borderRadius: "10px 10px 0px 0px",
                 }}
             >
-                Instances
+                {title}
             </h1>
             <div>
                 <Icon name="search" className="search-icon"></Icon>

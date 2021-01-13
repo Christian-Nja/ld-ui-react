@@ -30,6 +30,7 @@ export default function KG({
     },
     itemTooltip = null,
     defaultConfig,
+    listTitle,
     defaultLayoutOptions = {
         menu: true,
         help: true,
@@ -138,8 +139,9 @@ export default function KG({
                         layout={layoutHandler.name}
                         options={{
                             //keyShapeZoom: 0.001,
+                            zoom: 0.6,
                             fitView: true,
-                            fitViewPadding: 100,
+                            fitViewPadding: [300, 0, 0, 200],
                             modes: {
                                 default: [
                                     {
@@ -163,6 +165,7 @@ export default function KG({
                                 itemTooltip={itemTooltip}
                                 onItemClick={onItemClick}
                                 list={filteredList}
+                                title={listTitle ? listTitle : "Data"}
                             ></List>
                         </div>
                     )}

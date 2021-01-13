@@ -30,7 +30,7 @@ export default function LayoutSelector(props) {
     const [open, handleOpen] = useBinaryState(false);
 
     return (
-        <Menu.Item>
+        <Menu.Item className="menu-item">
             <div
                 style={{ cursor: "pointer" }}
                 onClick={handleOpen}

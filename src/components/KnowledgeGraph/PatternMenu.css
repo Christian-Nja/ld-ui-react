@@ -3,5 +3,21 @@
 }
 
 .active-filter {
-    color: green;
+    color: #14d014;
+}
+
+.menu-item-message div.content {
+    width: max-content;
+}
+
+.ui.message.menu-item-message {
+    display: flex;
+    align-items: baseline;
+    position: absolute;
+    top: 65px;
+    left: 10px;
+}
+
+.ui.menu .item.menu-item {
+    padding: 1.5em;
 }

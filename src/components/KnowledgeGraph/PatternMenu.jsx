@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { Menu } from "semantic-ui-react";
+import React, { useContext, useState } from "react";
+import { Menu, Message, Icon } from "semantic-ui-react";
 
 import LayoutSelector from "./LayoutSelector";
 import LayoutToggle from "./LayoutToggle";
@@ -12,8 +12,10 @@ import "./PatternMenu.css";
 import { Context } from "./Context";
 
 import { cloneDeep } from "lodash";
+import { useEffect } from "react";
 
 const menuStyle = { position: "absolute", top: 70, left: 20, zIndex: 10 };
+const greenText = "#14d014";
 
 export default function PatternMenu(props) {
     const [context, setContext] = useContext(Context);
@@ -22,13 +24,62 @@ export default function PatternMenu(props) {
     const [layoutButton, setLayoutButton] = useBinaryState();
     const [filterButton, setFilterButton] = useBinaryState();
 
+    // we use this state variable to launch a callback opening the filter item menu
+    // resulting behaviour: when activating a filter it's menu item regulator is also open
+    const [lastActivatedFilter, setLastActivatedFilter] = useState(false);
+
+    useEffect(() => {
+        if (lastActivatedFilter) {
+            // filtering
+            let newFilterConfig = cloneDeep(context.filterConfig);
+            newFilterConfig[
+                lastActivatedFilter.filterKey
+            ].state = !newFilterConfig[lastActivatedFilter.filterKey].state;
+            setContext({
+                ...context,
+                filterConfig: newFilterConfig,
+            });
+        }
+    }, [lastActivatedFilter]);
+    useEffect(() => {
+        if (lastActivatedFilter) {
+            // filter active
+            if (!lastActivatedFilter.state) {
+                if (open.includes(lastActivatedFilter.filterId)) {
+                    // regulator open
+                    // do nothing
+                } else {
+                    setOpen(lastActivatedFilter.filterId);
+                }
+            }
+            // filter not active
+            if (lastActivatedFilter.state) {
+                if (open.includes(lastActivatedFilter.filterId)) {
+                    // regulator open
+                    // close it
+                    setOpen(lastActivatedFilter.filterId);
+                } else {
+                }
+            }
+        }
+    }, [lastActivatedFilter]);
+
+    // check if some filter is active and modify menu UI
+    // signalling user by green color or message
+    const isSomeFilterActive = Object.keys(context.filterConfig).some((k) => {
+        console.log(k);
+        return context.filterConfig[k].state === true;
+    });
+
     return (
         <div style={menuStyle}>
             <Menu vertical inverted>
                 {
-                    <Menu.Item>
+                    <Menu.Item className="menu-item">
                         <div
-                            style={{ cursor: "pointer" }}
+                            style={{
+                                cursor: "pointer",
+                            }}
                             onClick={setLayoutButton}
                         >
                             Layout
@@ -51,12 +102,28 @@ export default function PatternMenu(props) {
                         }}
                     ></LayoutSelector>
                 )}
-                <Menu.Item>
+                <Menu.Item className="menu-item">
                     <div
-                        style={{ cursor: "pointer" }}
+                        style={{
+                            cursor: "pointer",
+                            color: isSomeFilterActive ? greenText : "white",
+                            display: "flex",
+                        }}
                         onClick={setFilterButton}
                     >
                         Filters
+                        {isSomeFilterActive && !filterButton ? (
+                            <Message
+                                className="menu-item-message"
+                                success
+                                size="small"
+                            >
+                                <Icon name="alarm" />
+                                <Message.Content>
+                                    There are active filters
+                                </Message.Content>
+                            </Message>
+                        ) : null}
                     </div>
                     <Menu.Menu className={filterButton ? "" : "close-filter"}>
                         {props.children &&
@@ -64,7 +131,10 @@ export default function PatternMenu(props) {
                                 (child, index) => {
                                     // return filters
                                     return (
-                                        <Menu.Item key={index}>
+                                        <Menu.Item
+                                            key={index}
+                                            className="menu-item"
+                                        >
                                             <div
                                                 style={{
                                                     display: "flex",
@@ -98,22 +168,17 @@ export default function PatternMenu(props) {
                                                         ].state
                                                     }
                                                     onChange={(e) => {
-                                                        const filterKey =
-                                                            e.target.id;
-                                                        let newFilterConfig = cloneDeep(
-                                                            context.filterConfig
-                                                        );
-                                                        newFilterConfig[
-                                                            filterKey
-                                                        ].state = !newFilterConfig[
-                                                            filterKey
-                                                        ].state;
-                                                        console.log(
-                                                            newFilterConfig
-                                                        );
-                                                        setContext({
-                                                            ...context,
-                                                            filterConfig: newFilterConfig,
+                                                        // setLastToggledFilter
+                                                        setLastActivatedFilter({
+                                                            filterKey:
+                                                                e.target.id,
+                                                            filterId: index,
+                                                            state: context
+                                                                .filterConfig[
+                                                                child.props.id
+                                                            ].state
+                                                                ? true
+                                                                : false,
                                                         });
                                                     }}
                                                 />

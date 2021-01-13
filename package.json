@@ -1,5 +1,5 @@
 {
-    "name": "ld-ui-react",
+    "name": "odp-reactor",
     "version": "1.0.1",
     "description": "React UIs to visualize Linked Data, especially Ontology Design Patterns",
     "main": "lib/index.js",
@@ -24,7 +24,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Christian-Nja/ld-ui-react.git"
+        "url": "git+https://github.com/Christian-Nja/odp-reactor.git"
     },
     "keywords": [
         "linked",
@@ -38,9 +38,9 @@
     "author": "Christian Colonna",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/Christian-Nja/ld-ui-react/issues"
+        "url": "https://github.com/Christian-Nja/odp-reactor/issues"
     },
-    "homepage": "https://github.com/Christian-Nja/ld-ui-react#readme",
+    "homepage": "https://github.com/Christian-Nja/odp-reactor#readme",
     "dependencies": {
         "@ant-design/icons": "^4.3.0",
         "@antv/graphin": "^1.5.0",
