@@ -2,23 +2,40 @@ import { useState, useEffect } from "react";
 
 import { defineProp } from "../../utilities/generics";
 
-
-import {cloneDeep} from "lodash"
+import { cloneDeep } from "lodash";
 
 /* LD-UI-REACT
 _____________________________________________________________ */
 
-
 // to refactor you need to initialize the state outside o KG and pass the context, setContext from there
 export function useHelp(context, setContext, message) {
-    console.log(message)
+    console.log(message);
     const setMessage = () => {
         setContext({ ...context, help: message });
     };
     return setMessage;
 }
 
+export function useAlert(context, setContext) {
+    useEffect(() => {
+        document.getElementById("alert-box").classList.add("show-alert");
+        const interval = setInterval(() => {
+            document.getElementById("alert-box").classList.remove("show-alert");
+        }, 1500);
+        return () => clearInterval(interval);
+    }, [context.alert]);
 
+    const setAlert = (message) => {
+        setContext({
+            ...context,
+            alert: {
+                switch: context.alert ? !context.alert.switch : true,
+                message: message,
+            },
+        });
+    };
+    return setAlert;
+}
 
 /**
  * @description A function to invert binary state.

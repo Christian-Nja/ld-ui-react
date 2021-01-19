@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
 import { Menu, Message, Icon } from "semantic-ui-react";
 
+import HelpIcon from "./HelpIcon";
+
 import LayoutSelector from "./LayoutSelector";
 import LayoutToggle from "./LayoutToggle";
 
@@ -24,7 +26,7 @@ const greenText = "#14d014";
 export default function PatternMenu(props) {
     const [context, setContext] = useContext(Context);
     const filterHelp =
-        "Click here to open filter panel. Every filter can be active or inactive. When active it will filter out all KG nodes without the filter range and all the nodes without the property the filter acts on";
+        "Click here to open filter panel. Every filter can be active or inactive. When active it will filter out all KG nodes outside of the filter range. Nodes without  ";
     const setHelp = useHelp(context, setContext, filterHelp);
 
     const [open, setOpen] = useBinaryArrayState([]);
@@ -117,12 +119,14 @@ export default function PatternMenu(props) {
                             display: "flex",
                         }}
                         onClick={setFilterButton}
-                        class="with-help"
                         onMouseEnter={() => {
                             setHelp();
                         }}
                     >
                         Filters
+                        <HelpIcon
+                            style={{ position: "absolute", left: 130, top: 15 }}
+                        />
                         {isSomeFilterActive && !filterButton ? (
                             <Message
                                 className="menu-item-message"

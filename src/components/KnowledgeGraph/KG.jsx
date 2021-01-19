@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import PatternMenu from "./PatternMenu";
 import List from "./List";
 import HelpBox from "./HelpBox";
+import AlertBox from "./AlertBox";
 import { Context } from "./Context";
 
 // Graphin Components
@@ -152,6 +153,7 @@ export default function KG({
             // <MatomoProvider value={instance}>
             <Context.Provider value={[context, setContext]}>
                 <div style={graphContainerStyle}>
+                    <AlertBox />
                     {layoutOptions.help ? <HelpBox /> : null}
                     {layoutOptions.menu ? (
                         <PatternMenu

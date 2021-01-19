@@ -7,6 +7,8 @@ import React, {
 } from "react";
 import { Context } from "../Context";
 
+import { useAlert } from "../../hooks/ld-ui-hooks";
+
 import { Map, TileLayer, FeatureGroup, GeoJSON } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import L from "leaflet";
@@ -48,9 +50,6 @@ export default function GeoFilter({
         console.log("close filter");
     },
 }) {
-    console.log("Geo filter func:");
-    console.log(closeFilterMenuItem);
-
     const startDrawFlag = "Start draw";
     const stopDrawFlag = "Stop Draw";
 
@@ -61,6 +60,7 @@ export default function GeoFilter({
     const editRef = useRef();
 
     const [context, setContext] = useContext(Context);
+    const setAlert = useAlert(context, setContext);
     // read nodes from global context
     const nodes = context.nodes;
     const active = context.filterConfig[id].state;
@@ -170,6 +170,10 @@ export default function GeoFilter({
             isMounted.current = true;
         }
     }, [featureGroup, active]);
+
+    // useEffect(() => {
+    //     setAlert("Nodes filtered");
+    // }, [featureGroup, active]);
 
     const onFilterCreated = (e) => {
         const l = e.layer;

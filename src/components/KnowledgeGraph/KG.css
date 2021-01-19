@@ -13,12 +13,66 @@
     box-shadow: rgb(174, 174, 174) 0 0 10px;
 }
 
-.with-help.help-color {
-    border: 4px solid rgb(40, 207, 117);
+#alert-box {
+    background-color: chartreuse;
+    width: 600px;
+    height: 70px;
+    position: absolute;
+    top: 20px;
+    z-index: 50;
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: opacity 600ms, visibility 600ms;
+    transition: opacity 600ms, visibility 600ms;
 }
 
-.with-help {
-    border: 4px solid rgba(0, 0, 0, 0);
+#alert-box.show-alert {
+    visibility: visible;
+    opacity: 1;
+}
+
+i.with-help {
+    display: none;
+}
+
+i.show-help {
+    display: inline-block;
+    transform: rotate(15deg);
+}
+
+.slider-tooltip {
+    position: relative;
+    display: inline-block;
+    border: 1px solid black;
+    border-bottom: 1px dotted #222;
+    margin-left: 22px;
+}
+
+.slider-tooltip .slider-tooltiptext {
+    width: 100px;
+    background-color: white;
+    color: black;
+    opacity: 1;
+    text-align: center;
+    font-size: 15px;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -60px;
+}
+
+.slider-tooltip .slider-tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #e2e2e2 transparent transparent transparent;
 }
 
 .button-container {

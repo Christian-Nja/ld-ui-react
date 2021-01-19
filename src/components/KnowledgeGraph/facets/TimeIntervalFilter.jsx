@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useMemo, useRef } from "react";
 import { Context } from "../Context";
 
-import { Tick, Track, Handle } from "./SliderComponents";
+import { Tick, Track, Handle, TooltipRail } from "./SliderComponents";
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 
 import { cloneDeep } from "lodash";
@@ -100,11 +100,7 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
                 onChange={onChange}
                 values={values}
             >
-                <Rail>
-                    {({ getRailProps }) => (
-                        <div style={railStyle} {...getRailProps()} />
-                    )}
-                </Rail>
+                <Rail>{(railProps) => <TooltipRail {...railProps} />}</Rail>
                 <Handles>
                     {({ handles, getHandleProps }) => (
                         <div className="slider-handles">

@@ -14,6 +14,35 @@ const msgStyle = {
     fontSize: "medium",
 };
 
+const SHAKING_INTERVAL = 1500;
+let interval;
+const shakeit = function (element) {
+    // element.style.display = "block";
+    var x = -1;
+    interval = setInterval(function () {
+        if (x == -1) {
+            element.style.marginLeft = "3px";
+        } else {
+            switch (x) {
+                case 0:
+                    element.style.marginLeft = "-3px";
+                    break;
+                case 1:
+                    element.style.marginLeft = "0px";
+                    element.style.marginTop = "3px";
+                    break;
+                case 2:
+                    element.style.marginTop = "-3px";
+                    break;
+                default:
+                    element.style.marginTop = "0px";
+                    clearInterval(interval);
+            }
+        }
+        x++;
+    }, 50);
+};
+
 export default function HelpBox() {
     // listen to local central state
     const [context, setContext] = useContext(Context);
@@ -22,7 +51,7 @@ export default function HelpBox() {
     const outMessage =
         "This diagram shows the patterns contained in the knowledge graph and their relations. Each node corresponds to a pattern, the radius of the node indicates the size of pattern (number of instances of the pattern within the graph). Double click on a node to explore the instances of the patterns";
     const enterMessage =
-        "Move the mouse over an element with green fluo borders and, usage hint will be shown in this box";
+        "Move over the blue question marks with the mouse. An help about the element they are closed too will be shown in this box. ";
     const setEnterHelp = useHelp(context, setContext, enterMessage);
     const setOutHelp = useHelp(context, setContext, outMessage);
 
@@ -30,11 +59,11 @@ export default function HelpBox() {
         const helps = document.getElementsByClassName("with-help");
         if (open) {
             for (let h of helps) {
-                h.classList.add("help-color");
+                h.classList.add("show-help");
             }
         } else {
             for (let h of helps) {
-                h.classList.remove("help-color");
+                h.classList.remove("show-help");
             }
         }
     }, [open]);
@@ -44,9 +73,24 @@ export default function HelpBox() {
         return () => {
             const helps = document.getElementsByClassName("with-help");
             for (let h of helps) {
-                h.classList.remove("help-color");
+                h.classList.remove("show-help");
             }
         };
+    }, []);
+
+    useEffect(() => {
+        const toShake = document.getElementsByClassName("shakeit");
+        if (toShake) {
+            for (let s of toShake) {
+                shakeit(s);
+            }
+
+            setInterval(function () {
+                for (let s of toShake) {
+                    shakeit(s);
+                }
+            }, SHAKING_INTERVAL);
+        }
     }, []);
 
     const boxStyle = open
