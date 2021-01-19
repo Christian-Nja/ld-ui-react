@@ -214,8 +214,9 @@ const graphContainerStyle = {
 };
 
 const listContainerStyle = {
-    marginTop: 70,
     marginLeft: 200,
     width: 1050,
     display: "none",
+    position: "absolute",
+    top: 70,
 };

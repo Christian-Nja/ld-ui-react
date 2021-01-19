@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useMemo, useRef } from "react";
 
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
-import { Tick, Track, Handle } from "./SliderComponents";
+import { Tick, Track, Handle, TooltipRail } from "./SliderComponents";
 
 import { Context } from "../Context";
 
@@ -11,15 +11,6 @@ const sliderStyle = {
     margin: "5%",
     position: "relative",
     width: "90%",
-};
-
-const railStyle = {
-    position: "absolute",
-    width: "100%",
-    height: 14,
-    borderRadius: 7,
-    cursor: "pointer",
-    backgroundColor: "rgb(155,155,155)",
 };
 
 SliderFilter.defaultProps = {
@@ -125,10 +116,13 @@ export default function SliderFilter({
                         values={values}
                     >
                         <Rail>
-                            {({ getRailProps }) => (
-                                <div style={railStyle} {...getRailProps()} />
-                            )}
+                            {(railProps) => <TooltipRail {...railProps} />}
                         </Rail>
+                        {/* <Rail>
+                             {({ getRailProps }) => (
+                                <div style={railStyle} {...getRailProps()} />
+                            )} 
+                        </Rail> */}
                         <Handles>
                             {({ handles, getHandleProps }) => (
                                 <div className="slider-handles">
