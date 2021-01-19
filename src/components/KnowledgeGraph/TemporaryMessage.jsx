@@ -19,12 +19,11 @@ export default function TemporaryMessage({
     // }, []);
 
     // not working to much rerendering !!!!!!!!!
-    const helpToken = window.sessionStorage.getItem("help");
-    if (!helpToken) {
-        window.sessionStorage.setItem("help", "yes");
-    }
-    console.log("HelpToken");
-    console.log(helpToken);
+    // const helpToken = window.sessionStorage.getItem("help");
+    // if (!helpToken) {
+    //     window.sessionStorage.setItem("help", "yes");
+    // }
+    const helpToken = true;
 
     return (
         <div

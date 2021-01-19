@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
 
-import { useBinaryState } from "../hooks/ld-ui-hooks";
+import { useBinaryState, useHelp } from "../hooks/ld-ui-hooks";
 
 import { Context } from "./Context";
 import TemporaryMessage from "./TemporaryMessage";
 
 import { Icon } from "semantic-ui-react";
+import { useEffect } from "react";
 
 const msgStyle = {
     color: "black",
@@ -18,6 +19,36 @@ export default function HelpBox() {
     const [context, setContext] = useContext(Context);
     const [open, handleOpen] = useBinaryState(false);
 
+    const outMessage =
+        "This diagram shows the patterns contained in the knowledge graph and their relations. Each node corresponds to a pattern, the radius of the node indicates the size of pattern (number of instances of the pattern within the graph). Double click on a node to explore the instances of the patterns";
+    const enterMessage =
+        "Move the mouse over an element with green fluo borders and, usage hint will be shown in this box";
+    const setEnterHelp = useHelp(context, setContext, enterMessage);
+    const setOutHelp = useHelp(context, setContext, outMessage);
+
+    useEffect(() => {
+        const helps = document.getElementsByClassName("with-help");
+        if (open) {
+            for (let h of helps) {
+                h.classList.add("help-color");
+            }
+        } else {
+            for (let h of helps) {
+                h.classList.remove("help-color");
+            }
+        }
+    }, [open]);
+
+    useEffect(() => {
+        // clean up if component unmount
+        return () => {
+            const helps = document.getElementsByClassName("with-help");
+            for (let h of helps) {
+                h.classList.remove("help-color");
+            }
+        };
+    }, []);
+
     const boxStyle = open
         ? {
               position: "absolute",
@@ -25,17 +56,18 @@ export default function HelpBox() {
               left: 40,
               zIndex: 10,
               cursor: "pointer",
-              background: "grey",
+              background: "white",
               opacity: 1,
               width: 400,
               height: 140,
               textAlign: "center",
               transition: 0.3,
-              border: "1px solid #7f45e7",
+              border: "2px solid #7f45e7",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               padding: "0px 20px",
+              fontStyle: "italic",
           }
         : {
               position: "absolute",
@@ -55,10 +87,19 @@ export default function HelpBox() {
           };
 
     return (
-        <div onClick={handleOpen} style={boxStyle}>
+        <div
+            onClick={handleOpen}
+            style={boxStyle}
+            onMouseEnter={() => {
+                setEnterHelp();
+            }}
+            onMouseLeave={() => {
+                setOutHelp();
+            }}
+        >
             {!open ? (
                 <TemporaryMessage
-                    message="Open the box to get help about application"
+                    message="Open this box to get help about the application"
                     style={{
                         color: "rgb(13, 60, 97)",
                         backgroundColor: "rgb(232, 244, 253)",
@@ -67,7 +108,7 @@ export default function HelpBox() {
                         position: "absolute",
                         top: -90,
                         left: 0,
-                        width: 200,
+                        width: 210,
                         fontWeight: "bolder",
                         padding: 20,
                     }}
@@ -75,7 +116,18 @@ export default function HelpBox() {
             ) : null}
             <div style={msgStyle}>
                 {open ? (
-                    "Move the mouse over an element and, if there's a usage hint it will be shown in this box"
+                    context.help ? (
+                        <div>
+                            <i aria-hidden="true" class="info icon"></i>
+                            {context.help}
+                        </div>
+                    ) : (
+                        <div>
+                            <i aria-hidden="true" class="info icon"></i>
+                            Move the mouse over an element and, if there's a
+                            usage hint it will be shown in this box
+                        </div>
+                    )
                 ) : (
                     <Icon name="question circle"></Icon>
                 )}

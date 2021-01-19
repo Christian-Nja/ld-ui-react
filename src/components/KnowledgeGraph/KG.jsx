@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 
 import PatternMenu from "./PatternMenu";
 import List from "./List";
@@ -14,6 +14,8 @@ import "./KG.css";
 import { useLayout, useGraphinDoubleClick } from "../hooks/ld-ui-hooks";
 
 // import { Map } from "immutable";
+
+import MatomoTracker from "@datapunt/matomo-tracker-js";
 
 export default function KG({
     data = {
@@ -40,11 +42,40 @@ export default function KG({
     },
 }) {
     if (data.graph.nodes) {
+        const tracker = new MatomoTracker({
+            urlBase: "http://localhost:10080/",
+            siteId: 1,
+            // userId: "UID76903202", // optional, default value: `undefined`.
+            // trackerUrl: "https://LINK.TO.DOMAIN/tracking.php", // optional, default value: `${urlBase}matomo.php`
+            // srcUrl: "https://LINK.TO.DOMAIN/tracking.js", // optional, default value: `${urlBase}matomo.js`
+            disabled: false, // optional, false by default. Makes all tracking calls no-ops if set to true.
+            heartBeat: {
+                // optional, enabled by default
+                active: true, // optional, default value: true
+                seconds: 10, // optional, default value: `15
+            },
+            linkTracking: false, // optional, default value: true
+            // configurations: {
+            //     // optional, default value: {}
+            //     // any valid matomo configuration, all below are optional
+            //     disableCookies: true,
+            //     setSecureCookie: true,
+            //     setRequestMethod: "POST",
+            // },
+        });
+
+        tracker.trackPageView();
+
         // pass this to PatternMenu component to have a panel to switch layouts
         const layoutHandler = useLayout();
         const [layoutOptions, setLayoutOptions] = useState(
             defaultLayoutOptions
         );
+
+        // matomo tracking
+        // *****<=========>
+        // const { enableLinkTracking } = useMatomo();
+        // enableLinkTracking();
 
         useEffect(() => {
             let graphContainer = document.getElementById("graphin-container");
@@ -95,9 +126,6 @@ export default function KG({
         };
         const [context, setContext] = useState(initialState); // todo setContext as useReducer with setRemovedNodes actions, setConfigurations ...
 
-        console.log("initial context");
-        console.log(context);
-
         useEffect(() => {
             onContextChange(context);
         }, [context]);
@@ -121,6 +149,7 @@ export default function KG({
         });
 
         return (
+            // <MatomoProvider value={instance}>
             <Context.Provider value={[context, setContext]}>
                 <div style={graphContainerStyle}>
                     {layoutOptions.help ? <HelpBox /> : null}
@@ -171,6 +200,7 @@ export default function KG({
                     )}
                 </div>
             </Context.Provider>
+            // </MatomoProvider>
         );
     } else return <div></div>;
 }
@@ -184,8 +214,8 @@ const graphContainerStyle = {
 };
 
 const listContainerStyle = {
-    marginTop: 40,
-    marginLeft: 100,
-    width: 900,
+    marginTop: 70,
+    marginLeft: 200,
+    width: 1050,
     display: "none",
 };

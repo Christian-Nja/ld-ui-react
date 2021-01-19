@@ -1,4 +1,10 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import React, {
+    useContext,
+    useState,
+    useRef,
+    useEffect,
+    useLayoutEffect,
+} from "react";
 import { Context } from "../Context";
 
 import { Map, TileLayer, FeatureGroup, GeoJSON } from "react-leaflet";
@@ -32,8 +38,27 @@ GeoFilter.defaultProps = {
     options: {},
 };
 
-export default function GeoFilter({ id = "geo", options = {} }) {
+const POLYGON_CREATED = 1;
+const SHAPE_DELETED = 2;
+
+export default function GeoFilter({
+    id = "geo",
+    options = {},
+    closeFilterMenuItem = () => {
+        console.log("close filter");
+    },
+}) {
+    console.log("Geo filter func:");
+    console.log(closeFilterMenuItem);
+
+    const startDrawFlag = "Start draw";
+    const stopDrawFlag = "Stop Draw";
+
+    const [mapUIState, setMapUI] = useState(startDrawFlag);
+    const [mapState, setMapState] = useState(null);
+
     const mapRef = useRef();
+    const editRef = useRef();
 
     const [context, setContext] = useContext(Context);
     // read nodes from global context
@@ -98,12 +123,7 @@ export default function GeoFilter({ id = "geo", options = {} }) {
         if (isMounted) {
             let newRemovedNodes = cloneDeep(context.removedNodes);
             let newFilterConfig = cloneDeep(context.filterConfig);
-            console.log("slider filter called");
-            console.log(context);
             if (active) {
-                console.log("Feature group:");
-                console.log(featureGroup);
-                console.log(JSON.stringify(featureGroup));
                 // here logic to set true only nodes inside featureGroup
                 nodes.forEach((node) => {
                     // disable every node without the value key
@@ -113,7 +133,6 @@ export default function GeoFilter({ id = "geo", options = {} }) {
                     }
                     // touch only nodes with geometry
                     if (node.lat && node.long) {
-                        console.log("node value key");
                         // get node in map
                         let nodeState = newRemovedNodes.get(node.id);
                         let geolookup = new GeoJsonGeometriesLookup(
@@ -123,8 +142,6 @@ export default function GeoFilter({ id = "geo", options = {} }) {
                             type: "Point",
                             coordinates: [node.long, node.lat],
                         };
-                        console.log(geolookup);
-                        console.log(point);
                         if (geolookup.hasContainers(point)) {
                             // node inside geoJSON set true
                             nodeState.set(id, true);
@@ -154,7 +171,7 @@ export default function GeoFilter({ id = "geo", options = {} }) {
         }
     }, [featureGroup, active]);
 
-    const onCreated = (e) => {
+    const onFilterCreated = (e) => {
         const l = e.layer;
         let newFeature = l.toGeoJSON();
         newFeature.properties.id = L.stamp(l);
@@ -214,55 +231,136 @@ export default function GeoFilter({ id = "geo", options = {} }) {
         //         return f.properties.id !== id;
         //     });
         // });
+        console.log("on deleted");
         setFeatureGroup(initialFeatureGroup);
     };
+
+    const onCreated = (e) => {
+        setMapState({ id: POLYGON_CREATED, e: e });
+    };
+
+    // update filter
+    useEffect(() => {
+        console.log("UPDATE filters");
+        if (mapState) {
+            if (mapState.id === POLYGON_CREATED) {
+                onFilterCreated(mapState.e);
+            }
+            if (mapState.id === SHAPE_DELETED) {
+                console.log("Deleted");
+                onDeleted();
+            }
+        }
+    }, [mapState]);
+    // update UI
+    useLayoutEffect(() => {
+        if (mapState) {
+            if (mapState.id === POLYGON_CREATED) {
+                setMapUI(startDrawFlag);
+            }
+        }
+    }, [mapState]);
 
     // https://github.com/simonepri/geojson-geometries-lookup#geojsongeometrieslookuphascontainersgeometry-options--boolean
 
     return (
-        <Map
-            center={center}
-            zoom={ZOOM_LEVEL}
-            maxZoom={MAX_ZOOM}
-            ref={mapRef}
-            attributionControl={false}
-            id="leaflet-map"
-            style={{
-                position: "fixed",
-                top: "50%",
-                left: "50%",
-                width: 1000,
-                height: 600,
-                marginTop: -300,
-                marginLeft: -450,
-                border: "2px solid rgb(54, 48, 74)",
-                borderRadius: 4,
-            }}
-        >
-            <FeatureGroup>
-                <EditControl
-                    position="topright"
-                    onCreated={onCreated}
-                    onEdited={onEdited}
-                    onDeleted={onDeleted}
-                    draw={{
-                        rectangle: false,
-                        polyline: false,
-                        circlemarker: false,
-                        marker: false,
-                        circle: true,
-                    }}
+        <div>
+            <Map
+                zoomControl={false}
+                center={center}
+                zoom={ZOOM_LEVEL}
+                maxZoom={MAX_ZOOM}
+                ref={mapRef}
+                attributionControl={false}
+                id="leaflet-map"
+                style={{
+                    //                 position: fixed;
+                    // top: 0;
+                    // left: 0;
+                    // left: 0;
+                    // h: 1000px;
+                    /* height: 600px; */
+                    /* margin-top: -300px; */
+                    // margin-left: -450px;
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    border: "2px solid rgb(54, 48, 74)",
+                    borderRadius: 4,
+                    zIndex: 4,
+                    // zIndex: 1,
+                }}
+            >
+                <FeatureGroup>
+                    <EditControl
+                        ref={editRef}
+                        position="topright"
+                        onCreated={onCreated}
+                        onEdited={onEdited}
+                        onDeleted={onDeleted}
+                        draw={{
+                            rectangle: false,
+                            polyline: false,
+                            circlemarker: false,
+                            marker: false,
+                            circle: true,
+                            polygon: true,
+                        }}
+                    />
+                    <GeoJSON data={featureGroup} />
+                </FeatureGroup>
+                <TileLayer
+                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
                 />
-                <GeoJSON data={featureGroup} />
-            </FeatureGroup>
-            <TileLayer
-                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
-            />
-            {/* <TileLayer
+                {/* <TileLayer
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             /> */}
-        </Map>
+            </Map>
+            <div
+                className="map-button close-button"
+                onClick={closeFilterMenuItem}
+            >
+                X
+            </div>
+            <div className="button-container">
+                <div
+                    className="map-button edit-button"
+                    onClick={() => {
+                        if (mapUIState === startDrawFlag) {
+                            editRef.current.leafletElement._toolbars.draw._modes.polygon.handler.enable();
+                            setMapUI(stopDrawFlag);
+                        }
+                        if (mapUIState === stopDrawFlag) {
+                            editRef.current.leafletElement._toolbars.draw._modes.polygon.handler.completeShape();
+                            editRef.current.leafletElement._toolbars.draw._modes.polygon.handler.disable();
+                            setMapUI(startDrawFlag);
+                        }
+                    }}
+                >
+                    {mapUIState}
+                </div>
+                {featureGroup.features.length > 0 && (
+                    <div
+                        className="map-button delete-button"
+                        onClick={() => {
+                            console.log(
+                                editRef.current.leafletElement._toolbars.edit
+                                    ._modes.remove.handler
+                            );
+                            // startDelete
+                            editRef.current.leafletElement._toolbars.edit._modes.remove.handler.enable();
+                            // saveDelete
+                            editRef.current.leafletElement._toolbars.edit._modes.remove.handler.removeAllLayers();
+                            editRef.current.leafletElement._toolbars.edit._modes.remove.handler.disable();
+                            setMapState({ id: SHAPE_DELETED, e: null });
+                        }}
+                    >
+                        Clear Map
+                    </div>
+                )}
+            </div>
+        </div>
     );
 }

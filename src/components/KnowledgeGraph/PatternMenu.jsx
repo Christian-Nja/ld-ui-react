@@ -4,7 +4,11 @@ import { Menu, Message, Icon } from "semantic-ui-react";
 import LayoutSelector from "./LayoutSelector";
 import LayoutToggle from "./LayoutToggle";
 
-import { useBinaryArrayState, useBinaryState } from "../hooks/ld-ui-hooks";
+import {
+    useBinaryArrayState,
+    useBinaryState,
+    useHelp,
+} from "../hooks/ld-ui-hooks";
 import Toggle from "react-toggle";
 import "react-toggle/style.css"; // for ES6 modules
 
@@ -19,6 +23,9 @@ const greenText = "#14d014";
 
 export default function PatternMenu(props) {
     const [context, setContext] = useContext(Context);
+    const filterHelp =
+        "Click here to open filter panel. Every filter can be active or inactive. When active it will filter out all KG nodes without the filter range and all the nodes without the property the filter acts on";
+    const setHelp = useHelp(context, setContext, filterHelp);
 
     const [open, setOpen] = useBinaryArrayState([]);
     const [layoutButton, setLayoutButton] = useBinaryState();
@@ -110,6 +117,10 @@ export default function PatternMenu(props) {
                             display: "flex",
                         }}
                         onClick={setFilterButton}
+                        class="with-help"
+                        onMouseEnter={() => {
+                            setHelp();
+                        }}
                     >
                         Filters
                         {isSomeFilterActive && !filterButton ? (
@@ -128,7 +139,16 @@ export default function PatternMenu(props) {
                     <Menu.Menu className={filterButton ? "" : "close-filter"}>
                         {props.children &&
                             React.Children.toArray(props.children).map(
-                                (child, index) => {
+                                (c, index) => {
+                                    let child;
+                                    if (React.isValidElement(c)) {
+                                        child = React.cloneElement(c, {
+                                            closeFilterMenuItem: () => {
+                                                setOpen(index);
+                                            },
+                                        });
+                                    }
+
                                     // return filters
                                     return (
                                         <Menu.Item

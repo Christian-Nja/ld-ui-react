@@ -2,8 +2,23 @@ import { useState, useEffect } from "react";
 
 import { defineProp } from "../../utilities/generics";
 
+
+import {cloneDeep} from "lodash"
+
 /* LD-UI-REACT
 _____________________________________________________________ */
+
+
+// to refactor you need to initialize the state outside o KG and pass the context, setContext from there
+export function useHelp(context, setContext, message) {
+    console.log(message)
+    const setMessage = () => {
+        setContext({ ...context, help: message });
+    };
+    return setMessage;
+}
+
+
 
 /**
  * @description A function to invert binary state.
