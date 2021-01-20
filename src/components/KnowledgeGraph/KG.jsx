@@ -149,6 +149,9 @@ export default function KG({
             }
         });
 
+        console.log("GRAPH");
+        console.log(data.graph.toVisual(context.removedNodes));
+
         return (
             // <MatomoProvider value={instance}>
             <Context.Provider value={[context, setContext]}>
@@ -168,11 +171,21 @@ export default function KG({
                         data={data.graph.toVisual(context.removedNodes)}
                         ref={graphRef}
                         layout={layoutHandler.name}
+                        extend={{
+                            nodeShape: () => {
+                                return [
+                                    {
+                                        name: "CustomNode",
+                                        render: renderCustomNodeShape,
+                                    },
+                                ];
+                            },
+                        }}
                         options={{
                             //keyShapeZoom: 0.001,
-                            zoom: 0.6,
+                            zoom: 0.7,
                             fitView: true,
-                            fitViewPadding: [300, 0, 0, 200],
+                            fitViewPadding: [300, 300, 300, 200],
                             modes: {
                                 default: [
                                     {
@@ -221,4 +234,122 @@ const listContainerStyle = {
     display: "none",
     position: "absolute",
     top: 70,
+};
+
+const renderCustomNodeShape = (node) => {
+    const style = {
+        ...node.style,
+    };
+    const badgeNumber = 0;
+
+    return {
+        shape: "CustomNode",
+        shapeComponents: [
+            {
+                shape: "rect",
+                attrs: {
+                    id: "rect-container",
+                    x: 0,
+                    y: 0,
+                    width: style.containerWidth,
+                    height: style.containerWidth,
+                    fill: style.containerFill,
+                    stroke: style.containerStroke,
+                    cursor: "pointer",
+                    lineWidth: 2,
+                    radius: style.containerWidth / 2,
+                },
+            },
+            // {
+            //     shape: "circle",
+            //     attrs: {
+            //         id: "badge",
+            //         x: style.containerWidth,
+            //         y: 0,
+            //         r: style.badgeSize,
+            //         fill: style.badgeFill,
+            //         cursor: "pointer",
+            //         lineWidth: 1,
+            //     },
+            // },
+            // {
+            //     shape: "text",
+            //     attrs: {
+            //         id: "badge-text",
+            //         x: style.containerWidth,
+            //         y: -4,
+            //         text: badgeNumber,
+            //         fontSize: 10,
+            //         cursor: "pointer",
+            //         fill: "#fff",
+            //         textAlign: "center",
+            //         textBaseline: "top",
+            //     },
+            // },
+            {
+                shape: "text",
+                attrs: {
+                    id: "text-desc",
+                    text: node.data.label,
+                    x: style.containerWidth / 2,
+                    y: style.containerWidth * 1.1,
+                    cursor: "pointer",
+                    fontSize: style.fontSize,
+                    fill: style.fontColor,
+                    fontWeight: "lighter",
+                    fontFamily: "Courier New",
+                    textAlign: "center",
+                    textBaseline: "top",
+                },
+            },
+        ],
+        state: {
+            selected: {
+                "rect-container": {
+                    stroke: style.containerStroke,
+                    fill: style.containerStroke,
+                    animate: {
+                        attrs: {
+                            lineWidth: 6,
+                            shadowOffsetX: 0,
+                            shadowOffsetY: 0,
+                            shadowBlur: 2,
+                            shadowColor: "#fff",
+                            repeat: false, // 循环
+                        },
+                        duration: 200,
+                        easing: "easeCubic",
+                        callback: null,
+                        delay: 0,
+                    },
+                },
+                "node-icon": {
+                    fill: "#fff",
+                },
+                badge: {
+                    lineWidth: 6,
+                },
+            },
+        },
+        // HIGHLITE CHANGE COLOR
+        "highlight.dark": {
+            "rect-container": {
+                fill: style.dark,
+                stroke: style.dark,
+                lineWidth: 0,
+            },
+            "node-icon": {
+                fill: style.dark,
+            },
+            "text-desc": {
+                fill: "#eee",
+            },
+            badge: {
+                fill: style.dark,
+            },
+            "badge-text": {
+                fill: style.dark,
+            },
+        },
+    };
 };

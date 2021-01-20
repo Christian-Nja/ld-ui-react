@@ -1,9 +1,9 @@
 import React from "react";
 import { Icon } from "semantic-ui-react";
 
-export default function HelpIcon({ style = {} }) {
+export default function HelpIcon({ style = {}, onMouseEnter = () => {} }) {
     return (
-        <div style={style}>
+        <div style={style} onMouseEnter={onMouseEnter}>
             <Icon
                 color="teal"
                 size="big"

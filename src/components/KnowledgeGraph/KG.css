@@ -5,16 +5,26 @@
 .g6-tooltip {
     border: 1px solid #e2e2e2;
     border-radius: 4px;
-    font-size: 12px;
-    max-width: 200px;
+    font-size: 15px;
+    max-width: 400px;
     color: #545454;
+    margin: 15px;
     background-color: rgba(255, 255, 255, 0.9);
-    padding: 10px 8px;
+    padding: 20px 18px;
     box-shadow: rgb(174, 174, 174) 0 0 10px;
 }
 
+.g6-tooltip-title {
+    font-weight: bolder;
+}
+
+.g6-tooltip-text {
+    display: inline-block;
+    margin-left: 5px;
+    margin-bottom: 10px;
+}
+
 #alert-box {
-    background-color: chartreuse;
     width: 600px;
     height: 70px;
     position: absolute;
@@ -24,6 +34,13 @@
     visibility: hidden;
     -webkit-transition: opacity 600ms, visibility 600ms;
     transition: opacity 600ms, visibility 600ms;
+    border: 1px solid #2c662d;
+    color: #2c662d;
+    background-color: #fcfff5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
 }
 
 #alert-box.show-alert {

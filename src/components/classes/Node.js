@@ -27,7 +27,7 @@ export default class Node {
         this.id = node.id;
         this.label = node.data.label || getURILabel(node.id);
         this.data = node.data || { id: node.id };
-        this.shape = node.shape || "CircleNode";
+        this.shape = node.shape || "CustomNode";
         this.type = node.type || "company";
         this.style = node.style || { nodeSize: 25 };
     }

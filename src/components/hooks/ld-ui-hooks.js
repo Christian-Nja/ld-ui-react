@@ -18,12 +18,19 @@ export function useHelp(context, setContext, message) {
 
 export function useAlert(context, setContext) {
     useEffect(() => {
-        document.getElementById("alert-box").classList.add("show-alert");
-        const interval = setInterval(() => {
-            document.getElementById("alert-box").classList.remove("show-alert");
-        }, 1500);
-        return () => clearInterval(interval);
+        if (context.alert) {
+            document.getElementById("alert-box").classList.add("show-alert");
+            const interval = setInterval(() => {
+                document
+                    .getElementById("alert-box")
+                    .classList.remove("show-alert");
+            }, 1500);
+            return () => clearInterval(interval);
+        }
     }, [context.alert]);
+
+    console.log("Context inside alert message");
+    console.log(context);
 
     const setAlert = (message) => {
         setContext({
@@ -155,6 +162,13 @@ export function useLayout(baseLayout) {
         options: {
             animation: false,
             enableWorker: true,
+            defSpringLen: (_edge, source, target) => {
+                const nodeSize = 100;
+                const Sdegree = source.data.layout?.degree;
+                const Tdegree = target.data.layout?.degree;
+                const minDegree = Math.min(Sdegree, Tdegree);
+                return minDegree < 3 ? nodeSize * 5 : minDegree * nodeSize * 2;
+            },
         },
     });
     const [layout, setLayout] = useState(defaultLayout);

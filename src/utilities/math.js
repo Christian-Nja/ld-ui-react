@@ -111,5 +111,9 @@ export function baseLog(b, n) {
 export function scaleData(x, minD, maxD, minV, maxV) {
     // log base
     const b = Math.pow(maxD - minD, 1 / (maxV - minV));
-    return minV + baseLog(b, x - minD);
+    const result = minV + baseLog(b, x - minD);
+    if (isFinite(result)) {
+        return result;
+    }
+    return minV;
 }

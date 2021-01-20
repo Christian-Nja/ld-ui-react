@@ -7,7 +7,7 @@
 }
 
 .menu-item-message div.content {
-    width: max-content;
+    font-size: 15px;
 }
 
 .ui.message.menu-item-message {
@@ -20,4 +20,12 @@
 
 .ui.menu .item.menu-item {
     padding: 1.5em;
+}
+
+.react-toggle {
+    top: -15px;
+}
+
+.filter-title {
+    font-size: 15px;
 }

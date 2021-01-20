@@ -11,7 +11,7 @@ const stringSimilarity = require("string-similarity");
 export default function List({
     list,
     onItemClick = (node) => {},
-    searchBarPlaceholder = "Search an item",
+    searchBarPlaceholder = "Search in the table",
     itemTooltip = null,
     threshold = 0.23,
     title,

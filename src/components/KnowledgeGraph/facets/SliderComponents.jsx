@@ -282,6 +282,7 @@ export function Tick({ tick, count, format }) {
     return (
         <div>
             <div
+                className="tick"
                 style={{
                     position: "absolute",
                     marginTop: 17,
@@ -295,7 +296,7 @@ export function Tick({ tick, count, format }) {
                 style={{
                     position: "absolute",
                     marginTop: 25,
-                    fontSize: 10,
+                    fontSize: 18,
                     textAlign: "center",
                     marginLeft: `${-(100 / count) / 2}%`,
                     width: `${100 / count}%`,

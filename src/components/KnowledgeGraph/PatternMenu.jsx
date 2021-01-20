@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Menu, Message, Icon } from "semantic-ui-react";
 
 import HelpIcon from "./HelpIcon";
+import DropdownIcon from "./DropdownIcon";
 
 import LayoutSelector from "./LayoutSelector";
 import LayoutToggle from "./LayoutToggle";
@@ -12,6 +13,7 @@ import {
     useHelp,
 } from "../hooks/ld-ui-hooks";
 import Toggle from "react-toggle";
+
 import "react-toggle/style.css"; // for ES6 modules
 
 import "./PatternMenu.css";
@@ -19,6 +21,7 @@ import { Context } from "./Context";
 
 import { cloneDeep } from "lodash";
 import { useEffect } from "react";
+import { RotateRightOutlined } from "@ant-design/icons";
 
 const menuStyle = { position: "absolute", top: 70, left: 20, zIndex: 10 };
 const greenText = "#14d014";
@@ -117,15 +120,17 @@ export default function PatternMenu(props) {
                             cursor: "pointer",
                             color: isSomeFilterActive ? greenText : "white",
                             display: "flex",
+                            fontSize: 18,
                         }}
                         onClick={setFilterButton}
-                        onMouseEnter={() => {
-                            setHelp();
-                        }}
                     >
                         Filters
                         <HelpIcon
                             style={{ position: "absolute", left: 130, top: 15 }}
+                            onMouseEnter={() => {
+                                console.log("Enter");
+                                setHelp();
+                            }}
                         />
                         {isSomeFilterActive && !filterButton ? (
                             <Message
@@ -168,21 +173,36 @@ export default function PatternMenu(props) {
                                                 }}
                                             >
                                                 <div
-                                                    style={{
-                                                        cursor: "pointer",
-                                                    }}
                                                     className={
                                                         context.filterConfig[
                                                             child.props.id
                                                         ].state
-                                                            ? "active-filter"
-                                                            : ""
+                                                            ? "active-filter filter-title"
+                                                            : "filter-title"
                                                     }
-                                                    onClick={() => {
-                                                        setOpen(index);
-                                                    }}
                                                 >
                                                     {child.props.title}
+                                                    <DropdownIcon
+                                                        style={{
+                                                            transform: open.includes(
+                                                                index
+                                                            )
+                                                                ? "rotate(180deg)"
+                                                                : null,
+                                                            position:
+                                                                "relative",
+                                                            marginDown: 5,
+                                                            marginBottom: 5,
+                                                            marginTop: 10,
+                                                            marginLeft: 35,
+                                                            cursor: "pointer",
+                                                            width:
+                                                                "fit-content",
+                                                        }}
+                                                        onClick={() => {
+                                                            setOpen(index);
+                                                        }}
+                                                    />
                                                 </div>
                                                 <Toggle
                                                     id={child.props.id}

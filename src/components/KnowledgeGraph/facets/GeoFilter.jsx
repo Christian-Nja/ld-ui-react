@@ -161,6 +161,8 @@ export default function GeoFilter({
                 });
             }
             newFilterConfig[id].options.featureGroup = featureGroup;
+            console.log("[*] We are filtering");
+            console.log(newRemovedNodes);
             setContext({
                 ...context,
                 removedNodes: newRemovedNodes,
@@ -171,9 +173,16 @@ export default function GeoFilter({
         }
     }, [featureGroup, active]);
 
-    // useEffect(() => {
-    //     setAlert("Nodes filtered");
-    // }, [featureGroup, active]);
+    useEffect(() => {
+        console.log("Context inside geo filter");
+        console.log(context);
+        console.log("Fiature group in filter");
+        console.log(featureGroup);
+        // launch message just if filter is active
+        if (active) {
+            setAlert("Nodes filtered");
+        }
+    }, [context.removedNodes]);
 
     const onFilterCreated = (e) => {
         const l = e.layer;
