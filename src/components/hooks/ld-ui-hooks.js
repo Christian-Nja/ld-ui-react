@@ -19,29 +19,29 @@ export function useHelp(context, setContext, message) {
 export function useAlert(context, setContext) {
     useEffect(() => {
         if (context.alert) {
-            document.getElementById("alert-box").classList.add("show-alert");
-            const interval = setInterval(() => {
-                document
-                    .getElementById("alert-box")
-                    .classList.remove("show-alert");
-            }, 1500);
+            const interval = showAlertBox();
             return () => clearInterval(interval);
         }
     }, [context.alert]);
 
-    console.log("Context inside alert message");
-    console.log(context);
-
-    const setAlert = (message) => {
+    const showAlert = (/*message*/) => {
         setContext({
             ...context,
             alert: {
                 switch: context.alert ? !context.alert.switch : true,
-                message: message,
+                // message: message,
             },
         });
     };
-    return setAlert;
+    return showAlert;
+}
+
+export function showAlertBox(hideTime = 1500) {
+    document.getElementById("alert-box").classList.add("show-alert");
+    const interval = setInterval(() => {
+        document.getElementById("alert-box").classList.remove("show-alert");
+    }, hideTime);
+    return interval;
 }
 
 /**

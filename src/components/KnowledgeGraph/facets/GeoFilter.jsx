@@ -60,7 +60,7 @@ export default function GeoFilter({
     const editRef = useRef();
 
     const [context, setContext] = useContext(Context);
-    const setAlert = useAlert(context, setContext);
+    const showAlert = useAlert(context, setContext);
     // read nodes from global context
     const nodes = context.nodes;
     const active = context.filterConfig[id].state;
@@ -174,13 +174,9 @@ export default function GeoFilter({
     }, [featureGroup, active]);
 
     useEffect(() => {
-        console.log("Context inside geo filter");
-        console.log(context);
-        console.log("Fiature group in filter");
-        console.log(featureGroup);
         // launch message just if filter is active
         if (active) {
-            setAlert("Nodes filtered");
+            showAlert();
         }
     }, [context.removedNodes]);
 

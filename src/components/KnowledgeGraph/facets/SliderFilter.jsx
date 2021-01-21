@@ -7,6 +7,10 @@ import { Context } from "../Context";
 
 import { cloneDeep } from "lodash";
 
+import { useAlert } from "../../hooks/ld-ui-hooks";
+
+import Qty from "js-quantities";
+
 const sliderStyle = {
     margin: "5%",
     position: "relative",
@@ -26,11 +30,24 @@ export default function SliderFilter({
     id = "slider",
     options = {},
     valueKey,
+    measurementUnit,
 }) {
+    let formatTicks = (d) => {
+        return d;
+    };
+    if (measurementUnit) {
+        formatTicks = (d) => {
+            return Qty(`${d} ${measurementUnit}`).format("m");
+        };
+    }
+
     // listen to global context
     const [context, setContext] = useContext(Context);
+    const showAlert = useAlert(context, setContext);
+
     // read nodes from global context
     const nodes = context.nodes;
+
     // filter cannot work with one node
     if (nodes.length < 2) {
         return null;
@@ -104,6 +121,13 @@ export default function SliderFilter({
             }
         }, [values, active]);
 
+        useEffect(() => {
+            // launch message just if filter is active
+            if (active) {
+                showAlert();
+            }
+        }, [context.removedNodes]);
+
         if (domain[MIN] < domain[MAX]) {
             return (
                 <div style={{ height: 40, width: "100%", marginTop: 20 }}>
@@ -159,6 +183,7 @@ export default function SliderFilter({
                                             key={tick.id}
                                             tick={tick}
                                             count={ticks.length}
+                                            format={formatTicks}
                                         />
                                     ))}
                                 </div>

@@ -31,6 +31,7 @@ export default function SearchBarFilter({ onFilter = (filtered) => {} }) {
                 style={{
                     margin: "auto",
                     display: "block",
+                    fontFamily: "Montserrat-Medium",
                 }}
                 onChange={(e) => setSearch(e.target.value)}
             />

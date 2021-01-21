@@ -89,13 +89,14 @@ export default function List({
     }, [inputValue]);
 
     const renderRow = (index, key) => {
+        let columnId = -1;
         if (nodes.length > 0) {
             return (
                 <div
                     title={itemTooltip}
                     key={key}
-                    className="table-item body-row"
-                    style={key % 2 == 0 ? { backgroundColor: "#f5f5f5" } : null}
+                    className="table-item body-row "
+                    // style={key % 2 == 0 ? { backgroundColor: "#f5f5f5" } : null}
                     onClick={() => {
                         console.log("On list click");
                         console.log(nodes[index]);
@@ -103,10 +104,54 @@ export default function List({
                     }}
                 >
                     {keys.map((k) => {
+                        columnId++;
                         if (nodes[index])
                             return (
-                                <div className="body-cell">
-                                    {nodes[index][k]}
+                                <div
+                                    className={`body-cell column-cell-${columnId}`}
+                                    onMouseEnter={(e) => {
+                                        let columnClass = e.target.classList[1];
+                                        let columnCells = document.getElementsByClassName(
+                                            columnClass
+                                        );
+                                        console.log("hover table");
+                                        console.log(e.target.classList);
+                                        for (let c of columnCells) {
+                                            console.log(c);
+                                            let isHeader =
+                                                c.classList[0] ===
+                                                "header-cell";
+                                            if (isHeader) {
+                                                c.classList.add(
+                                                    "header-column-hover"
+                                                );
+                                            } else {
+                                                c.classList.add("column-hover");
+                                            }
+                                        }
+                                    }}
+                                    onMouseOut={(e) => {
+                                        let columnClass = e.target.classList[1];
+                                        let columnCells = document.getElementsByClassName(
+                                            columnClass
+                                        );
+                                        for (let c of columnCells) {
+                                            let isHeader =
+                                                c.classList[0] ===
+                                                "header-cell";
+                                            if (isHeader) {
+                                                c.classList.remove(
+                                                    "header-column-hover"
+                                                );
+                                            } else {
+                                                c.classList.remove(
+                                                    "column-hover"
+                                                );
+                                            }
+                                        }
+                                    }}
+                                >
+                                    {nodes[index][k] ? nodes[index][k] : "--"}
                                 </div>
                             );
                     })}
@@ -115,16 +160,18 @@ export default function List({
         }
     };
 
+    let headerColumnId = -1;
+
     return (
-        <div>
+        <div style={{ fontFamily: "Montserrat-Medium" }}>
             <h1
                 style={{
-                    backgroundColor: "#36304a",
-                    fontFamily: "OpenSans-Regular",
+                    backgroundColor: "#002933",
                     fontSize: 18,
                     color: "#fff",
                     padding: 10,
                     borderRadius: "10px 10px 0px 0px",
+                    textTransform: "uppercase",
                 }}
             >
                 {title}
@@ -141,8 +188,15 @@ export default function List({
                 <div className="header">
                     <div className="header-row">
                         {keys.map((k) => {
+                            headerColumnId++;
                             // get keys from first node
-                            return <div className="header-cell">{k}</div>;
+                            return (
+                                <div
+                                    className={`header-cell column-cell-${headerColumnId}`}
+                                >
+                                    {k}
+                                </div>
+                            );
                         })}
                     </div>
                 </div>

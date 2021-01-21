@@ -91,6 +91,7 @@ export default function PatternMenu(props) {
                         <div
                             style={{
                                 cursor: "pointer",
+                                fontSize: 18,
                             }}
                             onClick={setLayoutButton}
                         >
@@ -157,7 +158,6 @@ export default function PatternMenu(props) {
                                             },
                                         });
                                     }
-
                                     // return filters
                                     return (
                                         <Menu.Item
@@ -170,8 +170,25 @@ export default function PatternMenu(props) {
                                                     justifyContent:
                                                         "space-between",
                                                     alignItems: "center",
+                                                    marginBottom: 5,
                                                 }}
                                             >
+                                                <DropdownIcon
+                                                    style={{
+                                                        transform: open.includes(
+                                                            index
+                                                        )
+                                                            ? null
+                                                            : "rotate(270deg)",
+                                                        position: "relative",
+                                                        cursor: "pointer",
+                                                        width: "fit-content",
+                                                    }}
+                                                    onClick={() => {
+                                                        setOpen(index);
+                                                    }}
+                                                />
+
                                                 <div
                                                     className={
                                                         context.filterConfig[
@@ -182,27 +199,6 @@ export default function PatternMenu(props) {
                                                     }
                                                 >
                                                     {child.props.title}
-                                                    <DropdownIcon
-                                                        style={{
-                                                            transform: open.includes(
-                                                                index
-                                                            )
-                                                                ? "rotate(180deg)"
-                                                                : null,
-                                                            position:
-                                                                "relative",
-                                                            marginDown: 5,
-                                                            marginBottom: 5,
-                                                            marginTop: 10,
-                                                            marginLeft: 35,
-                                                            cursor: "pointer",
-                                                            width:
-                                                                "fit-content",
-                                                        }}
-                                                        onClick={() => {
-                                                            setOpen(index);
-                                                        }}
-                                                    />
                                                 </div>
                                                 <Toggle
                                                     id={child.props.id}

@@ -7,6 +7,7 @@ import { Context } from "../Context";
 import { cloneDeep } from "lodash";
 
 import ColorGenerator from "../../classes/ColorGenerator";
+import { useAlert } from "../../hooks/ld-ui-hooks";
 
 PropertyFilter.defaultProps = {
     id: "pie",
@@ -34,6 +35,7 @@ export default function PropertyFilter({
 }) {
     // listen to local central state
     const [context, setContext] = useContext(Context);
+    const showAlert = useAlert(context, setContext);
 
     const [hovered, setHovered] = useState(null);
     const [filtered, setFiltered] = useBinaryArrayState(
@@ -83,9 +85,15 @@ export default function PropertyFilter({
         }
     }, [filtered, active]);
 
-    console.log("Property pie");
+    useEffect(() => {
+        // launch message just if filter is active
+        if (active) {
+            showAlert();
+        }
+    }, [context.removedNodes]);
 
     let values = {};
+
     nodes.forEach((node) => {
         if (!values[node[property]]) {
             values[node[property]] = {
@@ -111,12 +119,6 @@ export default function PropertyFilter({
             color: filtered.includes(k) ? "grey" : c.value,
         };
     });
-
-    console.log("Properties");
-    console.log(data);
-
-    console.log("Filtered:");
-    console.log(filtered);
 
     return (
         <PieChart

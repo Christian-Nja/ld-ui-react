@@ -1,12 +1,12 @@
 import React, { useState, useContext } from "react";
 
-import { Context } from "./Context";
+// import { Context } from "./Context";
 
 import { Icon } from "semantic-ui-react";
 
 export default function AlertBox() {
-    console.log("Alert box called");
-    const [context, setContext] = useContext(Context);
+    // console.log("Alert box called");
+    // const [context, setContext] = useContext(Context);
     return (
         <div id="alert-box">
             <div class="semantic-ui-icon">

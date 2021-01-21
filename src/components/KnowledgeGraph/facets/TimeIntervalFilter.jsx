@@ -6,6 +6,8 @@ import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 
 import { cloneDeep } from "lodash";
 
+import { useAlert } from "../../hooks/ld-ui-hooks";
+
 /**
  * node {
  *     id: uri
@@ -25,6 +27,8 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
     // read nodes from global context
     const nodes = context.nodes;
     const active = context.filterConfig[id].state;
+
+    const showAlert = useAlert(context, setContext);
 
     // if domain not in options compute it
     let domain = options.domain
@@ -89,6 +93,13 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
             isMounted.current = true;
         }
     }, [values, active]);
+
+    useEffect(() => {
+        // launch message just if filter is active
+        if (active) {
+            showAlert();
+        }
+    }, [context.removedNodes]);
 
     return nodes.length !== 0 ? (
         <div style={{ height: 40, width: "100%", marginTop: 20 }}>

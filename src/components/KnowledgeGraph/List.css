@@ -1,5 +1,4 @@
 .table-item {
-    padding: 10px;
     font-family: "OpenSans-Regular";
     cursor: pointer;
 }
@@ -22,12 +21,12 @@ i.search-icon {
 
 .table {
     border: 1px solid rgb(54, 48, 74);
-    padding: 5px;
 }
 
 .header {
-    border: 1px solid rgb(54, 48, 74);
-    margin-bottom: 5px;
+    background-color: #002933;
+    color: #fff;
+    text-transform: "uppercase";
 }
 
 .header-row,
@@ -35,14 +34,46 @@ i.search-icon {
     display: flex;
 }
 
+.column-hover {
+    background-color: #f2f2f2;
+}
+
+.header-column-hover {
+    background-color: #1a3f48;
+}
+
+.header-row {
+    background-color: #002933;
+    color: #fff;
+}
+
 .header-cell,
 .body-cell {
     flex: 1;
+}
+
+.body-cell {
+    color: gray;
     padding: 10px;
+    padding-top: 18px;
+    padding-bottom: 14px;
+    text-align: center;
+}
+
+.body-cell:hover {
+    background-color: #6c7ae0;
+    color: #fff;
+}
+
+.body-row:hover {
+    background-color: #f2f2f2;
 }
 
 .header-cell {
     font-weight: bold;
+    padding-top: 24px;
+    padding-bottom: 20px;
+    text-align: center;
 }
 
 .body {

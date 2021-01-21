@@ -11,7 +11,7 @@ const railStyle = {
     transform: "translate(0%, -50%)",
     height: 40,
     cursor: "pointer",
-    zIndex: 300,
+    zIndex: 3,
     // border: '1px solid grey',
 };
 
@@ -170,9 +170,7 @@ export class Handle extends Component {
                         }}
                     >
                         <div className="slider-tooltip">
-                            <span className="slider-tooltiptext">
-                                Value: {value}
-                            </span>
+                            <span className="slider-tooltiptext">{value}</span>
                         </div>
                     </div>
                 ) : null}
@@ -182,7 +180,7 @@ export class Handle extends Component {
                         position: "absolute",
                         transform: "translate(-50%, -50%)",
                         WebkitTapHighlightColor: "rgba(0,0,0,0)",
-                        zIndex: 400,
+                        zIndex: 4,
                         width: 26,
                         height: 42,
                         cursor: "pointer",
@@ -204,7 +202,7 @@ export class Handle extends Component {
                         position: "absolute",
                         transform: "translate(-50%, -50%)",
                         WebkitTapHighlightColor: "rgba(0,0,0,0)",
-                        zIndex: 300,
+                        zIndex: 3,
                         width: 24,
                         height: 24,
                         border: 0,
@@ -296,7 +294,7 @@ export function Tick({ tick, count, format }) {
                 style={{
                     position: "absolute",
                     marginTop: 25,
-                    fontSize: 18,
+                    fontSize: 15,
                     textAlign: "center",
                     marginLeft: `${-(100 / count) / 2}%`,
                     width: `${100 / count}%`,

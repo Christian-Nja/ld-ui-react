@@ -22,8 +22,8 @@
     padding: 1.5em;
 }
 
-.react-toggle {
-    top: -15px;
+.ui.vertical.menu {
+    width: 25rem;
 }
 
 .filter-title {
