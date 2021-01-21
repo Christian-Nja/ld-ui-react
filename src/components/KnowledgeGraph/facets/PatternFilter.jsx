@@ -39,6 +39,8 @@ export default function PatternFilter({
     const properties = context.nodes;
     const active = context.filterConfig[id].state;
 
+    console.log("PATTERN FILTER MOUNTED");
+
     // run this effect only on component update
     const isMounted = useRef(false);
     useEffect(() => {

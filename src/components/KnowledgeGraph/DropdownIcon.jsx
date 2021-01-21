@@ -5,6 +5,7 @@ export default function DropdownIcon({
     style = {},
     onClick = () => {},
     title,
+    className = "",
 }) {
     return (
         <div
@@ -12,7 +13,12 @@ export default function DropdownIcon({
             onClick={onClick}
             title={"Show/Close filter regulator"}
         >
-            <Icon name="angle down" color="grey" size="large" className="" />
+            <Icon
+                name="angle down"
+                color="grey"
+                size="large"
+                className={`${className}`}
+            />
         </div>
     );
 }

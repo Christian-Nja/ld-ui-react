@@ -96,7 +96,7 @@ export default function HelpBox() {
         ? {
               position: "absolute",
               top: 480,
-              left: 40,
+              left: 0,
               zIndex: 11,
               cursor: "pointer",
               background: "white",
@@ -118,8 +118,8 @@ export default function HelpBox() {
           }
         : {
               position: "absolute",
-              top: 600,
-              left: 40,
+              top: 650,
+              left: 0,
               zIndex: 10,
               cursor: "pointer",
               background: "grey",
@@ -158,7 +158,7 @@ export default function HelpBox() {
                     )
                 ) : (
                     <TemporaryMessage
-                        message="Open this box to get help about the application"
+                        message=""
                         style={{
                             color: "rgb(13, 60, 97)",
                             backgroundColor: "rgb(232, 244, 253)",
@@ -167,7 +167,7 @@ export default function HelpBox() {
                             position: "absolute",
                             top: -90,
                             left: 0,
-                            width: 210,
+                            width: "fit-content",
                             fontWeight: "bolder",
                             padding: 20,
                         }}

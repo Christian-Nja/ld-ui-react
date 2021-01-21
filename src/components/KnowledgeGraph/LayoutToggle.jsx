@@ -17,6 +17,8 @@ export default function LayoutToggle(props) {
                 color: "white",
                 display: "flex",
                 justifyContent: "space-evenly",
+                marginBottom: 10,
+                marginTop: 20,
             }}
             title={"Switch layout"}
         >

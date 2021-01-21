@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Menu, Message, Icon } from "semantic-ui-react";
 
 import HelpIcon from "./HelpIcon";
@@ -20,10 +20,7 @@ import "./PatternMenu.css";
 import { Context } from "./Context";
 
 import { cloneDeep } from "lodash";
-import { useEffect } from "react";
-import { RotateRightOutlined } from "@ant-design/icons";
 
-const menuStyle = { position: "absolute", top: 70, left: 20, zIndex: 10 };
 const greenText = "#14d014";
 
 export default function PatternMenu(props) {
@@ -35,10 +32,30 @@ export default function PatternMenu(props) {
     const [open, setOpen] = useBinaryArrayState([]);
     const [layoutButton, setLayoutButton] = useBinaryState();
     const [filterButton, setFilterButton] = useBinaryState();
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    useEffect(() => {
+        if (layoutButton) {
+            setLayoutButton();
+        }
+    }, [menuOpen]);
+
+    useEffect(() => {
+        if (filterButton) {
+            setFilterButton();
+        }
+    }, [menuOpen]);
 
     // we use this state variable to launch a callback opening the filter item menu
     // resulting behaviour: when activating a filter it's menu item regulator is also open
     const [lastActivatedFilter, setLastActivatedFilter] = useState(false);
+
+    const menuStyle = {
+        position: "absolute",
+        top: 70,
+        left: 0,
+        zIndex: 10,
+    };
 
     useEffect(() => {
         if (lastActivatedFilter) {
@@ -84,7 +101,16 @@ export default function PatternMenu(props) {
     });
 
     return (
-        <div style={menuStyle}>
+        <div
+            style={menuStyle}
+            className={`menu-main ${menuOpen ? "menu-main-over" : ""}`}
+            onMouseOver={() => {
+                setMenuOpen(true);
+            }}
+            onMouseLeave={() => {
+                setMenuOpen(false);
+            }}
+        >
             <Menu vertical inverted>
                 {
                     <Menu.Item className="menu-item">
@@ -95,7 +121,31 @@ export default function PatternMenu(props) {
                             }}
                             onClick={setLayoutButton}
                         >
-                            Layout
+                            <Icon name="picture" />
+                            <div
+                                className={`menu-main-title ${
+                                    menuOpen ? "menu-main-open" : ""
+                                }`}
+                            >
+                                Layout
+                            </div>
+                            <DropdownIcon
+                                style={{
+                                    transform: layoutButton
+                                        ? null
+                                        : "rotate(270deg)",
+                                    position: "relative",
+                                    cursor: "pointer",
+                                    width: "fit-content",
+                                    display: menuOpen ? "inline-block" : "none",
+                                    float: "right",
+                                }}
+                                className={
+                                    menuOpen
+                                        ? "menu-dropdown menu-open-dropdown"
+                                        : "menu-dropdown"
+                                }
+                            />
                         </div>
                         {layoutButton ? (
                             <Menu.Menu>
@@ -113,6 +163,7 @@ export default function PatternMenu(props) {
                         onClick={(newLayout) => {
                             props.layoutHandler.setLayout(newLayout);
                         }}
+                        menuOpen={menuOpen}
                     ></LayoutSelector>
                 )}
                 <Menu.Item className="menu-item">
@@ -120,12 +171,35 @@ export default function PatternMenu(props) {
                         style={{
                             cursor: "pointer",
                             color: isSomeFilterActive ? greenText : "white",
-                            display: "flex",
                             fontSize: 18,
                         }}
                         onClick={setFilterButton}
                     >
-                        Filters
+                        <Icon name="search" />
+                        <div
+                            className={`menu-main-title ${
+                                menuOpen ? "menu-main-open" : ""
+                            }`}
+                        >
+                            Filters
+                        </div>
+                        <DropdownIcon
+                            style={{
+                                transform: filterButton
+                                    ? null
+                                    : "rotate(270deg)",
+                                position: "relative",
+                                cursor: "pointer",
+                                width: "fit-content",
+                                display: menuOpen ? "inline-block" : "none",
+                                float: "right",
+                            }}
+                            className={
+                                menuOpen
+                                    ? "menu-dropdown menu-open-dropdown"
+                                    : "menu-dropdown"
+                            }
+                        />
                         <HelpIcon
                             style={{ position: "absolute", left: 130, top: 15 }}
                             onMouseEnter={() => {
@@ -162,7 +236,7 @@ export default function PatternMenu(props) {
                                     return (
                                         <Menu.Item
                                             key={index}
-                                            className="menu-item"
+                                            className="menu-item filter-item"
                                         >
                                             <div
                                                 style={{
@@ -171,6 +245,9 @@ export default function PatternMenu(props) {
                                                         "space-between",
                                                     alignItems: "center",
                                                     marginBottom: 5,
+                                                    paddingLeft: 30,
+                                                    marginTop: 10,
+                                                    marginBottom: 10,
                                                 }}
                                             >
                                                 <DropdownIcon
@@ -181,14 +258,13 @@ export default function PatternMenu(props) {
                                                             ? null
                                                             : "rotate(270deg)",
                                                         position: "relative",
-                                                        cursor: "pointer",
                                                         width: "fit-content",
+                                                        cursor: "pointer",
                                                     }}
                                                     onClick={() => {
                                                         setOpen(index);
                                                     }}
                                                 />
-
                                                 <div
                                                     className={
                                                         context.filterConfig[
@@ -197,6 +273,12 @@ export default function PatternMenu(props) {
                                                             ? "active-filter filter-title"
                                                             : "filter-title"
                                                     }
+                                                    onClick={() => {
+                                                        setOpen(index);
+                                                    }}
+                                                    style={{
+                                                        cursor: "pointer",
+                                                    }}
                                                 >
                                                     {child.props.title}
                                                 </div>

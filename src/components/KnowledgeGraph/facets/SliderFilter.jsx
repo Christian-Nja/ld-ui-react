@@ -41,6 +41,8 @@ export default function SliderFilter({
         };
     }
 
+    console.log("SLIDER FILTER MOUNTED");
+
     // listen to global context
     const [context, setContext] = useContext(Context);
     const showAlert = useAlert(context, setContext);

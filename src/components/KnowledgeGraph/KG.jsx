@@ -229,9 +229,8 @@ const graphContainerStyle = {
 };
 
 const listContainerStyle = {
-    marginLeft: 200,
-    width: 1050,
-    display: "none",
+    marginLeft: "5%",
+    marginRight: "2%",
     position: "absolute",
     top: 70,
 };
