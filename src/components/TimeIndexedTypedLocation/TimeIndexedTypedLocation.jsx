@@ -58,7 +58,7 @@ export default function TimeIndexedTypedLocation({
     timeIndexedTypedLocations,
     cPropDepiction,
     cPropLabel,
-    onCulturalPropertyClick = () => {},
+    onObjectClick = () => {},
 }) {
     /** mapRef */
     const mapRef = useRef(null);
@@ -185,7 +185,7 @@ export default function TimeIndexedTypedLocation({
                         console.log(cProp);
                         cProp[0].style.cursor = "pointer";
                         cProp[0].addEventListener("click", function (e) {
-                            onCulturalPropertyClick();
+                            onObjectClick();
                         });
                     });
             });
