@@ -68,17 +68,22 @@ export default function SliderFilter({
         );
 
         const onChange = (values) => {
-            setValues(values);
+            if (!Number.isNaN(values[0]) && !Number.isNaN(values[1])) {
+                setValues(values);
+            } else {
+                setValues(domain);
+            }
         };
 
         // run this effect only on component update
         const isMounted = useRef(false);
         useEffect(() => {
+            console.log("This effect is make crashing");
+            console.log("values:", values);
+            console.log(active);
             if (isMounted) {
                 let newRemovedNodes = cloneDeep(context.removedNodes);
                 let newFilterConfig = cloneDeep(context.filterConfig);
-                console.log("slider filter called");
-                console.log(context);
                 // if filter active it works
                 if (active) {
                     nodes.forEach((node) => {

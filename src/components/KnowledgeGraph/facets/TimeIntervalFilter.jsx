@@ -42,7 +42,11 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
     );
 
     const onChange = (values) => {
-        setValues(values);
+        if (!Number.isNaN(values[0]) && !Number.isNaN(values[1])) {
+            setValues(values);
+        } else {
+            setValues(domain);
+        }
     };
 
     // run this effect only on component update
