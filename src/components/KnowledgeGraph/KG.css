@@ -12,6 +12,7 @@
     background-color: rgba(255, 255, 255, 0.9);
     padding: 20px 18px;
     box-shadow: rgb(174, 174, 174) 0 0 10px;
+    pointer-events: none;
 }
 
 .g6-tooltip-title {
