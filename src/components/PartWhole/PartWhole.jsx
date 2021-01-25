@@ -84,7 +84,7 @@ export default function PartWhole({
                         label={
                             <Label
                                 uri={part.uri}
-                                classes={"label"}
+                                classes={"part-whole-label"}
                                 style={labelStyle}
                             />
                         }
@@ -109,7 +109,7 @@ export default function PartWhole({
                     label={
                         <Label
                             uri={whole.uri}
-                            classes="label"
+                            classes="part-whole-label"
                             style={centerLabelStyle}
                         />
                     }

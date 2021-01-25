@@ -51,12 +51,12 @@
     z-index: 4;
 }
 
-.whole-depiction:hover .label {
+.whole-depiction:hover .part-whole-label {
     /* transform: scale(2); */
     z-index: 5;
 }
 
-.label {
+.part-whole-label {
     opacity: 0;
     min-width: 200px;
     z-index: 5;
@@ -68,14 +68,14 @@
     position: relative;
 }
 
-.center:hover .label,
-.circle:hover .label {
+.center:hover .part-whole-label,
+.circle:hover .part-whole-label {
     opacity: 1;
     z-index: 5;
 }
 
-.center .label:hover,
-.circle .label:hover {
+.center .part-whole-label:hover,
+.circle .part-whole-label:hover {
     z-index: 5;
     opacity: 0;
 }

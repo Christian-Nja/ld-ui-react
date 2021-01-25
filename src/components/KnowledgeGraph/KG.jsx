@@ -233,6 +233,7 @@ const listContainerStyle = {
     marginRight: "2%",
     position: "absolute",
     top: 70,
+    width: "90%",
 };
 
 const renderCustomNodeShape = (node) => {
