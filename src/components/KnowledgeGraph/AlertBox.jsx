@@ -12,7 +12,7 @@ export default function AlertBox() {
             <div class="semantic-ui-icon">
                 <Icon name="check" size="big" color="green" />
             </div>
-            Filter applied
+            Filter Updated
             {/* {context.alert ? context.alert.message : null} */}
         </div>
     );

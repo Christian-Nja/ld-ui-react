@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
 
-import "./Collection.css";
+import styles from "./Collection.css";
 
 import Entity from "./Entity";
 import ThemeContext, { themes, DEFAULT_CONFIG } from "./config";
