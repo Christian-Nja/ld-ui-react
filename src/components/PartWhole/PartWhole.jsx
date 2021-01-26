@@ -78,6 +78,7 @@ export default function PartWhole({
                                 style={partStyle}
                                 classes={"depiction part-depiction"}
                                 uri={part.uri}
+                                placeholderImg={part.placeholder}
                                 onLoadedDepiction={onLoadedDepiction}
                             />
                         }
@@ -103,6 +104,7 @@ export default function PartWhole({
                             style={centerStyle}
                             classes={"depiction whole-depiction"}
                             uri={whole.uri}
+                            placeholderImg={whole.placeholder}
                             onLoadedDepiction={onLoadedDepiction}
                         />
                     }

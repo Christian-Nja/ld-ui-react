@@ -10,6 +10,7 @@ export default function Depiction({
     onClick,
     depiction = null,
     style = {},
+    placeholderImg = "https://semantic-ui.com/images/wireframe/image.png",
 }) {
     const [image, setImage] = useState(depiction);
 
@@ -33,7 +34,12 @@ export default function Depiction({
         }
     }, []);
 
-    return image ? (
-        <img onClick={onClick} src={image} className={classes} style={style} />
-    ) : null;
+    return (
+        <img
+            onClick={onClick}
+            src={image ? image : placeholderImg}
+            className={classes}
+            style={style}
+        />
+    );
 }
