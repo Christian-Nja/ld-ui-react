@@ -33,15 +33,17 @@ export default class Edge {
         this.source = edge.source;
         this.target = edge.target;
         this.style = edge.style;
-        this.shape = "line";
-        this.size = 5;
+        this.shape = "LineEdge";
+        this.size = 15;
         this.labelCfg = edge.labelCfg || {
             style: {
                 stroke: "white", // White stroke for the label
-                lineWidth: 5, // The line width of the stroke
+                lineWidth: 15, // The line width of the stroke
                 fill: "#722ed1", // The color of the text
-                fontSize: 20,
+                fontSize: 100,
             },
+            refY: -35, // refY is the offset along the clockwise down direction,
+            fontSize: 100,
         };
     }
 

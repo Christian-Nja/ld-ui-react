@@ -134,11 +134,18 @@ export default class Graph {
                     data: triple,
                     style: {
                         line: {
-                            width: 3,
+                            width: 5,
                             color:
                                 triple.p === Graph.relType.COMPONENT
                                     ? this.palette.compositionEdge
                                     : this.palette.specializationEdge,
+                        },
+                        label: {
+                            position: "top",
+                            fill: "black",
+                            fontSize: 1000,
+                            fontFamily: "",
+                            textAlign: "center",
                         },
                     },
                 })
