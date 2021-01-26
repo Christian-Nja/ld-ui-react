@@ -30,6 +30,11 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
 
     const showAlert = useAlert(context, setContext);
 
+    // from the age of time
+    const initialTime = -100000;
+    const now = new Date();
+    const currentTime = now.getFullYear();
+
     // if domain not in options compute it
     let domain = options.domain
         ? options.domain
@@ -58,13 +63,37 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
             // if filter active it works
             if (active) {
                 nodes.forEach((node) => {
-                    // touch only nodes with time
-                    if (node.startTime && node.endTime) {
+                    if (!node.startTime && !node.endTime) {
+                        // nodes without any information are meant to be
+                        // data not collected or reported
+                        // set them to false for this filter
+                        let nodeState = newRemovedNodes.get(node.id);
+                        nodeState.set(id, false);
+                    } else if (!node.startTime) {
+                        // Handle nodes with missing startTime
+                        // we consider as if it is since ever
+                        //
                         // get node in map
                         let nodeState = newRemovedNodes.get(node.id);
                         if (
-                            node.startTime >= values[0] &&
-                            node.endTime <= values[1]
+                            values[0] >= initialTime &&
+                            values[1] <= node.endTime
+                        ) {
+                            // node inside time interval set true
+                            nodeState.set(id, true);
+                        } else {
+                            // node not in range set false
+                            nodeState.set(id, false);
+                        }
+                    } else if (!node.endTime) {
+                        // Handle nodes with missing endTime
+                        // we consider as if it is today
+                        //
+                        // get node in map
+                        let nodeState = newRemovedNodes.get(node.id);
+                        if (
+                            values[0] >= node.startTime &&
+                            values[1] <= currentTime
                         ) {
                             // node inside time interval set true
                             nodeState.set(id, true);
@@ -73,9 +102,20 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
                             nodeState.set(id, false);
                         }
                     } else {
-                        // remove all nodes without startTime and endTime
+                        // Handle nodes with startTime and endTime defined
+                        //
+                        // get node in map
                         let nodeState = newRemovedNodes.get(node.id);
-                        nodeState.set(id, false);
+                        if (
+                            values[0] >= node.startTime &&
+                            values[1] <= node.endTime
+                        ) {
+                            // node inside time interval set true
+                            nodeState.set(id, true);
+                        } else {
+                            // node not in range set false
+                            nodeState.set(id, false);
+                        }
                     }
                 });
             } else {
