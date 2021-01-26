@@ -8,6 +8,14 @@ import { orderBy, fromPairs, map, filter } from "lodash";
 
 const stringSimilarity = require("string-similarity");
 
+/**
+ * You can modify max-height to change table height and eventually remove max-height in
+ * .body css class. This will make an infinite table you can handle with pagination.
+ *
+ * This a nice example:
+ *  https://datatables.net/extensions/searchpanes/examples/initialisation/viewTotal.html
+ */
+
 export default function List({
     list,
     onItemClick = (node) => {},
@@ -176,13 +184,24 @@ export default function List({
             >
                 {title}
             </h1>
-            <div>
-                <Icon name="search" className="search-icon"></Icon>
-                <input
-                    className="search-item"
-                    placeholder={searchBarPlaceholder}
-                    onChange={handleInput}
-                ></input>
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "baseline",
+                }}
+            >
+                <div>
+                    <Icon name="search" className="search-icon"></Icon>
+                    <input
+                        className="search-item"
+                        placeholder={searchBarPlaceholder}
+                        onChange={handleInput}
+                    ></input>
+                </div>
+                <div className="result-display" style={{ marginRight: 50 }}>
+                    Showing 1 to {nodes.length} of {nodes.length} resources
+                </div>
             </div>
             <div className="table">
                 <div className="header">
