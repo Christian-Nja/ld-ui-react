@@ -68,7 +68,9 @@ export class TooltipRail extends Component {
                     >
                         <div className="slider-tooltip">
                             <span className="slider-tooltiptext">
-                                Value: {value}
+                                {this.props.formatTooltip
+                                    ? this.props.formatTooltip(value)
+                                    : value}
                             </span>
                         </div>
                     </div>
@@ -90,6 +92,7 @@ TooltipRail.propTypes = {
     getEventData: PropTypes.func,
     activeHandleID: PropTypes.string,
     getRailProps: PropTypes.func.isRequired,
+    formatTooltip: PropTypes.func,
 };
 
 TooltipRail.defaultProps = {
@@ -170,7 +173,11 @@ export class Handle extends Component {
                         }}
                     >
                         <div className="slider-tooltip">
-                            <span className="slider-tooltiptext">{value}</span>
+                            <span className="slider-tooltiptext">
+                                {this.props.formatTooltip
+                                    ? this.props.formatTooltip(value)
+                                    : value}
+                            </span>
                         </div>
                     </div>
                 ) : null}
@@ -226,6 +233,7 @@ Handle.propTypes = {
     getHandleProps: PropTypes.func.isRequired,
     isActive: PropTypes.bool.isRequired,
     disabled: PropTypes.bool,
+    formatTooltip: PropTypes.func,
 };
 
 Handle.defaultProps = {

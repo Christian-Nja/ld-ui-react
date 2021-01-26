@@ -78,8 +78,6 @@ export default function SliderFilter({
         // run this effect only on component update
         const isMounted = useRef(false);
         useEffect(() => {
-            console.log("This effect is make crashing");
-            console.log("values:", values);
             console.log(active);
             if (isMounted) {
                 let newRemovedNodes = cloneDeep(context.removedNodes);
@@ -147,7 +145,12 @@ export default function SliderFilter({
                         values={values}
                     >
                         <Rail>
-                            {(railProps) => <TooltipRail {...railProps} />}
+                            {(railProps) => (
+                                <TooltipRail
+                                    {...railProps}
+                                    formatTooltip={formatTicks}
+                                />
+                            )}
                         </Rail>
                         {/* <Rail>
                              {({ getRailProps }) => (
@@ -163,6 +166,7 @@ export default function SliderFilter({
                                             handle={handle}
                                             domain={domain}
                                             getHandleProps={getHandleProps}
+                                            formatTooltip={formatTicks}
                                         />
                                     ))}
                                 </div>
