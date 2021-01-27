@@ -11,12 +11,14 @@ import Graph from "./components/classes/Graph";
 import { scaleData } from "./utilities/math";
 import ImageGrid from "./components/ImageGrid/ImageGrid";
 import PropertyValueList from "./components/PropertyValueList/PropertyValueList";
+import Measurement from "./measurements/Measurement";
 
 /**
  * Available components
  */
 export {
     Graph,
+    Measurement,
     scaleData,
     Collection,
     PartWhole,
