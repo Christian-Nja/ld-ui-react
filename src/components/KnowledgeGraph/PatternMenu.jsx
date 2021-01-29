@@ -51,7 +51,7 @@ export default function PatternMenu(props) {
     const [lastActivatedFilter, setLastActivatedFilter] = useState(false);
 
     const menuStyle = {
-        position: "absolute",
+        position: "fixed",
         top: 70,
         left: 0,
         zIndex: 10,

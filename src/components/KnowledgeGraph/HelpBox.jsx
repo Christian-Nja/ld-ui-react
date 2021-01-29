@@ -94,7 +94,7 @@ export default function HelpBox() {
 
     const boxStyle = open
         ? {
-              position: "absolute",
+              position: "fixed",
               top: 480,
               left: 0,
               zIndex: 11,
@@ -117,7 +117,7 @@ export default function HelpBox() {
               borderRadius: 4,
           }
         : {
-              position: "absolute",
+              position: "fixed",
               top: 650,
               left: 0,
               zIndex: 10,

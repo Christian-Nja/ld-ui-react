@@ -28,7 +28,7 @@
 #alert-box {
     width: 600px;
     height: 70px;
-    position: absolute;
+    position: fixed;
     top: 20px;
     z-index: 50;
     opacity: 0;

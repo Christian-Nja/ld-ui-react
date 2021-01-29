@@ -145,11 +145,7 @@ export default function KG({
         // Consider using Graphology lib to represent Data or Dataset
         // or better the representation best for performance (hashmap?)
         const filteredList = data.list.filter((node) => {
-            console.log("Error here");
-            console.log(context.removedNodes);
-            console.log(node.id);
             let filterValues = context.removedNodes.get(node.id);
-            console.log(filterValues);
             if (
                 Array.from(filterValues.values()).every((v) => {
                     return v;

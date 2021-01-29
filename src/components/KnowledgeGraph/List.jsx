@@ -55,6 +55,33 @@ export default function List({
     // remove id key from rendered elements
     keys.splice(keys.indexOf("id"), 1);
 
+    const [stickyWidth, setStickyWidth] = useState(null);
+
+    useEffect(() => {
+        window.onscroll = function () {
+            myFunction();
+        };
+
+        // Get the header
+        var header = document.getElementById("list-header");
+        var table = document.getElementById("list-table");
+
+        // Get the offset position of the navbar
+        var sticky = header.offsetTop;
+
+        // Add the sticky class to the header when you reach its scroll position. Remove "sticky" when you leave the scroll position
+        function myFunction() {
+            const width = table.clientWidth;
+            if (window.pageYOffset > sticky) {
+                header.classList.add("sticky-listbar");
+                header.style.width = `${width}px`;
+            } else {
+                header.classList.remove("sticky-listbar");
+                header.style.width = `100%`;
+            }
+        }
+    }, []);
+
     const [inputValue, setInputValue] = useState("");
 
     const [nodes, setNodeList] = useState([]);
@@ -158,15 +185,24 @@ export default function List({
             "clickedListElement"
         );
         const scrollToThis = document.getElementById(clickedListElement);
+        let activateScrollInterval;
         if (scrollToThis) {
             if (!scrolledToElement) {
-                console.log("Scrolled:", scrollToThis);
-                scrollToThis.scrollIntoView({
-                    behavior: "smooth",
-                    block: "center",
-                });
-                setScrolledToElement(true);
+                activateScrollInterval = setInterval(() => {
+                    console.log("Scrolled:", scrollToThis);
+                    scrollToThis.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                    });
+                    scrollToThis.classList.add("highlight-scroll");
+                    setScrolledToElement(true);
+                }, 500);
             }
+        }
+        if (activateScrollInterval) {
+            return () => {
+                clearInterval(activateScrollInterval);
+            };
         }
     });
 
@@ -177,8 +213,8 @@ export default function List({
                 onClick={scrollToTop}
                 style={{
                     position: "absolute",
-                    left: -70,
-                    top: 250,
+                    left: -80,
+                    top: 350,
                     cursor: "pointer",
                 }}
             >
@@ -186,54 +222,63 @@ export default function List({
                     <Icon name="arrow alternate circle up" size="big" />
                 </div>
             </div>
-            <h1
-                style={{
-                    backgroundColor: "#002933",
-                    fontSize: 18,
-                    color: "#fff",
-                    padding: 10,
-                    borderRadius: "10px 10px 0px 0px",
-                    textTransform: "uppercase",
-                }}
-                id="scroll-to-top"
-            >
-                {title}
-            </h1>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "baseline",
-                }}
-            >
-                <div>
-                    <Icon name="search" className="search-icon"></Icon>
-                    <input
-                        className="search-item"
-                        placeholder={searchBarPlaceholder}
-                        onChange={handleInput}
-                    ></input>
-                </div>
-                <div className="result-display" style={{ marginRight: 50 }}>
-                    Showing 1 to {nodes.length} of {nodes.length} resources
-                </div>
-            </div>
-            <div className="table">
-                <div className="header">
-                    <div className="header-row">
-                        {keys.map((k) => {
-                            headerColumnId++;
-                            // get keys from first node
-                            return (
-                                <div
-                                    className={`header-cell column-cell-${headerColumnId}`}
-                                >
-                                    {k}
-                                </div>
-                            );
-                        })}
+            <div>
+                <h1
+                    style={{
+                        backgroundColor: "#002933",
+                        fontSize: 18,
+                        color: "#fff",
+                        padding: 10,
+                        borderRadius: "10px 10px 0px 0px",
+                        textTransform: "uppercase",
+                    }}
+                    id="scroll-to-top"
+                >
+                    {title}
+                </h1>
+                <div id="table-header-container">
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "baseline",
+                        }}
+                        id="search-container"
+                    >
+                        <div>
+                            <Icon name="search" className="search-icon"></Icon>
+                            <input
+                                className="search-item"
+                                placeholder={searchBarPlaceholder}
+                                onChange={handleInput}
+                            ></input>
+                        </div>
+                        <div
+                            className="result-display"
+                            style={{ marginRight: 50 }}
+                        >
+                            Showing 1 to {nodes.length} of {nodes.length}{" "}
+                            resources
+                        </div>
+                    </div>
+                    <div className="header" id="list-header">
+                        <div className="header-row">
+                            {keys.map((k) => {
+                                headerColumnId++;
+                                // get keys from first node
+                                return (
+                                    <div
+                                        className={`header-cell column-cell-${headerColumnId}`}
+                                    >
+                                        {k}
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div className="table" id="list-table">
                 <div className={"body"}>
                     <ReactList
                         // itemsRenderer={(items, ref) => renderTable(items, ref)}
