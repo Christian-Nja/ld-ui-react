@@ -102,6 +102,11 @@ export default function KG({
         const defaultRemovedNodes = defaultConfig
             ? defaultConfig.removedNodes
             : null;
+
+        const clickedListElement = defaultConfig
+            ? defaultConfig.clickedListElement
+            : -1;
+
         React.Children.toArray(children).forEach((child) => {
             filterConfig[child.props.id] = {
                 state: defaultFilterConfig[child.props.id]
@@ -124,6 +129,7 @@ export default function KG({
             nodes: data.nodes,
             removedNodes: defaultRemovedNodes || new Map(removedNodes),
             filterConfig: filterConfig,
+            clickedListElement: clickedListElement,
         };
         const [context, setContext] = useState(initialState); // todo setContext as useReducer with setRemovedNodes actions, setConfigurations ...
 
@@ -139,7 +145,11 @@ export default function KG({
         // Consider using Graphology lib to represent Data or Dataset
         // or better the representation best for performance (hashmap?)
         const filteredList = data.list.filter((node) => {
+            console.log("Error here");
+            console.log(context.removedNodes);
+            console.log(node.id);
             let filterValues = context.removedNodes.get(node.id);
+            console.log(filterValues);
             if (
                 Array.from(filterValues.values()).every((v) => {
                     return v;
@@ -148,9 +158,6 @@ export default function KG({
                 return node;
             }
         });
-
-        console.log("GRAPH");
-        console.log(data.graph.toVisual(context.removedNodes));
 
         return (
             // <MatomoProvider value={instance}>

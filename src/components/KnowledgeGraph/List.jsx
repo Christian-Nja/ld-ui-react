@@ -16,6 +16,32 @@ const stringSimilarity = require("string-similarity");
  *  https://datatables.net/extensions/searchpanes/examples/initialisation/viewTotal.html
  */
 
+const highlightRow = (e) => {
+    let columnClass = e.target.classList[1];
+    let columnCells = document.getElementsByClassName(columnClass);
+    for (let c of columnCells) {
+        let isHeader = c.classList[0] === "header-cell";
+        if (isHeader) {
+            c.classList.add("header-column-hover");
+        } else {
+            c.classList.add("column-hover");
+        }
+    }
+};
+
+const clearRowLight = (e) => {
+    let columnClass = e.target.classList[1];
+    let columnCells = document.getElementsByClassName(columnClass);
+    for (let c of columnCells) {
+        let isHeader = c.classList[0] === "header-cell";
+        if (isHeader) {
+            c.classList.remove("header-column-hover");
+        } else {
+            c.classList.remove("column-hover");
+        }
+    }
+};
+
 export default function List({
     list,
     onItemClick = (node) => {},
@@ -39,6 +65,8 @@ export default function List({
     useEffect(() => {
         setNodeList([...list]);
     }, [list]);
+
+    const [scrolledToElement, setScrolledToElement] = useState(false);
 
     useEffect(() => {
         if (inputValue === "") {
@@ -77,19 +105,10 @@ export default function List({
                         x.rating,
                     ])
                 );
-                console.log("index");
-                console.log(index);
-                console.log("Filtering");
                 const filtered = filter(list, (n) => {
-                    console.log(n);
                     if (index[n.id] >= threshold) return n;
                 });
-                console.log("filtered");
-                console.log(filtered);
                 const sorted = orderBy(filtered, (x) => index[x.id], ["desc"]);
-                console.log("ratings & sorted");
-                console.log(result.ratings);
-                console.log(sorted);
                 setNodeList(sorted);
             }, 400);
             return () => clearTimeout(delayDebounceFn);
@@ -106,10 +125,13 @@ export default function List({
                     className="table-item body-row "
                     // style={key % 2 == 0 ? { backgroundColor: "#f5f5f5" } : null}
                     onClick={() => {
-                        console.log("On list click");
-                        console.log(nodes[index]);
+                        window.sessionStorage.setItem(
+                            "clickedListElement",
+                            nodes[index].id
+                        );
                         onItemClick(nodes[index]);
                     }}
+                    id={nodes[index].id}
                 >
                     {keys.map((k) => {
                         columnId++;
@@ -117,47 +139,8 @@ export default function List({
                             return (
                                 <div
                                     className={`body-cell column-cell-${columnId}`}
-                                    onMouseEnter={(e) => {
-                                        let columnClass = e.target.classList[1];
-                                        let columnCells = document.getElementsByClassName(
-                                            columnClass
-                                        );
-                                        console.log("hover table");
-                                        console.log(e.target.classList);
-                                        for (let c of columnCells) {
-                                            console.log(c);
-                                            let isHeader =
-                                                c.classList[0] ===
-                                                "header-cell";
-                                            if (isHeader) {
-                                                c.classList.add(
-                                                    "header-column-hover"
-                                                );
-                                            } else {
-                                                c.classList.add("column-hover");
-                                            }
-                                        }
-                                    }}
-                                    onMouseOut={(e) => {
-                                        let columnClass = e.target.classList[1];
-                                        let columnCells = document.getElementsByClassName(
-                                            columnClass
-                                        );
-                                        for (let c of columnCells) {
-                                            let isHeader =
-                                                c.classList[0] ===
-                                                "header-cell";
-                                            if (isHeader) {
-                                                c.classList.remove(
-                                                    "header-column-hover"
-                                                );
-                                            } else {
-                                                c.classList.remove(
-                                                    "column-hover"
-                                                );
-                                            }
-                                        }
-                                    }}
+                                    onMouseEnter={highlightRow}
+                                    onMouseOut={clearRowLight}
                                 >
                                     {nodes[index][k] ? nodes[index][k] : "--"}
                                 </div>
@@ -170,8 +153,39 @@ export default function List({
 
     let headerColumnId = -1;
 
+    useEffect(() => {
+        const clickedListElement = window.sessionStorage.getItem(
+            "clickedListElement"
+        );
+        const scrollToThis = document.getElementById(clickedListElement);
+        if (scrollToThis) {
+            if (!scrolledToElement) {
+                console.log("Scrolled:", scrollToThis);
+                scrollToThis.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                });
+                setScrolledToElement(true);
+            }
+        }
+    });
+
     return (
         <div style={{ fontFamily: "Montserrat-Medium" }}>
+            <div
+                id="scroll-to-top-button"
+                onClick={scrollToTop}
+                style={{
+                    position: "absolute",
+                    left: -70,
+                    top: 250,
+                    cursor: "pointer",
+                }}
+            >
+                <div style={{ position: "fixed" }}>
+                    <Icon name="arrow alternate circle up" size="big" />
+                </div>
+            </div>
             <h1
                 style={{
                     backgroundColor: "#002933",
@@ -181,6 +195,7 @@ export default function List({
                     borderRadius: "10px 10px 0px 0px",
                     textTransform: "uppercase",
                 }}
+                id="scroll-to-top"
             >
                 {title}
             </h1>
@@ -225,9 +240,29 @@ export default function List({
                         itemRenderer={renderRow}
                         length={nodes.length}
                         type="variable"
+                        // scrollTo={
+                        //     context.clickedListElement
+                        //         ? context.clickedListElement
+                        //         : null
+                        // }
                     />
                 </div>
             </div>
         </div>
     );
 }
+
+const scrollToTop = () => {
+    console.log("Scroll to top");
+    const top = document.getElementById("scroll-to-top");
+    console.log(top);
+    const elementPosition = top.offsetTop;
+    window.scrollTo({ behavior: "smooth", top: elementPosition - 200 });
+};
+
+// var elementPosition = document.getElementById('id').offsetTop;
+
+// window.scrollTo({
+//   top: elementPosition - 10, //add your necessary value
+//   behavior: "smooth"  //Smooth transition to roll
+// });
