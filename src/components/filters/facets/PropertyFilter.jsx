@@ -1,13 +1,11 @@
-import React, { useEffect, useState, useContext, useRef } from "react";
+import React, { useEffect, useState } from "react";
 
 import { PieChart } from "react-minimal-pie-chart";
 import { useBinaryArrayState } from "../../hooks/ld-ui-hooks";
-import { Context } from "../Context";
-
-import { cloneDeep } from "lodash";
+import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
+import useFilter from "../../../filters/FilterCtx/useFilter";
 
 import ColorGenerator from "../../classes/ColorGenerator";
-import { useAlert } from "../../hooks/ld-ui-hooks";
 
 PropertyFilter.defaultProps = {
     id: "pie",
@@ -27,74 +25,43 @@ PropertyFilter.defaultProps = {
  *                            Array contains index of the element as it passed as input to the filter.
  * @returns {JSX.Element}
  */
-export default function PropertyFilter({
-    onFilter = (filtered) => {},
-    id = "pie",
-    options = {},
-    property = "id",
-}) {
-    // listen to local central state
-    const [context, setContext] = useContext(Context);
-    const showAlert = useAlert(context, setContext);
+export default function PropertyFilter({ id = "pie", property = "id" }) {
+    const { knowledgeGraph } = useKGCtx();
 
-    const [hovered, setHovered] = useState(null);
+    const resources = knowledgeGraph.getResources();
+
+    const filterCallback = (pattern) => {
+        if (!filtered.includes(pattern[property])) {
+            return true;
+        }
+        return false;
+    };
+
+    const initialFilterOptions = {
+        active: false,
+        filterCallback: filterCallback,
+    };
+
+    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+
     const [filtered, setFiltered] = useBinaryArrayState(
-        context.filterConfig[id].options.filtered || []
+        (filter && filter.getOption("filtered")) || []
     );
+    const [hovered, setHovered] = useState(null);
 
-    const nodes = context.nodes;
-    const active = context.filterConfig[id].state;
-
-    // run this effect only on component update
-    const isMounted = useRef(false);
     useEffect(() => {
-        if (isMounted.current) {
-            let newRemovedNodes = cloneDeep(context.removedNodes);
-            let newFilterConfig = cloneDeep(context.filterConfig);
-            if (active) {
-                // if filter active it works
-                nodes.forEach((node) => {
-                    let nodeState = newRemovedNodes.get(node.id);
-                    // remove every node without the property
-                    if (!node[property]) {
-                        nodeState.set(id, false);
-                    } else {
-                        // remove node filtered out by the user
-                        if (filtered.includes(node[property])) {
-                            nodeState.set(id, false);
-                        } else {
-                            nodeState.set(id, true);
-                        }
-                    }
-                });
-            } else {
-                // filter inactive every node should be set to true for this filter
-                nodes.forEach((node) => {
-                    let nodeState = newRemovedNodes.get(node.id);
-                    nodeState.set(id, true);
-                });
-            }
-            newFilterConfig[id].options.filtered = filtered;
-            setContext({
-                ...context,
-                removedNodes: newRemovedNodes,
-                filterConfig: newFilterConfig,
+        if (filter) {
+            setFilterOptions({
+                ...filter.options,
+                filtered: filtered,
+                filterCallback: filterCallback,
             });
-        } else {
-            isMounted.current = true;
         }
-    }, [filtered, active]);
-
-    useEffect(() => {
-        // launch message just if filter is active
-        if (active) {
-            showAlert();
-        }
-    }, [context.removedNodes]);
+    }, [filtered]);
 
     let values = {};
 
-    nodes.forEach((node) => {
+    resources.forEach((node) => {
         if (!values[node[property]]) {
             values[node[property]] = {
                 id: node.id,

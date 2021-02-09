@@ -1,9 +1,5 @@
 import { useState, useEffect } from "react";
 
-import { defineProp } from "../../utilities/generics";
-
-import { cloneDeep } from "lodash";
-
 /* LD-UI-REACT
 _____________________________________________________________ */
 
@@ -14,34 +10,6 @@ export function useHelp(context, setContext, message) {
         setContext({ ...context, help: message });
     };
     return setMessage;
-}
-
-export function useAlert(context, setContext) {
-    useEffect(() => {
-        if (context.alert) {
-            const interval = showAlertBox();
-            return () => clearInterval(interval);
-        }
-    }, [context.alert]);
-
-    const showAlert = (/*message*/) => {
-        setContext({
-            ...context,
-            alert: {
-                switch: context.alert ? !context.alert.switch : true,
-                // message: message,
-            },
-        });
-    };
-    return showAlert;
-}
-
-export function showAlertBox(hideTime = 1500) {
-    document.getElementById("alert-box").classList.add("show-alert");
-    const interval = setInterval(() => {
-        document.getElementById("alert-box").classList.remove("show-alert");
-    }, hideTime);
-    return interval;
 }
 
 /**
@@ -147,43 +115,6 @@ export function usePane(mapRef, paneName, paneZIndex = 450) {
 _____________________________________________________________ */
 
 /**
- * @description A hook for Graphin visualization library. Returns layout and a function to set layout.
- * @author Christian Colonna
- * @date 10-11-2020
- * @export
- * @param {Object} baseLayout
- * @param {string} [baseLayout.name=force]
- * @param {Object} [baseLayout.options={}]
- * @returns {Object} layoutHandler
- */
-export function useLayout(baseLayout) {
-    const defaultLayout = defineProp(baseLayout, {
-        name: "force",
-        options: {
-            animation: false,
-            enableWorker: true,
-            defSpringLen: (_edge, source, target) => {
-                const nodeSize = 100;
-                const Sdegree = source.data.layout?.degree;
-                const Tdegree = target.data.layout?.degree;
-                const minDegree = Math.min(Sdegree, Tdegree);
-                return minDegree < 3 ? nodeSize * 5 : minDegree * nodeSize * 2;
-            },
-        },
-    });
-    const [layout, setLayout] = useState(defaultLayout);
-    return {
-        name: layout,
-        setLayout: (newLayout) => {
-            setLayout({
-                ...layout,
-                name: newLayout,
-            });
-        },
-    };
-}
-
-/**
  * @description A hook for Graphin visualization library. Bind filter function on node doubleclick
  * @author Christian Colonna
  * @date 16-11-2020
@@ -196,7 +127,7 @@ export function useGraphinDoubleClick(graphRef, filter, depArray) {
         if (graphRef.current) {
             const { graph } = graphRef.current;
             const handleNodeDoubleClick = (e) => {
-                const node = e.item._cfg;
+                const node = e.item._cfg.model.data;
                 filter(node);
             };
             graph.on("node:dblclick", handleNodeDoubleClick);

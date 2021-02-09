@@ -4,9 +4,9 @@ import ReactList from "react-list";
 import "./List.css";
 import { Icon } from "semantic-ui-react";
 
-import { orderBy, fromPairs, map, filter } from "lodash";
-
-const stringSimilarity = require("string-similarity");
+import SearchBarFilter from "../filters/facets/SearchBarFilter";
+import { find, forEach } from "lodash";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 /**
  * You can modify max-height to change table height and eventually remove max-height in
@@ -42,18 +42,54 @@ const clearRowLight = (e) => {
     }
 };
 
+const SAMPLE_RESOURCE = 0;
+
 export default function List({
     list,
-    onItemClick = (node) => {},
-    searchBarPlaceholder = "Search in the table",
-    itemTooltip = null,
-    threshold = 0.23,
     title,
+    itemTooltip = "click to explore resources",
 }) {
+    const resources = list;
+
+    const renderMoreData = () => {
+        setResourcesToRenderCount(resourcesToRenderCount + 20);
+    };
+    const [resourcesToRenderCount, setResourcesToRenderCount] = useState(20);
+    const resourcesToRender = resources.slice(0, resourcesToRenderCount);
+
     // keys will be used to render header and access node information
-    let keys = list.length > 0 ? Object.keys(list[0]) : [];
+    const allPossiblekeys = resources[SAMPLE_RESOURCE]
+        ? resources[SAMPLE_RESOURCE].getListKeys()
+        : [];
+
+    title = resources[SAMPLE_RESOURCE]
+        ? resources[SAMPLE_RESOURCE].getListTitle()
+        : "Instances";
+
+    const keys = [];
+
+    const onItemClick = resources[SAMPLE_RESOURCE]
+        ? resources[SAMPLE_RESOURCE].onListItemClick()
+        : () => {};
+
+    // WARNING THIS APPROACH MAY BE PERFORMANCE CRITIC
+    // we parse list keys, only if there is at least one object with the key we show the row
+    forEach(allPossiblekeys, (k) => {
+        const thereIsOneDataWithKey = find(resources, (r) => {
+            // if (typeof r[k] !== "undefined") console.log("Value:", r[k]);
+            return typeof r[k] !== "undefined";
+        });
+        // console.log("Found data with key", k);
+        // console.log(thereIsOneDataWithKey);
+        if (thereIsOneDataWithKey) {
+            keys.push(k);
+        }
+    });
+
+    const headerLabels = resources[SAMPLE_RESOURCE]
+        ? resources[SAMPLE_RESOURCE].getHeaderLabels(keys)
+        : [];
     // remove id key from rendered elements
-    keys.splice(keys.indexOf("id"), 1);
 
     const [stickyWidth, setStickyWidth] = useState(null);
 
@@ -82,69 +118,13 @@ export default function List({
         }
     }, []);
 
-    const [inputValue, setInputValue] = useState("");
-
-    const [nodes, setNodeList] = useState([]);
-    const handleInput = (event) => {
-        setInputValue(event.target.value);
-    };
-
-    useEffect(() => {
-        setNodeList([...list]);
-    }, [list]);
+    //============================================== to remove
 
     const [scrolledToElement, setScrolledToElement] = useState(false);
 
-    useEffect(() => {
-        if (inputValue === "") {
-            // reset if user clears search bar and array is empty
-            setNodeList([...list]);
-        }
-        if (inputValue !== "") {
-            // apply effect only after 3 seconds the user stopped typing
-            const delayDebounceFn = setTimeout(() => {
-                const result = stringSimilarity.findBestMatch(
-                    inputValue.toLowerCase(),
-                    list.map((node) => {
-                        // concatenate list values inside label
-                        // node.id will be used to split and create an index
-                        let propsChain;
-                        keys.forEach((k) => {
-                            propsChain += ` ${node[k]}`;
-                        });
-                        propsChain = propsChain.toLowerCase();
-                        return `${node.id} ${propsChain}`;
-                    })
-                );
-                // if string exact match of a substring set ratings to 1
-                result.ratings.forEach((r) => {
-                    if (
-                        r.target
-                            .toLowerCase()
-                            .includes(inputValue.toLowerCase())
-                    ) {
-                        r.rating = 1;
-                    }
-                });
-                const index = fromPairs(
-                    map(result.ratings, (x, i) => [
-                        x.target.split(" ")[0],
-                        x.rating,
-                    ])
-                );
-                const filtered = filter(list, (n) => {
-                    if (index[n.id] >= threshold) return n;
-                });
-                const sorted = orderBy(filtered, (x) => index[x.id], ["desc"]);
-                setNodeList(sorted);
-            }, 400);
-            return () => clearTimeout(delayDebounceFn);
-        }
-    }, [inputValue]);
-
     const renderRow = (index, key) => {
         let columnId = -1;
-        if (nodes.length > 0) {
+        if (resources.length > 0) {
             return (
                 <div
                     title={itemTooltip}
@@ -152,24 +132,25 @@ export default function List({
                     className="table-item body-row "
                     // style={key % 2 == 0 ? { backgroundColor: "#f5f5f5" } : null}
                     onClick={() => {
-                        window.sessionStorage.setItem(
-                            "clickedListElement",
-                            nodes[index].id
-                        );
-                        onItemClick(nodes[index]);
+                        // window.sessionStorage.setItem(
+                        //     resources[index].getUri()
+                        // );
+                        onItemClick(resources[index]);
                     }}
-                    id={nodes[index].id}
+                    id={resources[index].getUri()}
                 >
                     {keys.map((k) => {
                         columnId++;
-                        if (nodes[index])
+                        if (resources[index])
                             return (
                                 <div
                                     className={`body-cell column-cell-${columnId}`}
                                     onMouseEnter={highlightRow}
                                     onMouseOut={clearRowLight}
                                 >
-                                    {nodes[index][k] ? nodes[index][k] : "--"}
+                                    {resources[index][k]
+                                        ? resources[index][k]
+                                        : "--"}
                                 </div>
                             );
                     })}
@@ -180,127 +161,139 @@ export default function List({
 
     let headerColumnId = -1;
 
-    useEffect(() => {
-        const clickedListElement = window.sessionStorage.getItem(
-            "clickedListElement"
-        );
-        const scrollToThis = document.getElementById(clickedListElement);
-        let activateScrollInterval;
-        if (scrollToThis) {
-            if (!scrolledToElement) {
-                activateScrollInterval = setInterval(() => {
-                    console.log("Scrolled:", scrollToThis);
-                    scrollToThis.scrollIntoView({
-                        behavior: "smooth",
-                        block: "center",
-                    });
-                    scrollToThis.classList.add("highlight-scroll");
-                    setScrolledToElement(true);
-                }, 500);
-            }
-        }
-        if (activateScrollInterval) {
-            return () => {
-                clearInterval(activateScrollInterval);
-            };
-        }
-    });
+    // useEffect(() => {
+    //     const clickedListElement = window.sessionStorage.getItem(
+    //         "clickedListElement"
+    //     );
+    //     const scrollToThis = document.getElementById(clickedListElement);
+    //     let activateScrollInterval;
+    //     if (scrollToThis) {
+    //         if (!scrolledToElement) {
+    //             activateScrollInterval = setInterval(() => {
+    //                 console.log("Scrolled:", scrollToThis);
+    //                 scrollToThis.scrollIntoView({
+    //                     behavior: "smooth",
+    //                     block: "center",
+    //                 });
+    //                 scrollToThis.classList.add("highlight-scroll");
+    //                 setScrolledToElement(true);
+    //             }, 500);
+    //         }
+    //     }
+    //     if (activateScrollInterval) {
+    //         return () => {
+    //             clearInterval(activateScrollInterval);
+    //         };
+    //     }
+    // });
 
     return (
-        <div style={{ fontFamily: "Montserrat-Medium" }}>
-            <div
-                id="scroll-to-top-button"
-                onClick={scrollToTop}
-                style={{
-                    position: "absolute",
-                    left: -80,
-                    top: 350,
-                    cursor: "pointer",
-                }}
-            >
-                <div style={{ position: "fixed" }}>
-                    <Icon name="arrow alternate circle up" size="big" />
-                </div>
-            </div>
-            <div>
-                <h1
+        <div style={{ ...listContainerStyle }} id="list-container">
+            <div style={{ fontFamily: "Montserrat-Medium" }}>
+                <div
+                    id="scroll-to-top-button"
+                    onClick={scrollToTop}
                     style={{
-                        backgroundColor: "#002933",
-                        fontSize: 18,
-                        color: "#fff",
-                        padding: 10,
-                        borderRadius: "10px 10px 0px 0px",
-                        textTransform: "uppercase",
+                        position: "absolute",
+                        left: -80,
+                        top: 350,
+                        cursor: "pointer",
                     }}
-                    id="scroll-to-top"
                 >
-                    {title}
-                </h1>
-                <div id="table-header-container">
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "baseline",
-                        }}
-                        id="search-container"
-                    >
-                        <div>
-                            <Icon name="search" className="search-icon"></Icon>
-                            <input
-                                className="search-item"
-                                placeholder={searchBarPlaceholder}
-                                onChange={handleInput}
-                            ></input>
-                        </div>
-                        <div
-                            className="result-display"
-                            style={{ marginRight: 50 }}
-                        >
-                            Showing 1 to {nodes.length} of {nodes.length}{" "}
-                            resources
-                        </div>
+                    <div style={{ position: "fixed" }}>
+                        <Icon name="arrow alternate circle up" size="big" />
                     </div>
-                    <div className="header" id="list-header">
-                        <div className="header-row">
-                            {keys.map((k) => {
-                                headerColumnId++;
-                                // get keys from first node
-                                return (
-                                    <div
-                                        className={`header-cell column-cell-${headerColumnId}`}
-                                    >
-                                        {k}
-                                    </div>
-                                );
-                            })}
+                </div>
+                <div>
+                    <h1
+                        style={{
+                            backgroundColor: "#002933",
+                            fontSize: 18,
+                            color: "#fff",
+                            padding: 10,
+                            borderRadius: "10px 10px 0px 0px",
+                            textTransform: "uppercase",
+                        }}
+                        id="scroll-to-top"
+                    >
+                        {title}
+                    </h1>
+                    <div id="table-header-container">
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "baseline",
+                            }}
+                            id="search-container"
+                        >
+                            <SearchBarFilter />
+                            <div
+                                className="result-display"
+                                style={{ marginRight: 50 }}
+                            >
+                                Showing 1 to {resources.length} of{" "}
+                                {resources.length} resources
+                            </div>
+                        </div>
+                        <div className="header" id="list-header">
+                            <div className="header-row">
+                                {headerLabels.map((h) => {
+                                    headerColumnId++;
+                                    // get keys from first node
+                                    return (
+                                        <div
+                                            className={`header-cell column-cell-${headerColumnId}`}
+                                        >
+                                            {h}
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="table" id="list-table">
-                <div className={"body"}>
-                    <ReactList
-                        // itemsRenderer={(items, ref) => renderTable(items, ref)}
-                        itemRenderer={renderRow}
-                        length={nodes.length}
-                        type="variable"
-                        // scrollTo={
-                        //     context.clickedListElement
-                        //         ? context.clickedListElement
-                        //         : null
-                        // }
-                    />
+                <div className="table" id="list-table">
+                    <div className={"body"}>
+                        <InfiniteScroll
+                            dataLength={resourcesToRender.length}
+                            next={renderMoreData}
+                            hasMore={
+                                resourcesToRender.length < resources.length
+                                    ? true
+                                    : false
+                            }
+                            loader={<h4>Loading...</h4>}
+                        >
+                            <ReactList
+                                // itemsRenderer={(items, ref) => renderTable(items, ref)}
+                                itemRenderer={renderRow}
+                                length={resourcesToRender.length}
+                                type="variable"
+                                // scrollTo={
+                                //     context.clickedListElement
+                                //         ? context.clickedListElement
+                                //         : null
+                                // }
+                            />
+                        </InfiniteScroll>
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
 
+const listContainerStyle = {
+    marginLeft: "5%",
+    marginRight: "2%",
+    position: "absolute",
+    top: 70,
+    width: "90%",
+};
+
 const scrollToTop = () => {
-    console.log("Scroll to top");
     const top = document.getElementById("scroll-to-top");
-    console.log(top);
     const elementPosition = top.offsetTop;
     window.scrollTo({ behavior: "smooth", top: elementPosition - 200 });
 };

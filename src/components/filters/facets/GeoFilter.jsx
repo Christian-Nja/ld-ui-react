@@ -1,19 +1,15 @@
-import React, {
-    useContext,
-    useState,
-    useRef,
-    useEffect,
-    useLayoutEffect,
-} from "react";
-import { Context } from "../Context";
-
-import { useAlert } from "../../hooks/ld-ui-hooks";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import { Map, TileLayer, FeatureGroup, GeoJSON } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import L from "leaflet";
 
+import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
+import useFilter from "../../../filters/FilterCtx/useFilter";
+
 import { cloneDeep } from "lodash";
+
+import { Icon } from "semantic-ui-react";
 
 import GeoJsonGeometriesLookup from "geojson-geometries-lookup";
 
@@ -46,48 +42,18 @@ const SHAPE_DELETED = 2;
 export default function GeoFilter({
     id = "geo",
     options = {},
-    closeFilterMenuItem = () => {
-        console.log("close filter");
-    },
+    closeFilterMenuItem = () => {},
 }) {
     const startDrawFlag = "Start draw";
     const stopDrawFlag = "Stop Draw";
-
     const [mapUIState, setMapUI] = useState(startDrawFlag);
     const [mapState, setMapState] = useState(null);
-
     const mapRef = useRef();
     const editRef = useRef();
 
-    const [context, setContext] = useContext(Context);
-    const showAlert = useAlert(context, setContext);
-    // read nodes from global context
-    const nodes = context.nodes;
-    const active = context.filterConfig[id].state;
-
-    // prepare map
-    useEffect(() => {
-        console.log("mapRef");
-        if (mapRef.current) {
-            const map = mapRef.current.leafletElement;
-            const mcg = L.markerClusterGroup();
-            mcg.clearLayers();
-
-            nodes.forEach((node) => {
-                if (node.lat && node.long) {
-                    L.marker([node.lat, node.long], {
-                        icon: blueMarkerIcon,
-                    }).addTo(mcg);
-                    // .bindPopup(L.popup().setContent(customPopup).setLatLng([node.lat, node.long]))
-                }
-            });
-            map.fitBounds(mcg.getBounds(), {
-                padding: [120, 120],
-                maxZoom: 8,
-            });
-            map.addLayer(mcg);
-        }
-    }, [mapRef]);
+    const ZOOM_LEVEL = 12;
+    const MAX_ZOOM = 8;
+    const [center, setCenter] = useState({ lat: 24.2, lng: 54.37 });
 
     // This code is needed to listen for change on geo button filter class -> change is triggered on opening button
     // Once it opens the resize event is dispatched. This is needed to solve an issue with leaflet
@@ -106,79 +72,72 @@ export default function GeoFilter({
         });
     }
 
+    const { knowledgeGraph } = useKGCtx();
+    const resources = knowledgeGraph.getResources();
+
+    // filter definition
+    const filterCallback = (resource) => {
+        if (resource.lat && resource.long) {
+            let geolookup = new GeoJsonGeometriesLookup(featureGroup);
+            let point = {
+                type: "Point",
+                coordinates: [resource.long, resource.lat],
+            };
+            if (geolookup.hasContainers(point)) {
+                // node resource geoJSON keep it
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    };
+
+    const initialFilterOptions = {
+        active: false,
+        filterCallback: filterCallback,
+    };
+
+    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+
     const initialFeatureGroup = { type: "FeatureCollection", features: [] };
     const [featureGroup, setFeatureGroup] = useState(
-        context.filterConfig[id].options.featureGroup
-            ? context.filterConfig[id].options.featureGroup
-            : initialFeatureGroup
+        (filter && filter.getOption("featureGroup")) || initialFeatureGroup
     );
 
-    const ZOOM_LEVEL = 12;
-    const MAX_ZOOM = 8;
-    const [center, setCenter] = useState({ lat: 24.2, lng: 54.37 });
-
-    // run this effect only on component update
-    const isMounted = useRef(false);
     useEffect(() => {
-        if (isMounted) {
-            let newRemovedNodes = cloneDeep(context.removedNodes);
-            let newFilterConfig = cloneDeep(context.filterConfig);
-            if (active) {
-                // here logic to set true only nodes inside featureGroup
-                nodes.forEach((node) => {
-                    // disable every node without the value key
-                    if (!node.lat || !node.long) {
-                        let nodeState = newRemovedNodes.get(node.id);
-                        nodeState.set(id, false);
-                    }
-                    // touch only nodes with geometry
-                    if (node.lat && node.long) {
-                        // get node in map
-                        let nodeState = newRemovedNodes.get(node.id);
-                        let geolookup = new GeoJsonGeometriesLookup(
-                            featureGroup
-                        );
-                        let point = {
-                            type: "Point",
-                            coordinates: [node.long, node.lat],
-                        };
-                        if (geolookup.hasContainers(point)) {
-                            // node inside geoJSON set true
-                            nodeState.set(id, true);
-                        } else {
-                            // node not in geoJSON set false
-                            nodeState.set(id, false);
-                        }
-                    }
-                });
-            } else {
-                // filter inactive
-                // every node is true on this filter key
-                // this filter hasn't effect on nodes
-                nodes.forEach((node) => {
-                    let nodeState = newRemovedNodes.get(node.id);
-                    nodeState.set(id, true);
-                });
-            }
-            newFilterConfig[id].options.featureGroup = featureGroup;
-            console.log("[*] We are filtering");
-            console.log(newRemovedNodes);
-            setContext({
-                ...context,
-                removedNodes: newRemovedNodes,
-                filterConfig: newFilterConfig,
+        if (filter) {
+            setFilterOptions({
+                ...filter.options,
+                featureGroup: featureGroup,
+                filterCallback: filterCallback,
             });
-        } else {
-            isMounted.current = true;
         }
-    }, [featureGroup, active]);
+    }, [featureGroup]);
 
+    // prepare map
     useEffect(() => {
-        // launch message just if filter is active
-        if (active) {
-            showAlert();
+        if (mapRef.current) {
+            const map = mapRef.current.leafletElement;
+            const mcg = L.markerClusterGroup();
+            mcg.clearLayers();
+
+            resources.forEach((node) => {
+                if (node.lat && node.long) {
+                    L.marker([node.lat, node.long], {
+                        icon: blueMarkerIcon,
+                    }).addTo(mcg);
+                    // .bindPopup(L.popup().setContent(customPopup).setLatLng([node.lat, node.long]))
+                }
+            });
+            map.fitBounds(mcg.getBounds(), {
+                padding: [120, 120],
+                maxZoom: 8,
+            });
+            map.addLayer(mcg);
         }
-    }, [context.removedNodes]);
+    }, [mapRef]);
 
     const onFilterCreated = (e) => {
         const l = e.layer;
@@ -240,7 +199,6 @@ export default function GeoFilter({
         //         return f.properties.id !== id;
         //     });
         // });
-        console.log("on deleted");
         setFeatureGroup(initialFeatureGroup);
     };
 
@@ -250,13 +208,11 @@ export default function GeoFilter({
 
     // update filter
     useEffect(() => {
-        console.log("UPDATE filters");
         if (mapState) {
             if (mapState.id === POLYGON_CREATED) {
                 onFilterCreated(mapState.e);
             }
             if (mapState.id === SHAPE_DELETED) {
-                console.log("Deleted");
                 onDeleted();
             }
         }
@@ -269,8 +225,6 @@ export default function GeoFilter({
             }
         }
     }, [mapState]);
-
-    // https://github.com/simonepri/geojson-geometries-lookup#geojsongeometrieslookuphascontainersgeometry-options--boolean
 
     return (
         <div>
@@ -331,7 +285,7 @@ export default function GeoFilter({
                 className="map-button close-button"
                 onClick={closeFilterMenuItem}
             >
-                X
+                <Icon name="arrow left" /> See results
             </div>
             <div className="button-container">
                 <div
@@ -354,10 +308,6 @@ export default function GeoFilter({
                     <div
                         className="map-button delete-button"
                         onClick={() => {
-                            console.log(
-                                editRef.current.leafletElement._toolbars.edit
-                                    ._modes.remove.handler
-                            );
                             // startDelete
                             editRef.current.leafletElement._toolbars.edit._modes.remove.handler.enable();
                             // saveDelete

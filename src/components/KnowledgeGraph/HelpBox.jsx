@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 
-import { useBinaryState, useHelp } from "../hooks/ld-ui-hooks";
+import { useBinaryState } from "../hooks/ld-ui-hooks";
+import { useHelpCtx } from "../../filters/HelpCtx/useHelpCtx";
 
-import { Context } from "./Context";
 import TemporaryMessage from "./TemporaryMessage";
 
 import { Icon } from "semantic-ui-react";
@@ -43,16 +43,19 @@ const shakeit = function (element) {
 };
 
 export default function HelpBox() {
-    // listen to local central state
-    const [context, setContext] = useContext(Context);
+    const { help, setHelp } = useHelpCtx();
     const [open, handleOpen] = useBinaryState(false);
 
     const outMessage =
-        "This diagram shows the patterns contained in the knowledge graph and their relations. Each node corresponds to a pattern, the radius of the node indicates the size of pattern (number of instances of the pattern within the graph). Double click on a node to explore the instances of the patterns";
+        "What you see in this diagram is a knowledge graph containing X triples, Y entities, ... Each node contains information about them from a specific view. For example, in XX you can easily locate entities in space and time, in YY you can immediately know what are their dimensions and other structural information, etc. The dimension of a node tells you the amount of data of that kind that the KG contains. If you hover on a node, you will get an infobox telling what type of data and how many of them are there. Double click on a node to see its inside.";
     const enterMessage =
         "Move over the blue question marks with the mouse. An help about the element they are closed too will be shown in this box. ";
-    const setEnterHelp = useHelp(context, setContext, enterMessage);
-    const setOutHelp = useHelp(context, setContext, outMessage);
+    const setEnterHelp = () => {
+        setHelp({ message: enterMessage });
+    };
+    const setOutHelp = () => {
+        setHelp({ message: outMessage });
+    };
 
     useEffect(() => {
         const helps = document.getElementsByClassName("with-help");
@@ -144,10 +147,10 @@ export default function HelpBox() {
         >
             <div style={msgStyle}>
                 {open ? (
-                    context.help ? (
+                    help.message ? (
                         <div>
                             <i aria-hidden="true" class="info icon"></i>
-                            {context.help}
+                            {help.message}
                         </div>
                     ) : (
                         <div>
@@ -158,7 +161,7 @@ export default function HelpBox() {
                     )
                 ) : (
                     <TemporaryMessage
-                        message=""
+                        message={""}
                         style={{
                             color: "rgb(13, 60, 97)",
                             backgroundColor: "rgb(232, 244, 253)",

@@ -1,6 +1,4 @@
-import React, { useState, useContext } from "react";
-
-// import { Context } from "./Context";
+import React from "react";
 
 import { Icon } from "semantic-ui-react";
 
