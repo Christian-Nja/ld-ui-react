@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react/cjs/react.development";
+import React, { useState } from "react";
 import { FilterCtx } from "./FilterCtx";
 import { clone, remove } from "lodash";
 import Filter from "../Filter";
