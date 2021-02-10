@@ -31,7 +31,6 @@ export default function TemporaryMessage({
             className={!helpToken ? "shaking" : ""}
         >
             <i aria-hidden="true" class="info icon"></i>
-            {message}
         </div>
     );
 }

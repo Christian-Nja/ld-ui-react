@@ -37,7 +37,7 @@ export default function LayoutSelector(props) {
     }, [props.menuOpen]);
 
     return (
-        <Menu.Item className="menu-item">
+        <Menu.Item className="menu-item graph-layouts-menu-button">
             <div
                 style={{ cursor: "pointer", fontSize: 18 }}
                 onClick={handleOpen}

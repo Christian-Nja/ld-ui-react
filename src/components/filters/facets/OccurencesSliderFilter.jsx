@@ -8,8 +8,6 @@ export default function OccurencesSliderFilter({}) {
     const filterPattern = (resource) => {
         return resource.getType() === "Pattern";
     };
-    console.log("Occurences Slider filter patterns");
-    console.log(knowledgeGraph.getPatterns());
     return (
         <GenericSliderFilter
             resources={knowledgeGraph.getPatterns()}

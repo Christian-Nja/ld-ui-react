@@ -10,13 +10,20 @@ export default function FilteringResource({
     children,
     supportedFilterIds = [],
 }) {
-    const { filters } = useFilterCtx();
-    const supportedFilters = filter(filters, (filter) => {
-        return supportedFilterIds.includes(filter.getId());
-    });
-    const kgPipe = KnowledgeGraphPipe.create(knowledgeGraph);
-    // remove nodes connected to edge
-    let filteredKnowledgeGraph = kgPipe.chain(supportedFilters).toGraph();
+    const { filters, filtersMountedFlag } = useFilterCtx();
+
+    let filteredKnowledgeGraph;
+
+    if (filtersMountedFlag) {
+        const supportedFilters = filter(filters, (filter) => {
+            return supportedFilterIds.includes(filter.getId());
+        });
+        const kgPipe = KnowledgeGraphPipe.create(knowledgeGraph);
+        // remove nodes connected to edge
+        filteredKnowledgeGraph = kgPipe.chain(supportedFilters).toGraph();
+    } else {
+        filteredKnowledgeGraph = null;
+    }
     return (
         <div>
             {children

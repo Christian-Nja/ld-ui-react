@@ -36,6 +36,15 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
     const { setHelp } = useHelpCtx();
 
     const { layoutOptions, graphinLayoutHandler } = useLayoutCtx();
+
+    const exampleMenuOpen = layoutOptions.exampleMenuOpen;
+    const exampleLayoutOpen = layoutOptions.exampleLayoutOpen;
+    const exampleFiltersOpen = layoutOptions.exampleFiltersOpen;
+    const exampleFilterOccurencesOpen =
+        layoutOptions.exampleFilterOccurencesOpen;
+
+    console.log("Pattern Menu options", layoutOptions);
+
     const {
         setInvertedFilterStateById,
         filters,
@@ -46,13 +55,13 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
         if (layoutButton) {
             setLayoutButton();
         }
-    }, [menuOpen]);
+    }, [menuOpen, exampleMenuOpen]);
 
     useEffect(() => {
         if (filterButton) {
             setFilterButton();
         }
-    }, [menuOpen]);
+    }, [menuOpen, exampleMenuOpen]);
 
     // we use this state variable to launch a callback opening the filter item menu
     // resulting behaviour: when activating a filter it's menu item regulator is also open
@@ -103,7 +112,9 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
     return (
         <div
             style={menuStyle}
-            className={`menu-main ${menuOpen ? "menu-main-over" : ""}`}
+            className={`menu-main ${
+                menuOpen || exampleMenuOpen ? "menu-main-over" : ""
+            }`}
             onMouseOver={() => {
                 setMenuOpen(true);
             }}
@@ -112,58 +123,7 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
             }}
         >
             <Menu vertical inverted>
-                {showLayoutButton && (
-                    <Menu.Item className="menu-item">
-                        <div
-                            style={{
-                                cursor: "pointer",
-                                fontSize: 18,
-                            }}
-                            onClick={setLayoutButton}
-                        >
-                            <Icon name="picture" />
-                            <div
-                                className={`menu-main-title ${
-                                    menuOpen ? "menu-main-open" : ""
-                                }`}
-                            >
-                                Layout
-                            </div>
-                            <DropdownIcon
-                                style={{
-                                    transform: layoutButton
-                                        ? null
-                                        : "rotate(270deg)",
-                                    position: "relative",
-                                    cursor: "pointer",
-                                    width: "fit-content",
-                                    display: menuOpen ? "inline-block" : "none",
-                                    float: "right",
-                                }}
-                                className={
-                                    menuOpen
-                                        ? "menu-dropdown menu-open-dropdown"
-                                        : "menu-dropdown"
-                                }
-                            />
-                        </div>
-                        {layoutButton ? (
-                            <Menu.Menu>
-                                <LayoutToggle></LayoutToggle>
-                            </Menu.Menu>
-                        ) : null}
-                    </Menu.Item>
-                )}
-                {layoutOptions.layout === "graph" && (
-                    <LayoutSelector
-                        value={graphinLayoutHandler.name}
-                        onClick={(newLayout) => {
-                            graphinLayoutHandler.setLayout(newLayout);
-                        }}
-                        menuOpen={menuOpen}
-                    ></LayoutSelector>
-                )}
-                <Menu.Item className="menu-item">
+                <Menu.Item className="menu-item filters-menu-button">
                     <div
                         style={{
                             cursor: "pointer",
@@ -172,27 +132,33 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                         }}
                         onClick={setFilterButton}
                     >
-                        <Icon name="search" />
+                        <Icon name="search" className="filters-icon" />
                         <div
                             className={`menu-main-title ${
-                                menuOpen ? "menu-main-open" : ""
-                            }`}
+                                menuOpen || exampleMenuOpen
+                                    ? "menu-main-open"
+                                    : ""
+                            } filters-title`}
                         >
                             Filters
                         </div>
                         <DropdownIcon
                             style={{
-                                transform: filterButton
-                                    ? null
-                                    : "rotate(270deg)",
+                                transform:
+                                    filterButton || exampleFiltersOpen
+                                        ? null
+                                        : "rotate(270deg)",
                                 position: "relative",
                                 cursor: "pointer",
                                 width: "fit-content",
-                                display: menuOpen ? "inline-block" : "none",
+                                display:
+                                    menuOpen || exampleMenuOpen
+                                        ? "inline-block"
+                                        : "none",
                                 float: "right",
                             }}
                             className={
-                                menuOpen
+                                menuOpen || exampleMenuOpen
                                     ? "menu-dropdown menu-open-dropdown"
                                     : "menu-dropdown"
                             }
@@ -216,7 +182,13 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                             </Message>
                         ) : null}
                     </div>
-                    <Menu.Menu className={filterButton ? "" : "close-filter"}>
+                    <Menu.Menu
+                        className={
+                            filterButton || exampleFiltersOpen
+                                ? ""
+                                : "close-filter"
+                        }
+                    >
                         {children &&
                             React.Children.toArray(children).map((c, index) => {
                                 let child;
@@ -231,7 +203,7 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                                 return (
                                     <Menu.Item
                                         key={index}
-                                        className="menu-item filter-item"
+                                        className={`menu-item filter-item filter-${child.props.id}`}
                                     >
                                         <div
                                             style={{
@@ -307,7 +279,11 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                                         </div>
                                         <Menu.Menu
                                             className={
-                                                open.includes(index)
+                                                // open occurences as example filter
+                                                open.includes(index) ||
+                                                (exampleFilterOccurencesOpen &&
+                                                    child.props.id ===
+                                                        "occurences")
                                                     ? `${child.props.id}-filter-button`
                                                     : `${child.props.id}-filter-button close-filter`
                                             }
@@ -319,6 +295,63 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                             })}
                     </Menu.Menu>
                 </Menu.Item>
+                {showLayoutButton && (
+                    <Menu.Item className="menu-item layouts-menu-button">
+                        <div
+                            style={{
+                                cursor: "pointer",
+                                fontSize: 18,
+                            }}
+                            onClick={setLayoutButton}
+                        >
+                            <Icon name="picture" />
+                            <div
+                                className={`menu-main-title ${
+                                    menuOpen || exampleMenuOpen
+                                        ? "menu-main-open"
+                                        : ""
+                                }`}
+                            >
+                                Layout
+                            </div>
+                            <DropdownIcon
+                                style={{
+                                    transform:
+                                        layoutButton || exampleLayoutOpen
+                                            ? null
+                                            : "rotate(270deg)",
+                                    position: "relative",
+                                    cursor: "pointer",
+                                    width: "fit-content",
+                                    display:
+                                        menuOpen || exampleMenuOpen
+                                            ? "inline-block"
+                                            : "none",
+                                    float: "right",
+                                }}
+                                className={
+                                    menuOpen || exampleMenuOpen
+                                        ? "menu-dropdown menu-open-dropdown"
+                                        : "menu-dropdown"
+                                }
+                            />
+                        </div>
+                        {layoutButton || exampleLayoutOpen ? (
+                            <Menu.Menu>
+                                <LayoutToggle></LayoutToggle>
+                            </Menu.Menu>
+                        ) : null}
+                    </Menu.Item>
+                )}
+                {layoutOptions.layout === "graph" && (
+                    <LayoutSelector
+                        value={graphinLayoutHandler.name}
+                        onClick={(newLayout) => {
+                            graphinLayoutHandler.setLayout(newLayout);
+                        }}
+                        menuOpen={menuOpen || exampleMenuOpen}
+                    ></LayoutSelector>
+                )}
             </Menu>
         </div>
     );

@@ -74,31 +74,36 @@ export default function PatternFilter({ id = "patternPie" }) {
     });
 
     return (
-        <PieChart
-            lengthAngle={-360}
-            animate
-            paddingAngle={1}
-            data={data}
-            label={() => {
-                return data[hovered] ? data[hovered].value : null;
-            }}
-            segmentsStyle={{ transition: "stroke .3s", cursor: "pointer" }}
-            labelStyle={{
-                fontSize: "20px",
-                fontFamily: "sans-serif",
-                fill: data[hovered] ? data[hovered].color : null,
-            }}
-            onMouseOver={(_, index) => {
-                setHovered(index);
-            }}
-            onMouseOut={() => {
-                setHovered(null);
-            }}
-            onClick={(_, index) => {
-                setFiltered(data[index].id);
-            }}
-            lineWidth={30}
-            labelPosition={0}
-        />
+        <div>
+            <div class="pie-chart-title">
+                {data[hovered] ? data[hovered].title : null}
+            </div>
+            <PieChart
+                lengthAngle={-360}
+                animate
+                paddingAngle={1}
+                data={data}
+                label={() => {
+                    return data[hovered] ? data[hovered].value : null;
+                }}
+                segmentsStyle={{ transition: "stroke .3s", cursor: "pointer" }}
+                labelStyle={{
+                    fontSize: "20px",
+                    fontFamily: "sans-serif",
+                    fill: data[hovered] ? data[hovered].color : null,
+                }}
+                onMouseOver={(_, index) => {
+                    setHovered(index);
+                }}
+                onMouseOut={() => {
+                    setHovered(null);
+                }}
+                onClick={(_, index) => {
+                    setFiltered(data[index].id);
+                }}
+                lineWidth={30}
+                labelPosition={0}
+            />
+        </div>
     );
 }

@@ -8,11 +8,15 @@ import AlertBox from "../components/KnowledgeGraph/AlertBox";
 
 import PatternFilter from "../components/filters/facets/PatternFilter";
 import OccurencesSliderFilter from "../components/filters/facets/OccurencesSliderFilter";
+import ClassCentralityMeasureFilter from "../components/filters/facets/ClassCentralityMeasureFilter";
+import FiltersMountedFlag from "../components/filters/FiltersMountedFlag";
 
 import HelpBox from "../components/KnowledgeGraph/HelpBox";
 
 export default function PatternsAndClassesScreen({ filteredKnowledgeGraph }) {
     const { layoutOptions } = useLayoutCtx();
+
+    const kg = filteredKnowledgeGraph !== null;
 
     return (
         <ODPReactorContainer>
@@ -24,14 +28,24 @@ export default function PatternsAndClassesScreen({ filteredKnowledgeGraph }) {
                     title="Filter by occurences"
                     id="occurences"
                 />
+                <ClassCentralityMeasureFilter
+                    title="Filter by centrality measure"
+                    id="centrality"
+                />
+                <FiltersMountedFlag id="filter-flag" />
             </PatternMenu>
-            {layoutOptions.layout === "list" && (
+
+            {layoutOptions.layout === "list" && kg && (
                 <List
                     list={filteredKnowledgeGraph.toList()}
                     title="Categories"
                 />
             )}
-            <VisualGraph visualGraph={filteredKnowledgeGraph.toVisualGraph()} />
+            {kg && (
+                <VisualGraph
+                    visualGraph={filteredKnowledgeGraph.toVisualGraph()}
+                />
+            )}
         </ODPReactorContainer>
     );
 }

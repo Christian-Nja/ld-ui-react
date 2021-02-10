@@ -6,7 +6,7 @@ export default function WithFilterPatternAndClassesScreen({ knowledgeGraph }) {
     return (
         <FilteringResource
             knowledgeGraph={knowledgeGraph}
-            supportedFilterIds={["patternPie", "occurences"]}
+            supportedFilterIds={["patternPie", "occurences", "centrality"]}
         >
             <PatternAndClassesScreen />
         </FilteringResource>

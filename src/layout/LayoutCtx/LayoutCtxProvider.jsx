@@ -7,6 +7,11 @@ export default function LayoutCtxProvider({
     children,
     defaultLayout = {
         layout: "graph",
+        exampleMenuOpen: false,
+        exampleFilterOpen: false,
+        exampleLayoutOpen: false,
+        exampleFiltersOpen: false,
+        exampleFilterOccurencesOpen: false,
     },
 }) {
     const [layoutOptions, setLayoutOptions] = useState(defaultLayout);

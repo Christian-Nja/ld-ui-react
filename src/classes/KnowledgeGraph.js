@@ -80,6 +80,14 @@ export default class KnowledgeGraph {
     forEachResource(callback = (resourceURI, attributes) => {}) {
         this.graph.forEachNode(callback);
     }
+    forEachPattern(callback = (resourceURI, attributes) => {}) {
+        const wrappedPatternCallback = (resourceURI, attributes) => {
+            if (attributes && attributes.type === "Pattern") {
+                callback(resourceURI, attributes);
+            }
+        };
+        this.graph.forEachNode(wrappedPatternCallback);
+    }
     getResourceProperty(uri, property) {
         return this.graph.getNodeAttribute(uri, property);
     }
@@ -93,6 +101,9 @@ export default class KnowledgeGraph {
     }
     getResourceCount() {
         return this.graph.nodes().length;
+    }
+    getPatternCount() {
+        return this.getPatterns().length;
     }
     getNodes() {
         return this.graph.nodes();

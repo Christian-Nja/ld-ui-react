@@ -10,6 +10,7 @@ import {
 import { find } from "lodash";
 
 export default function FilterCtxProvider({ children }) {
+    const [filtersMountedFlag, setFiltersMountedFlag] = useState(false);
     const [filters, setFilters] = useState(
         safelyLoadFiltersFromSessionStorage() || []
     );
@@ -67,6 +68,8 @@ export default function FilterCtxProvider({ children }) {
         <FilterCtx.Provider
             value={{
                 filters,
+                filtersMountedFlag,
+                setFiltersMountedFlag,
                 getFilterById,
                 setNewFilter,
                 setFilterOptionsById,

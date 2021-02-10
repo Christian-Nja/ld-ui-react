@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import useFilter from "../../../filters/FilterCtx/useFilter";
+import useNonPersistentFilter from "../../../filters/FilterCtx/useNonPersistentFilter";
 import SliderFilter from "./SliderFilter";
 
 import findSliderDomain from "./findSliderDomain";
@@ -7,7 +7,7 @@ import findSliderDomain from "./findSliderDomain";
 const MIN = 0;
 const MAX = 1;
 
-export default function GenericSliderFilter({
+export default function NonPersistentGenericSliderFilter({
     id = "genericSlider",
     resourceProperty,
     resources,
@@ -37,7 +37,10 @@ export default function GenericSliderFilter({
         filterCallback: filterCallback,
     };
 
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+    const { filter, setFilterOptions } = useNonPersistentFilter(
+        id,
+        initialFilterOptions
+    );
 
     const initialRange = findSliderDomain(resources, resourceProperty);
 
