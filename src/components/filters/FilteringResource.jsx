@@ -1,6 +1,7 @@
 import React from "react";
 
 import KnowledgeGraphPipe from "../../knowledgegraph/KnowledgeGraphPipe";
+import KnowledgeGraph from "../../classes/KnowledgeGraph";
 import { useFilterCtx } from "../../filters/FilterCtx/useFilterCtx";
 
 import { filter } from "lodash";
@@ -22,8 +23,9 @@ export default function FilteringResource({
         // remove nodes connected to edge
         filteredKnowledgeGraph = kgPipe.chain(supportedFilters).toGraph();
     } else {
-        filteredKnowledgeGraph = null;
+        filteredKnowledgeGraph = KnowledgeGraph.create();
     }
+
     return (
         <div>
             {children

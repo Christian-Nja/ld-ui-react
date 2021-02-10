@@ -15,6 +15,7 @@ import { forEach, map } from "lodash";
 import AlertBox from "../components/KnowledgeGraph/AlertBox";
 import HelpBox from "../components/KnowledgeGraph/HelpBox";
 import GoToButton from "../components/layout/GoToButton";
+import FiltersMountedController from "../components/filters/FiltersMountedController";
 
 export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
     const { knowledgeGraph } = useKGCtx();
@@ -133,6 +134,7 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                         title="Filter by number of measurements"
                     />
                 )}
+                <FiltersMountedController id="filter-flag" />
             </PatternMenu>
             <List list={filteredKnowledgeGraph.toList()} />)
         </ODPReactorContainer>

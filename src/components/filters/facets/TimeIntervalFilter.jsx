@@ -31,6 +31,8 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
     // if domain not in options compute it
     const initialRange = useMemo(() => findTimeDomain(resources), [resources]);
 
+    const defaultRange = [initialRange[1], initialRange[1]];
+
     const filterCallback = (resource) => {
         if (!resource.startTime && !resource.endTime) {
             return false;
@@ -75,7 +77,7 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 
     const [range, setRange] = useState(
-        (filter && filter.getOption("range")) || initialRange
+        (filter && filter.getOption("range")) || defaultRange || initialRange
     );
 
     useEffect(() => {

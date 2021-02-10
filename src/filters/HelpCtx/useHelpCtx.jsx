@@ -1,10 +1,14 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { HelpCtx } from "./HelpCtx";
 
 export function useHelpCtx() {
-    const { help, setHelp } = useContext(HelpCtx);
+    const { isFirstAccess, saveFirstAccessToLocalStorage } = useContext(
+        HelpCtx
+    );
+    useEffect(() => {
+        saveFirstAccessToLocalStorage();
+    }, []);
     return {
-        help,
-        setHelp,
+        isFirstAccess,
     };
 }

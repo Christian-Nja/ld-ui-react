@@ -26,10 +26,7 @@ export default function TemporaryMessage({
     const helpToken = true;
 
     return (
-        <div
-            style={{ ...style, display: disappear }}
-            className={!helpToken ? "shaking" : ""}
-        >
+        <div style={{ ...style, display: disappear }} className={"help-button"}>
             <i aria-hidden="true" class="info icon"></i>
         </div>
     );
