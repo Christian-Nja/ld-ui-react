@@ -20,20 +20,20 @@ export default function HelpBox() {
         {
             content: (
                 <div>
-                    This screen represents a knowledge graphs. <br />
-                    Rectangles stands for Entities and circles represents vies
-                    on this entities.
-                    <br />
-                    Edges represents relations holding between entities and
-                    views
-                    <br /> Move the mouse over circles and rectangles to get
-                    more details about what kind of data are in the knowledge
-                    graph. <br />
-                    Double click on them to explore data of that kind. <br />{" "}
-                    For example in{" "}
-                    <strong>Cultural Property Measurements</strong>
-                    you can find measurements about specific cultural
-                    properties.
+                    This visualisation shows you a summary of the entire
+                    knowledge graph. <br /> Diamonds represent concepts (i.e.
+                    classes) and circles represents "views" on this entities.{" "}
+                    <br /> Only key concepts are visualised but you can
+                    customise the visualisation to show additional ones. <br />{" "}
+                    The presence of an edge between a concept and a view shows
+                    that that entity is involved in that view with a prominent
+                    role. <br /> Move the mouse over circles and diamonds to get
+                    details about them and the data they contain. <br /> Double
+                    click on any node of the graph to explore its content.{" "}
+                    <br /> For example in the "Cultural Property Measurements"
+                    you can find data about relevant measurements applied to
+                    cultural properties (e.g. height, length, etc.), along with
+                    their values.
                 </div>
             ),
             locale: { skip: <strong aria-label="skip">End tutorial</strong> },
@@ -44,7 +44,7 @@ export default function HelpBox() {
         {
             target: ".menu-main",
             locale: { skip: <strong aria-label="skip">End tutorial</strong> },
-            content: "Filter or interact with data through main panel!",
+            content: "Filter or interact with data through this panel",
             spotlightClicks: true,
             styles: {
                 options: {
@@ -56,7 +56,7 @@ export default function HelpBox() {
         },
         {
             target: ".filters-menu-button",
-            content: "Click here to open available filters",
+            content: "Here you see the available filters",
             locale: { skip: <strong aria-label="skip">End tutorial</strong> },
             spotlightClicks: true,
             styles: {
@@ -69,7 +69,7 @@ export default function HelpBox() {
         },
         {
             target: ".layouts-menu-button",
-            content: "Here you can change layout: graph or list",
+            content: "Select your preferred layout between graph or list",
             locale: { skip: <strong aria-label="skip">End tutorial</strong> },
             spotlightClicks: true,
             styles: {
@@ -109,13 +109,13 @@ export default function HelpBox() {
         {
             target: ".filter-occurences",
             content:
-                "Regulate filters and activate them to search inside knowledge graph",
+                "Tune filter values to refine your search within the knowledge graph",
             locale: { skip: <strong aria-label="skip">End tutorial</strong> },
             hideCloseButton: true,
         },
         {
             target: ".help-button",
-            content: "Click this button to run again the application tutorial",
+            content: "Click her to see this tutorial again",
             locale: { skip: <strong aria-label="skip">End tutorial</strong> },
             hideCloseButton: true,
         },

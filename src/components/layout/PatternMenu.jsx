@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, Message, Icon } from "semantic-ui-react";
+import { Menu, Message, Icon, Popup } from "semantic-ui-react";
 
 import HelpIcon from "../KnowledgeGraph/HelpIcon";
 import DropdownIcon from "../KnowledgeGraph/DropdownIcon";
@@ -9,11 +9,7 @@ import LayoutToggle from "../KnowledgeGraph/LayoutToggle";
 
 import { useLayoutCtx } from "../../layout/LayoutCtx/useLayoutCtx";
 
-import {
-    useBinaryArrayState,
-    useBinaryState,
-    useHelp,
-} from "../hooks/ld-ui-hooks";
+import { useBinaryArrayState, useBinaryState } from "../hooks/ld-ui-hooks";
 import Toggle from "react-toggle";
 
 import "react-toggle/style.css"; // for ES6 modules
@@ -199,6 +195,9 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                                         },
                                     });
                                 }
+                                const filter = getFilterById(child.props.id);
+                                const filterDescription =
+                                    filter && filter.getDescription();
                                 // return filters
                                 return (
                                     <Menu.Item
@@ -231,51 +230,99 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                                                     setOpen(index);
                                                 }}
                                             />
-                                            <div
-                                                className={
-                                                    getFilterById(
-                                                        child.props.id
-                                                    ) &&
-                                                    getFilterById(
-                                                        child.props.id
-                                                    ).isActive()
-                                                        ? "active-filter filter-title"
-                                                        : "filter-title"
-                                                }
-                                                onClick={() => {
-                                                    setOpen(index);
-                                                }}
-                                                style={{
-                                                    cursor: "pointer",
-                                                }}
-                                            >
-                                                {child.props.title}
-                                            </div>
-                                            <Toggle
-                                                id={child.props.id}
-                                                checked={
-                                                    getFilterById(
-                                                        child.props.id
-                                                    ) &&
-                                                    getFilterById(
-                                                        child.props.id
-                                                    ).isActive()
-                                                }
-                                                onChange={(e) => {
-                                                    // setLastToggledFilter
-                                                    setLastActivatedFilter({
-                                                        filterKey: e.target.id,
-                                                        filterId: index,
-                                                        state:
+                                            <Popup
+                                                trigger={
+                                                    <div
+                                                        className={
                                                             getFilterById(
                                                                 child.props.id
                                                             ) &&
                                                             getFilterById(
                                                                 child.props.id
-                                                            ).isActive(),
-                                                    });
-                                                }}
+                                                            ).isActive()
+                                                                ? "active-filter filter-title"
+                                                                : "filter-title"
+                                                        }
+                                                        onClick={() => {
+                                                            setOpen(index);
+                                                        }}
+                                                        style={{
+                                                            cursor: "pointer",
+                                                        }}
+                                                    >
+                                                        {child.props.title}
+                                                    </div>
+                                                }
+                                                mouseEnterDelay={500}
+                                                on="hover"
+                                                content="Click to show or hide filter"
+                                                position="top center"
                                             />
+                                            <Popup
+                                                trigger={
+                                                    <div>
+                                                        <Toggle
+                                                            id={child.props.id}
+                                                            checked={
+                                                                getFilterById(
+                                                                    child.props
+                                                                        .id
+                                                                ) &&
+                                                                getFilterById(
+                                                                    child.props
+                                                                        .id
+                                                                ).isActive()
+                                                            }
+                                                            onChange={(e) => {
+                                                                // setLastToggledFilter
+                                                                setLastActivatedFilter(
+                                                                    {
+                                                                        filterKey:
+                                                                            e
+                                                                                .target
+                                                                                .id,
+                                                                        filterId: index,
+                                                                        state:
+                                                                            getFilterById(
+                                                                                child
+                                                                                    .props
+                                                                                    .id
+                                                                            ) &&
+                                                                            getFilterById(
+                                                                                child
+                                                                                    .props
+                                                                                    .id
+                                                                            ).isActive(),
+                                                                    }
+                                                                );
+                                                            }}
+                                                        />
+                                                    </div>
+                                                }
+                                                mouseEnterDelay={500}
+                                                on="hover"
+                                                content="Enable/disable filter"
+                                                position="top center"
+                                            />
+                                            <div>
+                                                <Popup
+                                                    trigger={
+                                                        <Icon
+                                                            name="help"
+                                                            size="large"
+                                                            circular
+                                                        />
+                                                    }
+                                                    mouseEnterDelay={500}
+                                                    on="hover"
+                                                    content={
+                                                        child.props
+                                                            .description ||
+                                                        "Filter Data"
+                                                    }
+                                                    position="right center"
+                                                />
+                                            </div>
                                         </div>
                                         <Menu.Menu
                                             className={

@@ -14,6 +14,7 @@ import ColorGenerator from "./components/classes/ColorGenerator";
 import ResourceFactory from "./classes/ResourceFactory";
 import PatternsAndClassesPage from "./pages/PatternsAndClassesPage";
 import PatternInstancesPage from "./pages/PatternInstancesPage";
+import ResourcesWithViewControllerPage from "./pages/ResourcesWithViewControllerPage";
 
 /**
  * Available components
@@ -35,4 +36,5 @@ export {
     ResourceFactory,
     PatternsAndClassesPage,
     PatternInstancesPage,
+    ResourcesWithViewControllerPage,
 };

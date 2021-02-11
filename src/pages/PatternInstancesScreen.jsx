@@ -13,7 +13,6 @@ import hasResourceToFilter from "../components/filters/facets/hasResourceToFilte
 import { useKGCtx } from "../knowledgegraph/KGCtx/useKGCtx";
 import { forEach, map } from "lodash";
 import AlertBox from "../components/KnowledgeGraph/AlertBox";
-import HelpBox from "../components/KnowledgeGraph/HelpBox";
 import GoToButton from "../components/layout/GoToButton";
 import FiltersMountedController from "../components/filters/FiltersMountedController";
 
@@ -89,18 +88,19 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
         <ODPReactorContainer>
             <GoToButton />
             <AlertBox />
-            <HelpBox />
             <PatternMenu showLayoutButton={false}>
                 {thereIsGeoLocationToFilter && (
                     <GeoFilter
                         title="Filter drawing location on a map"
                         id="geo"
+                        description="Draw an area on the map and show only cultural properties inside it"
                     />
                 )}
                 {thereIsTimeToFilter && (
                     <TimeIntervalFilter
                         title="Filter by time interval"
                         id="time"
+                        description="This filter performs well with location type or geographic filter. Select an year or interval of time and a location. You will see only cultural properties located in a specific area at a certain period of time"
                     />
                 )}
                 {thereAreTypeLocationsToFilter && (
@@ -108,6 +108,7 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                         id="locationType"
                         property="locationType"
                         title="Filter by location type"
+                        description="Click on a slice to remove/show cultural properties with specified location type in the list. A grey color slice means cultural properties with given location type are not shown."
                     />
                 )}
                 {thereArePartsToFilter && (
@@ -115,6 +116,7 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                         id="parts"
                         title="Filter by number of parts"
                         resourceProperty="parts"
+                        description="Tune this filter to show only cultural properties with number of components in the selected range"
                     />
                 )}
                 {map(thereAreMeasurementToFilter, (m) => {
@@ -125,13 +127,15 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                             id={m}
                             title={`Filter by ${m}`}
                             measurementType={m}
+                            description={`Tune this filter to show only cultural properties with ${m} in the selected range`}
                         />
                     );
                 })}
-                {thereAreMeasurementToFilter && (
+                {thereAreMeasurementToFilter.length !== 0 && (
                     <MeasurementCountSliderFilter
                         id="measurements"
                         title="Filter by number of measurements"
+                        description="Tune this filter to show only cultural properties with number of collected measurements in the selected range"
                     />
                 )}
                 <FiltersMountedController id="filter-flag" />

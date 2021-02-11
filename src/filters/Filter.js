@@ -13,7 +13,7 @@ export default class Filter {
         return new Filter(id, { ...defaultOptions, ...options });
     }
     getOption(optionName) {
-        return this.options[optionName];
+        if (this.options) return this.options[optionName];
     }
     setOptions(options) {
         this.options = options;
@@ -51,5 +51,8 @@ export default class Filter {
     }
     getId() {
         return this.id;
+    }
+    getDescription() {
+        return this.getOption("description");
     }
 }

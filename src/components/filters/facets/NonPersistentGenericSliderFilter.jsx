@@ -54,6 +54,7 @@ export default function NonPersistentGenericSliderFilter({
                 ...filter.options,
                 range: range,
                 filterCallback: filterCallback,
+                description: "",
             });
         }
     }, [range]);
