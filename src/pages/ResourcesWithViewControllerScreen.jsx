@@ -12,7 +12,10 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
             <GoToButton />
             <AlertBox />
             <PatternMenu showLayoutButton={false}>
-                <FiltersMountedController id="filter-flag" />
+                <FiltersMountedController
+                    id="filter-flag"
+                    mountedFilters={[]}
+                />
             </PatternMenu>
             <List list={filteredKnowledgeGraph.toList()} />)
         </ODPReactorContainer>
