@@ -101,8 +101,17 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
 
     // check if some filter is active and modify menu UI
     // signalling user by green color or message
-    const isSomeFilterActive = some(filters, (f) => {
-        return f.isActive() && !f.isNonPersistent();
+    let mountedFilters;
+    if (children) {
+        mountedFilters = React.Children.toArray(children).filter((c, index) => {
+            return getFilterById(c.props.id);
+        });
+    }
+    console.log("mounted filters");
+    console.log(mountedFilters);
+    const isSomeFilterActive = some(mountedFilters, (f) => {
+        let filter = getFilterById(f.props.id);
+        return filter.isActive();
     });
 
     return (

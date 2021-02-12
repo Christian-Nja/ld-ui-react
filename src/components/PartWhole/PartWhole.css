@@ -41,10 +41,10 @@
     z-index: 1;
 }
 
-.part-depiction:hover {
+/* .part-depiction:hover {
     transform: scale(4);
     z-index: 4;
-}
+} */
 
 .whole-depiction:hover {
     /* transform: scale(2); */
@@ -57,6 +57,18 @@
 }
 
 .part-whole-label {
+    opacity: 0;
+    min-width: 200px;
+    z-index: 5;
+    background: white;
+    border-radius: 10px/20px;
+    padding: 5px;
+    border: 1px solid black;
+    pointer-events: none;
+    /* position: relative; */
+}
+
+.part-whole-whole-label {
     opacity: 0;
     min-width: 200px;
     z-index: 5;
@@ -78,4 +90,9 @@
 .circle .part-whole-label:hover {
     z-index: 5;
     opacity: 0;
+}
+
+.center:hover .part-whole-whole-label {
+    opacity: 1;
+    z-index: 5;
 }

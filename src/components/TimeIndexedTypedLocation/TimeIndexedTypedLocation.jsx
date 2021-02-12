@@ -161,7 +161,7 @@ export default function TimeIndexedTypedLocation({
                     timeInterval: `${tITL.startTime} - ${
                         tITL.endTime !== "" ? tITL.endTime : "Today"
                     }`,
-                    locationType: tITL.locationType.split("/").pop(), // at the moment we pass the uri TODO: pass the label
+                    locationType: tITL.locationTypeLabel, // at the moment we pass the uri TODO: pass the label
                     culturalProperty:
                         tITL.cPropLabel !== ""
                             ? tITL.cPropLabel

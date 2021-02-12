@@ -44,6 +44,7 @@ export default function PatternFilter({ id = "patternPie" }) {
     const initialFilterOptions = {
         active: false,
         filterCallback: filterCallback,
+        isMounted: true,
     };
 
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);

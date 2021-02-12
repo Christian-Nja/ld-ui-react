@@ -80,13 +80,13 @@ export default function PartWhole({
                                 uri={part.uri}
                                 placeholderImg={part.placeholder}
                                 onLoadedDepiction={onLoadedDepiction}
-                            />
-                        }
-                        label={
-                            <Label
-                                uri={part.uri}
-                                classes={"part-whole-label"}
-                                style={labelStyle}
+                                label={
+                                    <Label
+                                        uri={part.uri}
+                                        classes={"part-whole-label"}
+                                        style={labelStyle}
+                                    />
+                                }
                             />
                         }
                     />
@@ -106,13 +106,13 @@ export default function PartWhole({
                             uri={whole.uri}
                             placeholderImg={whole.placeholder}
                             onLoadedDepiction={onLoadedDepiction}
-                        />
-                    }
-                    label={
-                        <Label
-                            uri={whole.uri}
-                            classes="part-whole-label"
-                            style={centerLabelStyle}
+                            label={
+                                <Label
+                                    uri={whole.uri}
+                                    classes="part-whole-whole-label"
+                                    style={centerLabelStyle}
+                                />
+                            }
                         />
                     }
                 />

@@ -56,6 +56,8 @@ export default function FilterCtxProvider({ children }) {
         saveFiltersToSessionStorage(newFilters);
     };
     const setInvertedFilterStateById = (id) => {
+        console.log("ID THAT CRASH");
+        console.log(id);
         let filterToUpdate = getFilterById(id);
         filterToUpdate.invertState();
         const newFilters = clone(filters);

@@ -35,6 +35,7 @@ export default function NonPersistentGenericSliderFilter({
     const initialFilterOptions = {
         active: isActive,
         filterCallback: filterCallback,
+        isMounted: true,
     };
 
     const { filter, setFilterOptions } = useNonPersistentFilter(

@@ -38,7 +38,15 @@ export default function PatternsAndClassesScreen({ filteredKnowledgeGraph }) {
                     id="centrality"
                     description="The centrality of a concept is given by the highest interconnection with other concept. Tune this filter to show only views with importance score in the selected range"
                 />
-                <FiltersMountedController id="filter-flag" />
+                <FiltersMountedController
+                    id="filter-flag"
+                    mountedFilters={[
+                        "centrality",
+                        "occurences",
+                        "patternPie",
+                        "search",
+                    ]}
+                />
             </PatternMenu>
 
             {layoutOptions.layout === "list" && kg && (

@@ -40,6 +40,7 @@ export default function PropertyFilter({ id = "pie", property = "id" }) {
     const initialFilterOptions = {
         active: false,
         filterCallback: filterCallback,
+        isMounted: true,
     };
 
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);

@@ -43,6 +43,7 @@ export default function MeasurementSliderFilter({
     const initialFilterOptions = {
         active: false,
         filterCallback: filterCallback,
+        isMounted: true,
     };
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 

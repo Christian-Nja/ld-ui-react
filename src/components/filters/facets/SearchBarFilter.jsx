@@ -99,6 +99,7 @@ export default function SearchBarFilter({
     const initialFilterOptions = {
         active: true,
         filterCallback: filterCallback,
+        isMounted: true,
     };
     const { filter, setFilterOptions } = useNonPersistentFilter(
         id,

@@ -68,10 +68,6 @@ export default function List({
 
     const keys = [];
 
-    const onItemClick = resources[SAMPLE_RESOURCE]
-        ? resources[SAMPLE_RESOURCE].onListItemClick()
-        : () => {};
-
     // WARNING THIS APPROACH MAY BE PERFORMANCE CRITIC
     // we parse list keys, only if there is at least one object with the key we show the row
     forEach(allPossiblekeys, (k) => {
@@ -135,11 +131,14 @@ export default function List({
                         // window.sessionStorage.setItem(
                         //     resources[index].getUri()
                         // );
-                        onItemClick(resources[index]);
+                        console.log("CLICKED LIST ITEM", resources[index]);
+                        resources[index].listProperties.listItemClick();
                     }}
                     id={resources[index].getUri()}
                 >
                     {keys.map((k) => {
+                        console.log("List item");
+                        console.log(resources[index]);
                         columnId++;
                         if (resources[index])
                             return (
@@ -151,6 +150,12 @@ export default function List({
                                     {resources[index][k]
                                         ? resources[index][k]
                                         : "--"}
+                                    {resources[index][`${k}MeasurementUnit`]
+                                        ? " " +
+                                          resources[index][
+                                              `${k}MeasurementUnit`
+                                          ]
+                                        : null}
                                 </div>
                             );
                     })}

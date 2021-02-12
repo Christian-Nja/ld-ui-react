@@ -8,7 +8,7 @@ export default function PartCountSliderFilter({}) {
     return (
         <GenericSliderFilter
             resources={knowledgeGraph.getResources()}
-            id="partsCount"
+            id="parts"
             resourceProperty="parts"
         />
     );

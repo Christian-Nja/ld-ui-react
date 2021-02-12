@@ -5,10 +5,11 @@ import GenericSliderFilter from "./GenericSliderFilter";
 
 export default function MeasurementCountSliderFilter({}) {
     const { knowledgeGraph } = useKGCtx();
+
     return (
         <GenericSliderFilter
             resources={knowledgeGraph.getResources()}
-            id="measuresCount"
+            id="measurements"
             resourceProperty="measures"
         />
     );

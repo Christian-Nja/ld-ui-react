@@ -84,6 +84,15 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
         }
     });
 
+    const mountedFilters = ["search"];
+
+    if (thereIsGeoLocationToFilter) mountedFilters.push("geo");
+    thereAreMeasurementToFilter.forEach((m) => mountedFilters.push(m));
+    if (thereAreMeasurementToFilter.length > 0)
+        mountedFilters.push("measurements");
+    if (thereArePartsToFilter) mountedFilters.push("parts");
+    if (thereAreTypeLocationsToFilter) mountedFilters.push("locationType");
+    if (thereIsTimeToFilter) mountedFilters.push("time");
     return (
         <ODPReactorContainer>
             <GoToButton />
@@ -138,7 +147,10 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                         description="Tune this filter to show only cultural properties with number of collected measurements in the selected range"
                     />
                 )}
-                <FiltersMountedController id="filter-flag" />
+                <FiltersMountedController
+                    id="filter-flag"
+                    mountedFilters={mountedFilters}
+                />
             </PatternMenu>
             <List list={filteredKnowledgeGraph.toList()} />)
         </ODPReactorContainer>

@@ -97,6 +97,7 @@ export default function GeoFilter({
     const initialFilterOptions = {
         active: false,
         filterCallback: filterCallback,
+        isMounted: true,
     };
 
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);

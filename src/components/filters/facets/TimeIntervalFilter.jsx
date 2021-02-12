@@ -73,6 +73,7 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
     const initialFilterOptions = {
         active: false,
         filterCallback: filterCallback,
+        isMounted: true,
     };
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 

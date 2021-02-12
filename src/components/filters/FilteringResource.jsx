@@ -15,10 +15,15 @@ export default function FilteringResource({
 
     let filteredKnowledgeGraph;
 
+    console.log("Filters mounted flag", filtersMountedFlag);
     if (filtersMountedFlag) {
         const supportedFilters = filter(filters, (filter) => {
-            return supportedFilterIds.includes(filter.getId());
+            return filtersMountedFlag.includes(filter.getId());
         });
+        console.log("Mounted flag");
+        console.log(filtersMountedFlag);
+        console.log("supported mounted filters");
+        console.log(supportedFilters);
         const kgPipe = KnowledgeGraphPipe.create(knowledgeGraph);
         // remove nodes connected to edge
         filteredKnowledgeGraph = kgPipe.chain(supportedFilters).toGraph();

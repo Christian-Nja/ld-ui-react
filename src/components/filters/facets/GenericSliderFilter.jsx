@@ -35,6 +35,7 @@ export default function GenericSliderFilter({
     const initialFilterOptions = {
         active: isActive,
         filterCallback: filterCallback,
+        isMounted: true,
     };
 
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);

@@ -76,6 +76,9 @@ _____________________________________________________________ */
 export function useMap(mapRef, mapProvider) {
     useEffect(() => {
         /** mounts map */
+        console.log("Crash all");
+        console.log(mapRef);
+        console.log(mapRef.current);
         mapRef.current = L.map("map", {
             center: [0, 0],
             zoom: 1,
