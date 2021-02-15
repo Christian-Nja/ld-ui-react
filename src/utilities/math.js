@@ -98,6 +98,7 @@ export function baseLog(b, n) {
 
 /**
  * @description Scale a number x (number in a range minD, maxD) projecting it to a range (minV, maxV)
+ *              returns minV if result is not finite
  * @author Christian Colonna
  * @date 08-12-2020
  * @export
@@ -112,8 +113,16 @@ export function scaleData(x, minD, maxD, minV, maxV) {
     // log base
     const b = Math.pow(maxD - minD, 1 / (maxV - minV));
     const result = minV + baseLog(b, x - minD);
+    console.log("Result");
+    console.log(result);
+    console.log("value");
+    console.log(x);
     if (isFinite(result)) {
         return result;
     }
     return minV;
+}
+
+export function scaleInto01(x, min, max) {
+    return (x - min) / (max - min);
 }

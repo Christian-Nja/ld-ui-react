@@ -4,6 +4,7 @@ import Depiction from "./components/Resource/Depiction";
 import KG from "./components/KnowledgeGraph/KG";
 import Graph from "./components/classes/Graph";
 import { scaleData } from "./utilities/math";
+import findSliderDomain from "./components/filters/facets/findSliderDomain";
 import ImageGrid from "./components/ImageGrid/ImageGrid";
 import PropertyValueList from "./components/PropertyValueList/PropertyValueList";
 import Measurement from "./measurements/Measurement";
@@ -26,6 +27,7 @@ export {
     Measurement,
     Resource,
     scaleData,
+    findSliderDomain,
     Collection,
     PartWhole,
     Depiction,
