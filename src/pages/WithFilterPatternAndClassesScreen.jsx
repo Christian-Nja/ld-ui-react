@@ -4,10 +4,7 @@ import React from "react";
 
 export default function WithFilterPatternAndClassesScreen({ knowledgeGraph }) {
     return (
-        <FilteringResource
-            knowledgeGraph={knowledgeGraph}
-            supportedFilterIds={["patternPie", "occurences", "centrality"]}
-        >
+        <FilteringResource knowledgeGraph={knowledgeGraph}>
             <PatternAndClassesScreen />
         </FilteringResource>
     );

@@ -4,22 +4,7 @@ import React from "react";
 
 export default function WithFilterPatternInstancesScreen({ knowledgeGraph }) {
     return (
-        <FilteringResource
-            knowledgeGraph={knowledgeGraph}
-            supportedFilterIds={[
-                "geo",
-                "time",
-                "locationType",
-                "parts",
-                "measurements",
-                "search",
-                "diameter",
-                "height",
-                "width",
-                "length",
-                "depth",
-            ]}
-        >
+        <FilteringResource knowledgeGraph={knowledgeGraph}>
             <PatternInstancesScreen />
         </FilteringResource>
     );

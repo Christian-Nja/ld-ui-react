@@ -6,10 +6,7 @@ export default function WithFilterResourcesWithViewControllerScreen({
     knowledgeGraph,
 }) {
     return (
-        <FilteringResource
-            knowledgeGraph={knowledgeGraph}
-            supportedFilterIds={["search"]}
-        >
+        <FilteringResource knowledgeGraph={knowledgeGraph}>
             <ResourcesWithViewControllerScreen />
         </FilteringResource>
     );

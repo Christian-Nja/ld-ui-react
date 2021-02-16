@@ -113,10 +113,6 @@ export function scaleData(x, minD, maxD, minV, maxV) {
     // log base
     const b = Math.pow(maxD - minD, 1 / (maxV - minV));
     const result = minV + baseLog(b, x - minD);
-    console.log("Result");
-    console.log(result);
-    console.log("value");
-    console.log(x);
     if (isFinite(result)) {
         return result;
     }

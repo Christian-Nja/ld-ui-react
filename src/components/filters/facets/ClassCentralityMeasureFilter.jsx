@@ -15,7 +15,6 @@ export default function ClassCentralityMeasureFilter({}) {
             id="centrality"
             resourceProperty="centralityScore"
             resources={knowledgeGraph.getClasses()}
-            isActive={true}
         />
     );
 }

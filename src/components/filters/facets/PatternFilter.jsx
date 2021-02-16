@@ -67,7 +67,7 @@ export default function PatternFilter({ id = "patternPie" }) {
     const data = patterns.map((entry) => {
         return {
             ...entry,
-            color: filtered.includes(entry.getUri()) ? "grey" : entry.color,
+            color: filtered.includes(entry.getUri()) ? "grey" : entry.nodeColor,
             title: entry.getLabel(),
             value: Number.parseInt(entry.occurences),
             id: entry.getUri(),
@@ -91,7 +91,7 @@ export default function PatternFilter({ id = "patternPie" }) {
                 labelStyle={{
                     fontSize: "20px",
                     fontFamily: "sans-serif",
-                    fill: data[hovered] ? data[hovered].color : null,
+                    fill: data[hovered] ? data[hovered].nodeColor : null,
                 }}
                 onMouseOver={(_, index) => {
                     setHovered(index);

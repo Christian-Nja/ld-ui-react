@@ -21,6 +21,9 @@ export default function NonPersistentGenericSliderFilter({
 }) {
     const filterCallback = (resource) => {
         if (resourceFilter(resource)) {
+            if (resource.alwaysVisible) {
+                return true;
+            }
             if (
                 resource[resourceProperty] >= range[MIN] &&
                 resource[resourceProperty] <= range[MAX]
@@ -47,7 +50,7 @@ export default function NonPersistentGenericSliderFilter({
     const initialRange = findSliderDomain(resources, resourceProperty);
 
     // we set by default max
-    defaultRange = [initialRange[MAX], initialRange[MAX]];
+    // defaultRange = [initialRange[MAX], initialRange[MAX]];
 
     const [range, setRange] = useState(
         (filter && filter.getOption("range")) || defaultRange || initialRange
