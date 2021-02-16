@@ -4,7 +4,8 @@ import React, { useEffect, useState } from "react";
 import DropdownIcon from "./DropdownIcon";
 import { useBinaryState } from "../hooks/ld-ui-hooks";
 
-import { Menu, Icon } from "semantic-ui-react";
+import { Menu, Icon, Checkbox } from "semantic-ui-react";
+import { useLayoutCtx } from "../../layout/LayoutCtx/useLayoutCtx";
 
 import {
     TrademarkCircleOutlined,
@@ -18,16 +19,15 @@ import {
 } from "@ant-design/icons";
 
 const itemMap = [
-    { name: "random ", icon: <TrademarkCircleOutlined /> },
     { name: "concentric", icon: <ChromeOutlined /> },
-    { name: "circle", icon: <CopyrightCircleOutlined /> },
-    { name: "force", icon: <BranchesOutlined /> },
+    { name: "graphin-force", icon: <BranchesOutlined /> },
     { name: "dagre", icon: <ApartmentOutlined /> },
     { name: "grid", icon: <AppstoreOutlined /> },
     { name: "radial", icon: <ShareAltOutlined /> },
 ];
 
 export default function LayoutSelector(props) {
+    const { layoutOptions, setLayoutOptions } = useLayoutCtx();
     const [open, handleOpen] = useBinaryState(false);
 
     useEffect(() => {

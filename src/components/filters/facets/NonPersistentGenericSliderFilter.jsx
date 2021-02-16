@@ -3,6 +3,7 @@ import useNonPersistentFilter from "../../../filters/FilterCtx/useNonPersistentF
 import SliderFilter from "./SliderFilter";
 
 import findSliderDomain from "./findSliderDomain";
+import { scaleInto01 } from "../../../utilities/math";
 
 const MIN = 0;
 const MAX = 1;
@@ -20,6 +21,9 @@ export default function NonPersistentGenericSliderFilter({
 }) {
     const filterCallback = (resource) => {
         if (resourceFilter(resource)) {
+            if (resource.alwaysVisible) {
+                return true;
+            }
             if (
                 resource[resourceProperty] >= range[MIN] &&
                 resource[resourceProperty] <= range[MAX]
@@ -45,6 +49,9 @@ export default function NonPersistentGenericSliderFilter({
 
     const initialRange = findSliderDomain(resources, resourceProperty);
 
+    // we set by default max
+    // defaultRange = [initialRange[MAX], initialRange[MAX]];
+
     const [range, setRange] = useState(
         (filter && filter.getOption("range")) || defaultRange || initialRange
     );
@@ -65,6 +72,17 @@ export default function NonPersistentGenericSliderFilter({
     }
 
     return (
-        <SliderFilter range={range} setRange={setRange} domain={initialRange} />
+        <SliderFilter
+            range={range}
+            setRange={setRange}
+            domain={initialRange}
+            formatTicks={(d) => {
+                return scaleInto01(
+                    d,
+                    initialRange[MIN],
+                    initialRange[MAX]
+                ).toFixed(2);
+            }}
+        />
     );
 }

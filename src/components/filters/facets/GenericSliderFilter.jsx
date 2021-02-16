@@ -10,7 +10,7 @@ const MAX = 1;
 export default function GenericSliderFilter({
     id = "genericSlider",
     resourceProperty,
-    resources,
+    resources = [],
     isActive = false,
     defaultRange,
     resourceFilter = (r) => {

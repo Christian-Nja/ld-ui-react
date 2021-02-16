@@ -52,7 +52,7 @@ export default function GeoFilter({
     const editRef = useRef();
 
     const ZOOM_LEVEL = 12;
-    const MAX_ZOOM = 8;
+    const MAX_ZOOM = 9;
     const [center, setCenter] = useState({ lat: 24.2, lng: 54.37 });
 
     // This code is needed to listen for change on geo button filter class -> change is triggered on opening button
@@ -77,6 +77,12 @@ export default function GeoFilter({
 
     // filter definition
     const filterCallback = (resource) => {
+        console.log("Geo filter");
+        console.log(featureGroup);
+        if (featureGroup.features.length === 0) {
+            // no area selected
+            return true;
+        }
         if (resource.lat && resource.long) {
             let geolookup = new GeoJsonGeometriesLookup(featureGroup);
             let point = {
@@ -97,7 +103,6 @@ export default function GeoFilter({
     const initialFilterOptions = {
         active: false,
         filterCallback: filterCallback,
-        isMounted: true,
     };
 
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);

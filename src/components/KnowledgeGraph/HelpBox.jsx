@@ -115,7 +115,7 @@ export default function HelpBox() {
         },
         {
             target: ".help-button",
-            content: "Click her to see this tutorial again",
+            content: "Click here to see this tutorial again",
             locale: { skip: <strong aria-label="skip">End tutorial</strong> },
             hideCloseButton: true,
         },

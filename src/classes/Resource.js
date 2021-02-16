@@ -34,7 +34,11 @@ export default class Resource extends ODPReactorSuitable {
     getDescription() {
         return this.description;
     }
+    // @deprecated
     getLinkedData(property) {
+        return this[property];
+    }
+    getProperty(property) {
         return this[property];
     }
     getProperties() {

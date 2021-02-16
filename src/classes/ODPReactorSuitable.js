@@ -15,8 +15,13 @@ export default class ODPReactorSuitable {
             return this.graphinProperties.graphinPatternNodeDoubleClick;
         }
     }
-    getGraphinStyle() {
+    getGraphinStyle(key) {
         if (this.graphinProperties) {
+            if (key) {
+                if (this.graphinProperties.style) {
+                    return this.graphinProperties.style;
+                }
+            }
             return this.graphinProperties.style;
         }
     }
@@ -25,6 +30,7 @@ export default class ODPReactorSuitable {
             return this.graphinProperties.shape;
         }
     }
+    // @deprecated
     getGraphinOnNodeOverTooltip() {
         if (this.graphinProperties) {
             return this.graphinProperties.onNodeOverTooltip;

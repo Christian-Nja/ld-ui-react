@@ -133,9 +133,37 @@ export default class KnowledgeGraph {
             const resource = this.getResource(uri);
             return {
                 id: resource.getUri(),
-                label: resource.getLabel(),
-                style: resource.getGraphinStyle(),
-                shape: resource.getGraphinShape(),
+                type: resource.getProperty("nodeType"), //this invalidate graphin style
+                label: resource.getLabel(), //g6 interface
+                size: [
+                    //g6 interface
+                    resource.getProperty("nodeSize"),
+                    resource.getProperty("nodeSize"),
+                ],
+                // g6 interface
+                labelCfg: {
+                    position: resource.getProperty("nodeLabelPosition"),
+                    style: {
+                        fontSize: resource.getProperty("nodeLabelSize"), //g6 interface
+                    },
+                },
+                style: {
+                    keyshape: {
+                        size: [
+                            resource.getProperty("nodeSize"),
+                            resource.getProperty("nodeSize"),
+                        ],
+                        stroke: resource.getProperty("nodeColor"),
+                        fill: resource.getProperty("nodeBorderColor"),
+                    },
+                    label: {
+                        value: resource.getLabel(),
+                        fontSize: resource.getProperty("nodeLabelSize"),
+                    },
+                    stroke: resource.getProperty("nodeColor"), //g6 interface
+                    fill: resource.getProperty("nodeBorderColor"), //g6 interface
+                    cursor: "pointer",
+                },
                 data: this.dataMapper.toJson(resource),
             };
         };
@@ -143,9 +171,20 @@ export default class KnowledgeGraph {
             const property = this.getProperty(uri);
             return {
                 id: property.getUri(),
-                label: property.getLabel(),
+                // label: property.getLabel(),
                 source: this.graph.source(uri),
                 target: this.graph.target(uri),
+                style: {
+                    keyshape: {
+                        lineWidth: property.getProperty("edgeWidth"),
+                        stroke: property.getProperty("edgeColor"),
+                    },
+                    label: {
+                        value: property.getLabel(),
+                        fontSize: property.getProperty("edgeLabelSize"),
+                        fill: property.getProperty("edgeColor"),
+                    },
+                },
                 // style: resource.getGraphinEdgeStyle(),
                 data: this.dataMapper.toJson(property),
             };
