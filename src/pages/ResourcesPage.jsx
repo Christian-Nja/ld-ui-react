@@ -3,17 +3,17 @@ import FilterCtxProvider from "../filters/FilterCtx/FilterCtxProvider";
 import LayoutCtxProvider from "../layout/LayoutCtx/LayoutCtxProvider";
 import AlertCtxProvider from "../filters/AlertCtx/AlertCtxProvider";
 import KGCtxProvider from "../knowledgegraph/KGCtx/KGCtxProvider";
-import WithFilterResourcesWithViewControllerScreen from "./WithFilterResourcesWithViewControllerScreen";
+import WithFilterResourcesScreen from "./WithFilterResourcesScreen";
 import HelpCtxProvider from "../filters/HelpCtx/HelpCtxProvider";
 
-export default function PatternInstancesPage({ knowledgeGraph }) {
+export default function ResourcesPage({ knowledgeGraph, classUri }) {
     return (
-        <KGCtxProvider knowledgeGraph={knowledgeGraph}>
+        <KGCtxProvider knowledgeGraph={knowledgeGraph} classUri={classUri}>
             <HelpCtxProvider>
                 <AlertCtxProvider>
                     <FilterCtxProvider>
                         <LayoutCtxProvider defaultLayout={{ layout: "list" }}>
-                            <WithFilterResourcesWithViewControllerScreen
+                            <WithFilterResourcesScreen
                                 knowledgeGraph={knowledgeGraph}
                             />
                         </LayoutCtxProvider>

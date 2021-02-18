@@ -6,9 +6,14 @@ import KGCtxProvider from "../knowledgegraph/KGCtx/KGCtxProvider";
 import WithFilterPatternInstancesScreen from "./WithFilterPatternInstancesScreen";
 import HelpCtxProvider from "../filters/HelpCtx/HelpCtxProvider";
 
-export default function PatternInstancesPage({ knowledgeGraph }) {
+/**
+ * classUri/type  Class || Pattern   measurement_collection etc.
+ * they type pattern instance is of
+ */
+
+export default function PatternInstancesPage({ knowledgeGraph, classUri }) {
     return (
-        <KGCtxProvider knowledgeGraph={knowledgeGraph}>
+        <KGCtxProvider knowledgeGraph={knowledgeGraph} classUri={classUri}>
             <HelpCtxProvider>
                 <AlertCtxProvider>
                     <FilterCtxProvider>

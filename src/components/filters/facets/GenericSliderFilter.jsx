@@ -17,6 +17,9 @@ export default function GenericSliderFilter({
         //this function filter the knowledge graph resource filter can acts on
         return r; // example: (r) => {return r.getType() === "Pattern"} only patterns will be touched by filter the other resources discarded
     },
+    formatTicks = (d) => {
+        return d;
+    },
 }) {
     const filterCallback = (resource) => {
         if (resourceFilter(resource)) {
@@ -61,6 +64,11 @@ export default function GenericSliderFilter({
     }
 
     return (
-        <SliderFilter range={range} setRange={setRange} domain={initialRange} />
+        <SliderFilter
+            range={range}
+            setRange={setRange}
+            domain={initialRange}
+            formatTicks={formatTicks}
+        />
     );
 }

@@ -48,9 +48,8 @@ export default function PatternsAndClassesScreen({ filteredKnowledgeGraph }) {
                     ]}
                 />
             </PatternMenu>
-
             {layoutOptions.layout === "list" && kg && (
-                <List list={filteredKnowledgeGraph.toList()} title="Views" />
+                <List list={filteredKnowledgeGraph.toList()} title="Views" /> // queste pagine dovrebbero andare fuori dalla lib
             )}
             {kg && (
                 <VisualGraph

@@ -24,7 +24,9 @@ export default function FilteringResource({ knowledgeGraph, children }) {
         // if filter by centrality is not active
         // add a filter to remove all classes but those with alwaysVisible: true
         // this shit should be removed it depends on domain business logic
-        // todo move filter mounting at the top of the page
+        //
+        // some filters haven't guys move them ouside <FilterinResource mountedFilters=[]/>
+        // this one for example should be changed
         if (
             find(supportedFilters, (f) => {
                 return f.getId() === "centrality" && !f.isActive();
