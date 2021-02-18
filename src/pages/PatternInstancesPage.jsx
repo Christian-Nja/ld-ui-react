@@ -11,12 +11,18 @@ import HelpCtxProvider from "../filters/HelpCtx/HelpCtxProvider";
  * they type pattern instance is of
  */
 
-export default function PatternInstancesPage({ knowledgeGraph, classUri }) {
+export default function PatternInstancesPage({
+    knowledgeGraph,
+    patternTypeUri,
+}) {
     return (
-        <KGCtxProvider knowledgeGraph={knowledgeGraph} classUri={classUri}>
+        <KGCtxProvider
+            knowledgeGraph={knowledgeGraph}
+            classUri={patternTypeUri}
+        >
             <HelpCtxProvider>
                 <AlertCtxProvider>
-                    <FilterCtxProvider>
+                    <FilterCtxProvider resourceUri={patternTypeUri}>
                         <LayoutCtxProvider defaultLayout={{ layout: "list" }}>
                             <WithFilterPatternInstancesScreen
                                 knowledgeGraph={knowledgeGraph}

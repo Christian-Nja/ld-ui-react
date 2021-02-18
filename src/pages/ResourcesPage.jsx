@@ -11,7 +11,7 @@ export default function ResourcesPage({ knowledgeGraph, classUri }) {
         <KGCtxProvider knowledgeGraph={knowledgeGraph} classUri={classUri}>
             <HelpCtxProvider>
                 <AlertCtxProvider>
-                    <FilterCtxProvider>
+                    <FilterCtxProvider resourceUri={classUri}>
                         <LayoutCtxProvider defaultLayout={{ layout: "list" }}>
                             <WithFilterResourcesScreen
                                 knowledgeGraph={knowledgeGraph}
