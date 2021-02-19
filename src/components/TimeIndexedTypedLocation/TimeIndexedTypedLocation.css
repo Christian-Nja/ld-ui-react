@@ -1,8 +1,4 @@
 /* This is needed else Map will collapse in 0 dimensions */
-#map {
-    height: 500px;
-    width: 500px;
-}
 
 .tITL-popup {
     pointer-events: auto;
@@ -13,13 +9,13 @@
     color: "red";
 }
 
-.depiction {
+/* .depiction {
     z-index: 1000;
     position: absolute;
     height: 120px;
     left: 420px;
     top: 380px;
-}
+} */
 
 .locationsLine {
     fill: none;

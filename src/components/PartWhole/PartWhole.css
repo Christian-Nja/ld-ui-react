@@ -33,7 +33,7 @@
     position: absolute; */
 /* z-index: 1; */
 
-.depiction {
+.part-whole-depiction {
     border-radius: 50%;
     cursor: pointer;
     transition: 0.2s;
@@ -58,24 +58,16 @@
 
 .part-whole-label {
     opacity: 0;
-    min-width: 200px;
     z-index: 5;
-    background: white;
     border-radius: 10px/20px;
-    padding: 5px;
-    border: 1px solid black;
     pointer-events: none;
     /* position: relative; */
 }
 
 .part-whole-whole-label {
     opacity: 0;
-    min-width: 200px;
     z-index: 5;
-    background: white;
     border-radius: 10px/20px;
-    padding: 5px;
-    border: 1px solid black;
     pointer-events: none;
     position: relative;
 }

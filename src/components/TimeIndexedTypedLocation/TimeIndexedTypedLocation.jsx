@@ -55,9 +55,15 @@ const D3_ZINDEX = 625; // over markers under tooltip and popup
  * @param {{ timeIndexedTypedLocations : TimeIndexedTypedLocation [], depiction : string } }
  */
 export default function TimeIndexedTypedLocation({
+    styles = {
+        mapStyle: {
+            height: 500,
+            width: 500,
+        },
+        popupStyle: {},
+    },
     timeIndexedTypedLocations,
     cPropDepiction,
-    cPropLabel,
     onObjectClick = () => {},
 }) {
     /** mapRef */
@@ -350,7 +356,7 @@ export default function TimeIndexedTypedLocation({
 
     return (
         <div>
-            <div id="map"></div>
+            <div id="map" style={styles.mapStyle}></div>
         </div>
     );
 }
