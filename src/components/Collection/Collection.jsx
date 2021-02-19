@@ -15,55 +15,9 @@ import Entity from "./Entity";
  * @param {Member[]} {members}
  * @returns {JSX.Element}
  */
-export default function Collection({
-    members,
-    styles = {
-        collectionContainerWidth: {
-            width: "150%", // set this width to 120, 130, 140% to increase padding between items
-        },
-        collectionContainer: {
-            border: "solid 1px black",
-            margin: "auto",
-            padding: 5,
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
-            gridGap: "10px",
-            borderRadius: "9px/8px",
-            border: "1px solid rgba(0,0,0,0.15)",
-            gridGap: 10,
-        },
-        entity: {
-            entityContainer: {
-                textAlign: "center",
-                paddingTop:
-                    "100%" /* padding trick directly on the grid item */,
-                boxSizing: "border-box",
-                position: "relative",
-            },
-            entityLabel: {},
-            entityContent: {
-                color: "black",
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%, -50%)",
-                display: "flex",
-                flexFlow: "column",
-            },
-            entityDepiction: {
-                width: 60,
-                height: 60,
-                padding: 1,
-                borderRadius: 9999,
-                border: "solid 1px black",
-            },
-            entityLabel: {
-                color: "black",
-            },
-        },
-    },
-    classes,
-}) {
+export default function Collection({ members, styles, classes }) {
+    styles = { ...defaultStyles, ...styles };
+
     return (
         <div>
             <section
@@ -85,3 +39,48 @@ export default function Collection({
         </div>
     );
 }
+
+const defaultStyles = {
+    collectionContainerWidth: {
+        width: "150%", // set this width to 120, 130, 140% to increase padding between items
+    },
+    collectionContainer: {
+        border: "solid 1px black",
+        margin: "auto",
+        padding: 5,
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
+        gridGap: "10px",
+        borderRadius: "9px/8px",
+        border: "1px solid rgba(0,0,0,0.15)",
+        gridGap: 10,
+    },
+    entity: {
+        entityContainer: {
+            textAlign: "center",
+            paddingTop: "100%" /* padding trick directly on the grid item */,
+            boxSizing: "border-box",
+            position: "relative",
+        },
+        entityLabel: {},
+        entityContent: {
+            color: "black",
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            display: "flex",
+            flexFlow: "column",
+        },
+        entityDepiction: {
+            width: 60,
+            height: 60,
+            padding: 1,
+            borderRadius: 9999,
+            border: "solid 1px black",
+        },
+        entityLabel: {
+            color: "black",
+        },
+    },
+};
