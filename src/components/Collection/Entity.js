@@ -1,43 +1,24 @@
-import React, { useContext } from "react";
-
-import ThemeContext from "./config";
+import React from "react";
 
 import { getURILabel } from "../../utilities/uri";
 
-const NO_MESSAGE = "";
-
 export default function Entity(props) {
-    const THEME = useContext(ThemeContext);
-
     const flexFlow = props.entity.depiction
         ? { flexFlow: "column" }
         : { flexFlow: "row" };
 
     return (
-        <article className={"entity-container"}>
-            <div
-                className={`entity-content ${props.class.entityContent}`}
-                style={{ ...THEME.style.entityContent, ...flexFlow }}
-            >
-                {props.entity.depiction ? (
+        <article style={props.style.entityContainer}>
+            <div style={{ ...props.style.entityContent, ...flexFlow }}>
+                {props.entity.depiction && (
                     <figure>
                         <img
                             src={props.entity.depiction}
-                            className={`entity-image ${props.class.entityImage}`}
-                            style={THEME.style.entityImage}
+                            style={props.style.entityDepiction}
                         ></img>
                     </figure>
-                ) : (
-                    <THEME.itemIcon
-                        message={NO_MESSAGE}
-                        iconClassName={"collectionIcon"}
-                        descriptionClassName={"descriptionIcon"}
-                    ></THEME.itemIcon>
                 )}
-                <div
-                    style={THEME.style.entityLabel}
-                    className={`${props.class.entityLabel}`}
-                >
+                <div style={props.style.entityLabel}>
                     {props.entity.label
                         ? props.entity.label
                         : getURILabel(props.entity.entity)}
@@ -46,11 +27,3 @@ export default function Entity(props) {
         </article>
     );
 }
-
-Entity.defaultProps = {
-    class: {
-        entityImage: "",
-        entityLabel: "",
-        entityContent: "",
-    },
-};
