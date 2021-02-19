@@ -6,12 +6,18 @@ import WithFilterPatternAndClassesScreen from "./WithFilterPatternAndClassesScre
 import AlertCtxProvider from "../filters/AlertCtx/AlertCtxProvider";
 import HelpCtxProvider from "../filters/HelpCtx/HelpCtxProvider";
 
-export default function PatternsAndClassesPage({ knowledgeGraph }) {
+export default function PatternsAndClassesPage({
+    knowledgeGraph,
+    knowledgeGraphUri,
+}) {
     return (
-        <KGCtxProvider knowledgeGraph={knowledgeGraph}>
+        <KGCtxProvider
+            knowledgeGraph={knowledgeGraph}
+            classUri={knowledgeGraphUri}
+        >
             <HelpCtxProvider>
                 <AlertCtxProvider>
-                    <FilterCtxProvider>
+                    <FilterCtxProvider resourceUri={knowledgeGraphUri}>
                         <LayoutCtxProvider>
                             <WithFilterPatternAndClassesScreen
                                 knowledgeGraph={knowledgeGraph}

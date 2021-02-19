@@ -137,8 +137,6 @@ export default function List({
                     id={resources[index].getUri()}
                 >
                     {keys.map((k) => {
-                        console.log("List item");
-                        console.log(resources[index]);
                         columnId++;
                         if (resources[index])
                             return (

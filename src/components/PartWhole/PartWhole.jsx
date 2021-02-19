@@ -24,9 +24,17 @@ import "./PartWhole.css";
 export default function PartWhole({
     parts,
     whole,
-    onResourceClick = (e) => {
-        console.log(e.target);
-        console.log("click");
+    onResourceClick = (e) => {},
+    styles = {
+        containerStyle: {
+            width: 700,
+        },
+        littleItemStyle: {
+            width: 100,
+        },
+        centerItemStyle: {
+            width: 500,
+        },
     },
 }) {
     const circleContainer = useRef(null);
@@ -49,14 +57,46 @@ export default function PartWhole({
         }
     }, [depictionCount]);
 
+    const partWidth = styles.littleItemStyle.width;
+    const wholeWidth = styles.containerStyle.width;
+    const imgWidth = styles.centerItemStyle.width;
+
+    const partStyle = {
+        width: partWidth,
+        height: partWidth,
+    };
+
+    const wholeContainerStyle = {
+        width: wholeWidth,
+        height: wholeWidth,
+    };
+
+    const centerStyle = {
+        width: imgWidth,
+        height: imgWidth,
+        margin: "auto",
+        /* top: 0; */
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+    };
+
+    const labelStyle = {
+        // position: "relative",
+        left: -partWidth / 2,
+        top: partWidth,
+    };
+
+    const centerLabelStyle = {
+        top: imgWidth - 50,
+    };
+
     //  TODO change this to redux , to many calls! Or find a pattern to optimize callings!
     const onLoadedDepiction = () => {
         setDepictionCount(depictionCount + 1);
     };
-
-    console.log("Parts & Whole:");
-    console.log(parts);
-    console.log(whole);
 
     return (
         <div
@@ -76,7 +116,7 @@ export default function PartWhole({
                         depiction={
                             <Depiction
                                 style={partStyle}
-                                classes={"depiction part-depiction"}
+                                classes={"part-whole-depiction part-depiction"}
                                 uri={part.uri}
                                 placeholderImg={part.placeholder}
                                 onLoadedDepiction={onLoadedDepiction}
@@ -84,7 +124,11 @@ export default function PartWhole({
                                     <Label
                                         uri={part.uri}
                                         classes={"part-whole-label"}
-                                        style={labelStyle}
+                                        style={{
+                                            ...labelStyle,
+                                            ...defaultItemLabelStyle,
+                                            ...styles.itemLabel,
+                                        }}
                                     />
                                 }
                             />
@@ -102,7 +146,7 @@ export default function PartWhole({
                     depiction={
                         <Depiction
                             style={centerStyle}
-                            classes={"depiction whole-depiction"}
+                            classes={"part-whole-depiction whole-depiction"}
                             uri={whole.uri}
                             placeholderImg={whole.placeholder}
                             onLoadedDepiction={onLoadedDepiction}
@@ -110,7 +154,11 @@ export default function PartWhole({
                                 <Label
                                     uri={whole.uri}
                                     classes="part-whole-whole-label"
-                                    style={centerLabelStyle}
+                                    style={{
+                                        ...centerLabelStyle,
+                                        ...defaultCenterLabelStyle,
+                                        ...styles.centerLabel,
+                                    }}
                                 />
                             }
                         />
@@ -121,38 +169,15 @@ export default function PartWhole({
     );
 }
 
-const partWidth = 100;
-const wholeWidth = 700;
-const imgWidth = 500;
-
-const partStyle = {
-    width: partWidth,
-    height: partWidth,
+const defaultItemLabelStyle = {
+    minWidth: 300,
+    backgroundColor: "white",
+    border: "1px solid black",
+    padding: 5,
 };
-
-const wholeContainerStyle = {
-    width: wholeWidth,
-    height: wholeWidth,
-};
-
-const centerStyle = {
-    width: imgWidth,
-    height: imgWidth,
-    margin: "auto",
-    /* top: 0; */
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-};
-
-const labelStyle = {
-    // position: "relative",
-    left: -partWidth / 2,
-    top: partWidth,
-};
-
-const centerLabelStyle = {
-    top: imgWidth - 50,
+const defaultCenterLabelStyle = {
+    minWidth: 300,
+    backgroundColor: "white",
+    padding: 5,
+    border: "1px solid black",
 };

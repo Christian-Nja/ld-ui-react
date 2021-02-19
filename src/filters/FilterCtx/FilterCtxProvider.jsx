@@ -9,10 +9,11 @@ import {
 
 import { find } from "lodash";
 
-export default function FilterCtxProvider({ children }) {
+// resourceUri: the filter works on. It is used to scope the filter
+export default function FilterCtxProvider({ children, resourceUri }) {
     const [filtersMountedFlag, setFiltersMountedFlag] = useState(false);
     const [filters, setFilters] = useState(
-        safelyLoadFiltersFromSessionStorage() || []
+        safelyLoadFiltersFromSessionStorage(resourceUri) || []
     );
 
     const setNewFilter = (id, options) => {
@@ -21,7 +22,7 @@ export default function FilterCtxProvider({ children }) {
             filters.push(filter);
             const newFilters = clone(filters);
             setFilters(newFilters);
-            saveFiltersToSessionStorage(newFilters);
+            saveFiltersToSessionStorage(newFilters, resourceUri);
         }
     };
 
@@ -53,7 +54,7 @@ export default function FilterCtxProvider({ children }) {
         filterToUpdate.setOptions(options);
         const newFilters = clone(filters);
         setFilters(newFilters);
-        saveFiltersToSessionStorage(newFilters);
+        saveFiltersToSessionStorage(newFilters, resourceUri);
     };
     const setInvertedFilterStateById = (id) => {
         console.log("ID THAT CRASH");
@@ -62,7 +63,7 @@ export default function FilterCtxProvider({ children }) {
         filterToUpdate.invertState();
         const newFilters = clone(filters);
         setFilters(newFilters);
-        saveFiltersToSessionStorage(newFilters);
+        saveFiltersToSessionStorage(newFilters, resourceUri);
     };
 
     // set default filters

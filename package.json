@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "watch 'npm run build' ./src",
         "test": "jest",
-	"test:ui": "jest --testPathPattern=test/ui",
+        "test:ui": "jest --testPathPattern=test/ui",
         "build": "npm run cjs",
         "cjs": "./node_modules/.bin/babel src --out-dir lib --copy-files",
         "es6": "cp -r ./src/* ./es",
@@ -21,8 +21,8 @@
     },
     "jest": {
         "moduleNameMapper": {
-          "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/.mocks/fileMock.js",
-          "\\.(css|less)$": "<rootDir>/.mocks/styleMock.js"
+            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/.mocks/fileMock.js",
+            "\\.(css|less)$": "<rootDir>/.mocks/styleMock.js"
         }
     },
     "lint-staged": {
@@ -52,8 +52,9 @@
     "homepage": "https://github.com/Christian-Nja/odp-reactor#readme",
     "dependencies": {
         "@ant-design/icons": "^4.3.0",
-        "@antv/graphin": "^2.0.0-beta.13",
-        "@antv/graphin-components": "^2.0.0-beta.13",
+        "@antv/graphin": "^2.0.0-beta.14",
+        "@antv/graphin-components": "^2.0.0-beta.14",
+        "@antv/graphin-icons": "^1.0.0",
         "@babel/cli": "^7.12.8",
         "@babel/preset-react": "^7.12.7",
         "@christian-nja/general-components": "^1.0.2",

@@ -1,8 +1,8 @@
-const filtersSessionStorageKey = "filters-key";
 import Filter from "../Filter";
 import { map, remove } from "lodash";
 
-export function safelyLoadFiltersFromSessionStorage() {
+export function safelyLoadFiltersFromSessionStorage(resourceUri) {
+    const filtersSessionStorageKey = `filters-${resourceUri}`;
     try {
         const filters = JSON.parse(
             window.sessionStorage.getItem(filtersSessionStorageKey)
@@ -23,7 +23,9 @@ export function safelyLoadFiltersFromSessionStorage() {
     }
 }
 
-export function saveFiltersToSessionStorage(filters) {
+export function saveFiltersToSessionStorage(filters, resourceUri) {
+    const filtersSessionStorageKey = `filters-${resourceUri}`;
+
     const stringFilters = map(filters, (f) => {
         const { hasResourcesToFilter, ...filterOptions } = f.options;
 

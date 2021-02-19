@@ -1,10 +1,5 @@
-import React, { useContext } from "react";
-import PropTypes from "prop-types";
-
-import styles from "./Collection.css";
-
+import React from "react";
 import Entity from "./Entity";
-import ThemeContext, { themes, DEFAULT_CONFIG } from "./config";
 
 /**
  * @typedef Member
@@ -20,48 +15,72 @@ import ThemeContext, { themes, DEFAULT_CONFIG } from "./config";
  * @param {Member[]} {members}
  * @returns {JSX.Element}
  */
-export default function Collection({ members, classes }) {
-    const THEME = useContext(ThemeContext);
+export default function Collection({ members, styles, classes }) {
+    styles = { ...defaultStyles, ...styles };
 
     return (
-        <ThemeContext.Provider value={themes[DEFAULT_CONFIG]}>
-            <div>
-                {/* <h1
-                    style={THEME.style.collectionLabel}
-                    className={props.class.collectionLabel}
-                >
-                    {props.entities[0].collectionLabel}
-                </h1> */}
-                <section
-                    className={`collection-container container ${classes.collectionContainer}`}
-                    style={THEME.style.collectionContainer}
-                >
-                    {members.map((entity, i) => {
-                        return (
-                            <Entity
-                                entity={entity}
-                                key={i}
-                                class={classes}
-                            ></Entity>
-                        );
-                    })}
-                </section>
-            </div>
-        </ThemeContext.Provider>
+        <div>
+            <section
+                style={{
+                    ...styles.collectionContainer,
+                    ...styles.collectionContainerWidth,
+                }}
+            >
+                {members.map((entity, i) => {
+                    return (
+                        <Entity
+                            entity={entity}
+                            key={i}
+                            style={styles.entity}
+                        ></Entity>
+                    );
+                })}
+            </section>
+        </div>
     );
 }
 
-Collection.propTypes = {
-    // List of class to custom style the component
-    classes: PropTypes.object.isRequired,
-};
-
-Collection.defaultProps = {
-    classes: {
-        collectionLabel: "",
-        collectionContainer: "",
-        entityImage: "",
-        entityLabel: "",
-        entityContent: "",
+const defaultStyles = {
+    collectionContainerWidth: {
+        width: "150%", // set this width to 120, 130, 140% to increase padding between items
+    },
+    collectionContainer: {
+        border: "solid 1px black",
+        margin: "auto",
+        padding: 5,
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
+        gridGap: "10px",
+        borderRadius: "9px/8px",
+        border: "1px solid rgba(0,0,0,0.15)",
+        gridGap: 10,
+    },
+    entity: {
+        entityContainer: {
+            textAlign: "center",
+            paddingTop: "100%" /* padding trick directly on the grid item */,
+            boxSizing: "border-box",
+            position: "relative",
+        },
+        entityLabel: {},
+        entityContent: {
+            color: "black",
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            display: "flex",
+            flexFlow: "column",
+        },
+        entityDepiction: {
+            width: 60,
+            height: 60,
+            padding: 1,
+            borderRadius: 9999,
+            border: "solid 1px black",
+        },
+        entityLabel: {
+            color: "black",
+        },
     },
 };

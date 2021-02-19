@@ -2,9 +2,6 @@ import React, { useEffect, useLayoutEffect } from "react";
 import { useFilterCtx } from "./useFilterCtx";
 import { useAlertCtx } from "../AlertCtx/useAlertCtx";
 
-// here understand how to return filter -> you should return filter or undefined if not exist
-// return filter, if undefined filterUI must compute options and callback and setNewFilter
-
 export default function useFilter(id, options) {
     const {
         filters,
