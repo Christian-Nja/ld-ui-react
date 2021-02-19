@@ -1,27 +1,15 @@
-/**
- * 
-
- * sulla base di queste informazioni si setta la callback del filtro e si monta il classico 
- * filtro
- * ogni filtro va "scoopato" per classUri
- * 
- * Ogni schermata retrieva i filtri in base all'uri:
- * 
- * es:
- * screen1    useFilters(graphUri) solo quelli del grafo vengono riportati
- * screen2    useFilters(classUri) solo quelli per quella classe vengono recuperati
- * screen2    useFilters(patternUri) solo quelli per quel pattern vengono recuperati
- * 
- * nella FilteringResources vengono recuperati i filtri scoopati, non serve qualcuno che checka i filtri montati!
- * al più può checcare che tutti i filtri siano montati per evitare un primo rendering di tutte le risorse non montate
- * 
- */
-
 import React, { useState, useEffect } from "react";
 import ViewController from "../../KnowledgeGraph/ViewController";
 import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
 import useFilter from "../../../filters/FilterCtx/useFilter";
-import { forEach, clone, some, map, filter as lodashFilter } from "lodash";
+import {
+    forEach,
+    clone,
+    every,
+    some,
+    map,
+    filter as lodashFilter,
+} from "lodash";
 
 export default function ViewFilter({
     title = "Filter by available views",
@@ -51,9 +39,6 @@ export default function ViewFilter({
     });
 
     const filterCallback = (resource) => {
-        console.log("availableViews", availableViews);
-        console.log("resourceToFilter", resource);
-
         // no view selected return every resource
         if (
             !some(availableViews, (view) => {
@@ -76,10 +61,18 @@ export default function ViewFilter({
                     return checkedView.uri;
                 }
             );
+            const patternInstancesViews = map(
+                resource.patternInstances,
+                (patternInstance) => {
+                    return patternInstance.type;
+                }
+            );
             if (
-                // risorsa appartiene ad almeno un pattern di quelli selezionati
-                some(resource.patternInstances, (patternInstance) => {
-                    return checkedViewsUri.includes(patternInstance.type);
+                // risorsa compare in almeno un istanza con il tipo tra i tipi selezionati
+                // e.g. selezion Pattern1, Pattern2
+                // risorsa deve comparire in almeno pattern_1 type Pattern1, pattern_2 type Pattern2
+                every(checkedViewsUri, (checkedView) => {
+                    return patternInstancesViews.includes(checkedView);
                 })
             ) {
                 return true;
@@ -135,15 +128,12 @@ export default function ViewFilter({
                     clickedViewUri,
                     clickedViewState
                 ) => {
-                    console.log("toggling");
-
                     const newAvailableViews = clone(availableViews);
                     forEach(availableViews, (availableView) => {
                         if (availableView.uri === clickedViewUri) {
                             availableView.checked = clickedViewState;
                         }
                     });
-                    console.log("new available views", newAvailableViews);
                     setAvailableViews(newAvailableViews);
                 }}
             />

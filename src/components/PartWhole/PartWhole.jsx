@@ -24,10 +24,7 @@ import "./PartWhole.css";
 export default function PartWhole({
     parts,
     whole,
-    onResourceClick = (e) => {
-        console.log(e.target);
-        console.log("click");
-    },
+    onResourceClick = (e) => {},
 }) {
     const circleContainer = useRef(null);
 
@@ -53,10 +50,6 @@ export default function PartWhole({
     const onLoadedDepiction = () => {
         setDepictionCount(depictionCount + 1);
     };
-
-    console.log("Parts & Whole:");
-    console.log(parts);
-    console.log(whole);
 
     return (
         <div

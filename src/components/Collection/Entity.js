@@ -9,9 +9,6 @@ const NO_MESSAGE = "";
 export default function Entity(props) {
     const THEME = useContext(ThemeContext);
 
-    console.log("entity");
-    console.log(props.entity);
-
     const flexFlow = props.entity.depiction
         ? { flexFlow: "column" }
         : { flexFlow: "row" };
