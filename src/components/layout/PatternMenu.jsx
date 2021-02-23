@@ -42,24 +42,24 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
         getFilterById,
     } = useFilterCtx();
 
-    useEffect(() => {
-        if (layoutButton) {
-            setLayoutButton();
-        }
-    }, [menuOpen, exampleMenuOpen]);
+    // useEffect(() => {
+    //     if (layoutButton) {
+    //         setLayoutButton();
+    //     }
+    // }, [menuOpen, exampleMenuOpen]);
 
-    useEffect(() => {
-        if (filterButton) {
-            setFilterButton();
-        }
-    }, [menuOpen, exampleMenuOpen]);
+    // useEffect(() => {
+    //     if (filterButton) {
+    //         setFilterButton();
+    //     }
+    // }, [menuOpen, exampleMenuOpen]);
 
     // we use this state variable to launch a callback opening the filter item menu
     // resulting behaviour: when activating a filter it's menu item regulator is also open
     const [lastActivatedFilter, setLastActivatedFilter] = useState(false);
 
     const menuStyle = {
-        position: "fixed",
+        // position: "fixed",
         top: 70,
         left: 0,
         zIndex: 10,
@@ -111,14 +111,15 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
         <div
             style={menuStyle}
             className={`menu-main ${
-                menuOpen || exampleMenuOpen ? "menu-main-over" : ""
+                // menuOpen || exampleMenuOpen ? "menu-main-over" : ""
+                "menu-main-over"
             }`}
-            onMouseOver={() => {
-                setMenuOpen(true);
-            }}
-            onMouseLeave={() => {
-                setMenuOpen(false);
-            }}
+            // onMouseOver={() => {
+            //     setMenuOpen(true);
+            // }}
+            // onMouseLeave={() => {
+            //     setMenuOpen(false);
+            // }}
         >
             <Menu vertical inverted>
                 <Menu.Item className="menu-item filters-menu-button">
@@ -128,40 +129,43 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                             color: isSomeFilterActive ? greenText : "white",
                             fontSize: 18,
                         }}
-                        onClick={setFilterButton}
+                        // onClick={setFilterButton}
                     >
                         <Icon name="search" className="filters-icon" />
                         <div
                             className={`menu-main-title ${
-                                menuOpen || exampleMenuOpen
-                                    ? "menu-main-open"
-                                    : ""
+                                // menuOpen || exampleMenuOpen
+                                //     ? "menu-main-open"
+                                //     : ""
+                                "menu-main-open"
                             } filters-title`}
                         >
                             Filters
                         </div>
                         <DropdownIcon
                             style={{
-                                transform:
-                                    filterButton || exampleFiltersOpen
-                                        ? null
-                                        : "rotate(270deg)",
+                                transform: null,
+                                // filterButton || exampleFiltersOpen
+                                //     ? null
+                                //     : "rotate(270deg)",
                                 position: "relative",
                                 cursor: "pointer",
                                 width: "fit-content",
                                 display:
-                                    menuOpen || exampleMenuOpen
-                                        ? "inline-block"
-                                        : "none",
+                                    // menuOpen || exampleMenuOpen
+                                    //     ? "inline-block"
+                                    //     : "none",
+                                    "inline-block",
                                 float: "right",
                             }}
                             className={
-                                menuOpen || exampleMenuOpen
-                                    ? "menu-dropdown menu-open-dropdown"
-                                    : "menu-dropdown"
+                                // menuOpen || exampleMenuOpen
+                                //     ? "menu-dropdown menu-open-dropdown"
+                                //     : "menu-dropdown"
+                                "menu-dropdown menu-open-dropdown"
                             }
                         />
-                        {isSomeFilterActive && !filterButton ? (
+                        {/* {isSomeFilterActive && !filterButton ? (
                             <Message
                                 className="menu-item-message"
                                 success
@@ -172,13 +176,14 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                                     There are active filters
                                 </Message.Content>
                             </Message>
-                        ) : null}
+                        ) : null} */}
                     </div>
                     <Menu.Menu
                         className={
-                            filterButton || exampleFiltersOpen
-                                ? ""
-                                : "close-filter"
+                            // filterButton || exampleFiltersOpen
+                            //     ? ""
+                            //     : "close-filter"
+                            ""
                         }
                     >
                         {children &&
@@ -213,11 +218,12 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                                         >
                                             <DropdownIcon
                                                 style={{
-                                                    transform: open.includes(
-                                                        index
-                                                    )
-                                                        ? null
-                                                        : "rotate(270deg)",
+                                                    // transform: open.includes(
+                                                    //     index
+                                                    // )
+                                                    //     ? null
+                                                    //     : "rotate(270deg)",
+                                                    transform: null,
                                                     position: "relative",
                                                     width: "fit-content",
                                                     cursor: "pointer",
@@ -239,9 +245,9 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                                                                 ? "active-filter filter-title"
                                                                 : "filter-title"
                                                         }
-                                                        onClick={() => {
-                                                            setOpen(index);
-                                                        }}
+                                                        // onClick={() => {
+                                                        //     setOpen(index);
+                                                        // }}
                                                         style={{
                                                             cursor: "pointer",
                                                         }}
@@ -323,12 +329,13 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                                         <Menu.Menu
                                             className={
                                                 // open occurences as example filter
-                                                open.includes(index) ||
-                                                (exampleFilterOccurencesOpen &&
-                                                    child.props.id ===
-                                                        "occurences")
-                                                    ? `${child.props.id}-filter-button`
-                                                    : `${child.props.id}-filter-button close-filter`
+                                                // open.includes(index) ||
+                                                // (exampleFilterOccurencesOpen &&
+                                                //     child.props.id ===
+                                                //         "occurences")
+                                                //     ? `${child.props.id}-filter-button`
+                                                //     : `${child.props.id}-filter-button close-filter`
+                                                `${child.props.id}-filter-button`
                                             }
                                         >
                                             {child}
@@ -350,9 +357,10 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                             <Icon name="picture" />
                             <div
                                 className={`menu-main-title ${
-                                    menuOpen || exampleMenuOpen
-                                        ? "menu-main-open"
-                                        : ""
+                                    // menuOpen || exampleMenuOpen
+                                    //     ? "menu-main-open"
+                                    //     : ""
+                                    "menu-main-open"
                                 }`}
                             >
                                 Layout
@@ -367,15 +375,17 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                                     cursor: "pointer",
                                     width: "fit-content",
                                     display:
-                                        menuOpen || exampleMenuOpen
-                                            ? "inline-block"
-                                            : "none",
+                                        // menuOpen || exampleMenuOpen
+                                        //     ? "inline-block"
+                                        //     : "none",
+                                        "inline-block",
                                     float: "right",
                                 }}
                                 className={
-                                    menuOpen || exampleMenuOpen
-                                        ? "menu-dropdown menu-open-dropdown"
-                                        : "menu-dropdown"
+                                    // menuOpen || exampleMenuOpen
+                                    //     ? "menu-dropdown menu-open-dropdown"
+                                    //     : "menu-dropdown"
+                                    "menu-dropdown menu-open-dropdown"
                                 }
                             />
                         </div>

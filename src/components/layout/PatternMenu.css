@@ -55,7 +55,8 @@
 }
 
 .menu-main.menu-main-over {
-    width: 400px;
+    /* width: 400px; */
+    width: 300px;
 }
 
 .menu-dropdown {

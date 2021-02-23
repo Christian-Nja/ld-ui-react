@@ -46,7 +46,8 @@ export default function LayoutSelector(props) {
                 <Icon name="pie graph" />
                 <div
                     className={`menu-main-title ${
-                        props.menuOpen ? "menu-main-open" : ""
+                        // props.menuOpen ? "menu-main-open" : ""
+                        "menu-main-open"
                     }`}
                 >
                     Graph Layouts
@@ -57,13 +58,15 @@ export default function LayoutSelector(props) {
                         position: "relative",
                         cursor: "pointer",
                         width: "fit-content",
-                        display: props.menuOpen ? "inline-block" : "none",
+                        // display: props.menuOpen ? "inline-block" : "none",
+                        display: "inline-block",
                         float: "right",
                     }}
                     className={
-                        props.menuOpen
-                            ? "menu-dropdown menu-open-dropdown"
-                            : "menu-dropdown"
+                        // props.menuOpen
+                        //     ? "menu-dropdown menu-open-dropdown"
+                        //     : "menu-dropdown"
+                        "menu-dropdown menu-open-dropdown"
                     }
                 />
             </div>
