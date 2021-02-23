@@ -13,12 +13,19 @@ export default function ResourcesScreen({ filteredKnowledgeGraph }) {
 
     return (
         <ODPReactorContainer>
-            <GoToButton />
+            <GoToButton
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    background: "#6c7ae0",
+                }}
+            />
             <AlertBox />
             <PatternMenu showLayoutButton={false}>
                 <ViewFilter
                     id="viewFilter"
-                    title="Filter resources with specific view"
+                    title="Resource View"
                     description="Setting this filter you will see with resources has a specific view"
                 />
                 <FiltersMountedController

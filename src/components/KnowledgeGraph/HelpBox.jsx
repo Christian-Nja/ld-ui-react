@@ -22,7 +22,7 @@ export default function HelpBox() {
                 <div>
                     This visualisation shows you a summary of the entire
                     knowledge graph. <br /> Diamonds represent concepts (i.e.
-                    classes) and circles represents "views" on this entities.{" "}
+                    classes) and circles represent "views" on this entities.{" "}
                     <br /> Only key concepts are visualised but you can
                     customise the visualisation to show additional ones. <br />{" "}
                     The presence of an edge between a concept and a view shows
@@ -110,6 +110,13 @@ export default function HelpBox() {
             target: ".filter-occurences",
             content:
                 "Tune filter values to refine your search within the knowledge graph",
+            locale: { skip: <strong aria-label="skip">End tutorial</strong> },
+            hideCloseButton: true,
+        },
+        {
+            target: ".graph-tooltip-checkbox",
+            content:
+                "Click here to disable or enable explanations when moving mouse over graph circles and diamonds",
             locale: { skip: <strong aria-label="skip">End tutorial</strong> },
             hideCloseButton: true,
         },

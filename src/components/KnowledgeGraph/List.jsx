@@ -51,6 +51,8 @@ export default function List({
 }) {
     const resources = list;
 
+    console.log("Where is resource with more than one mesure ????");
+
     const renderMoreData = () => {
         setResourcesToRenderCount(resourcesToRenderCount + 20);
     };

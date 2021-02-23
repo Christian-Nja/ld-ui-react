@@ -15,8 +15,10 @@ export default function FilterCtxProvider({ children, resourceUri }) {
     const [filters, setFilters] = useState(
         safelyLoadFiltersFromSessionStorage(resourceUri) || []
     );
+    console.log("FilterCtxProvider filters:", filters);
 
     const setNewFilter = (id, options) => {
+        console.log("SetNewFilter I'm setting new filter", id, options);
         if (!getFilterById(id)) {
             const filter = Filter.create({ id, options });
             filters.push(filter);
@@ -50,6 +52,7 @@ export default function FilterCtxProvider({ children, resourceUri }) {
     };
 
     const setFilterOptionsById = (id, options) => {
+        console.log("StFilterOptions This are new options", options);
         let filterToUpdate = getFilterById(id);
         filterToUpdate.setOptions(options);
         const newFilters = clone(filters);
@@ -57,8 +60,6 @@ export default function FilterCtxProvider({ children, resourceUri }) {
         saveFiltersToSessionStorage(newFilters, resourceUri);
     };
     const setInvertedFilterStateById = (id) => {
-        console.log("ID THAT CRASH");
-        console.log(id);
         let filterToUpdate = getFilterById(id);
         filterToUpdate.invertState();
         const newFilters = clone(filters);

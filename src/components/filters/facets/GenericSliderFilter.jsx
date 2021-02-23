@@ -50,6 +50,7 @@ export default function GenericSliderFilter({
     );
 
     useEffect(() => {
+        console.log("I should save range in session storage", range);
         if (filter) {
             setFilterOptions({
                 ...filter.options,

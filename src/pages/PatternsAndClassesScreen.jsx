@@ -24,17 +24,17 @@ export default function PatternsAndClassesScreen({ filteredKnowledgeGraph }) {
             <HelpBox />
             <PatternMenu>
                 <PatternFilter
-                    title="Filter by view"
+                    title="View"
                     id="patternPie"
                     description="Click on a slice to remove nodes of that type by the graph/list. A grey color slice means nodes of that kind are not displayed"
                 />
                 <OccurencesSliderFilter
-                    title="Filter views by occurences"
+                    title="View occurences"
                     id="occurences"
                     description="Tune this filter to show only views with number of occurences in the selected range"
                 />
                 <ClassCentralityMeasureFilter
-                    title="Filter concepts by relevance"
+                    title="Concept relevance"
                     id="centrality"
                     description="The centrality of a concept is given by the highest interconnection with other concept. Tune this filter to show only views with importance score in the selected range"
                 />

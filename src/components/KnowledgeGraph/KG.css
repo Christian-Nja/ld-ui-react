@@ -138,18 +138,6 @@ i.show-help {
     padding: 15px;
 }
 
-.go-back-button {
-    position: absolute;
-    top: 0;
-    left: 0;
-    /* text-align: center; */
-    padding: 20px;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    background: #6c7ae0;
-}
-
 .leaflet-draw-toolbar {
     display: none;
 }

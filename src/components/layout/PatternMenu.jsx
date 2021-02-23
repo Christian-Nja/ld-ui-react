@@ -27,9 +27,6 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
     const [layoutButton, setLayoutButton] = useBinaryState();
     const [filterButton, setFilterButton] = useBinaryState();
     const [menuOpen, setMenuOpen] = useState(false);
-    const filterHelp =
-        "Click here to open filter panel. Every filter can be active or inactive. When active it will filter out all KG nodes outside of the filter range. Nodes without  ";
-    const { setHelp } = useHelpCtx();
 
     const { layoutOptions, graphinLayoutHandler } = useLayoutCtx();
 
@@ -38,8 +35,6 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
     const exampleFiltersOpen = layoutOptions.exampleFiltersOpen;
     const exampleFilterOccurencesOpen =
         layoutOptions.exampleFilterOccurencesOpen;
-
-    console.log("Pattern Menu options", layoutOptions);
 
     const {
         setInvertedFilterStateById,
@@ -107,8 +102,6 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
             return getFilterById(c.props.id);
         });
     }
-    console.log("mounted filters");
-    console.log(mountedFilters);
     const isSomeFilterActive = some(mountedFilters, (f) => {
         let filter = getFilterById(f.props.id);
         return filter.isActive();
@@ -167,12 +160,6 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                                     ? "menu-dropdown menu-open-dropdown"
                                     : "menu-dropdown"
                             }
-                        />
-                        <HelpIcon
-                            style={{ position: "absolute", left: 130, top: 15 }}
-                            onMouseEnter={() => {
-                                setHelp({ message: filterHelp });
-                            }}
                         />
                         {isSomeFilterActive && !filterButton ? (
                             <Message

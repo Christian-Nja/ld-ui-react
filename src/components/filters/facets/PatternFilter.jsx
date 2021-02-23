@@ -28,8 +28,6 @@ export default function PatternFilter({ id = "patternPie" }) {
     const { knowledgeGraph } = useKGCtx();
 
     const patterns = knowledgeGraph.getPatterns();
-    console.log("Filter by Patterns");
-    console.log(patterns);
 
     const filterCallback = (pattern) => {
         if (
