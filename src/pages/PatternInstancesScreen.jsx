@@ -104,60 +104,73 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                 }}
             />
             <AlertBox />
-            <PatternMenu showLayoutButton={false}>
-                {thereIsGeoLocationToFilter && (
-                    <GeoFilter
-                        title="On a map"
-                        id="geo"
-                        description="Draw an area on the map and show only cultural properties inside it"
-                    />
-                )}
-                {thereIsTimeToFilter && (
-                    <TimeIntervalFilter
-                        title="Time Interval"
-                        id="time"
-                        description="This filter performs well with location type or geographic filter. Select an year or interval of time and a location. You will see only cultural properties located in a specific area at a certain period of time"
-                    />
-                )}
-                {thereAreTypeLocationsToFilter && (
-                    <PropertyFilter
-                        id="locationType"
-                        property="locationType"
-                        title="Location Type"
-                        description="Click on a slice to remove/show cultural properties with specified location type in the list. A grey color slice means cultural properties with given location type are not shown."
-                    />
-                )}
-                {thereArePartsToFilter && (
-                    <PartCountSliderFilter
-                        id="parts"
-                        title="Number of parts"
-                        resourceProperty="parts"
-                        description="Tune this filter to show only cultural properties with number of components in the selected range"
-                    />
-                )}
-                {map(thereAreMeasurementToFilter, (m) => {
-                    return (
-                        <MeasurementSliderFilter
-                            id={m}
-                            title={`${m}`}
-                            measurementType={m}
-                            description={`Tune this filter to show only cultural properties with ${m} in the selected range`}
+            <div style={{ display: "flex", justifyContent: "center" }}>
+                <PatternMenu
+                    showLayoutButton={false}
+                    style={{ position: "absolute" }}
+                >
+                    {/* {thereIsGeoLocationToFilter && (
+                        <GeoFilter
+                            title="On a map"
+                            id="geo"
+                            description="Draw an area on the map and show only cultural properties inside it"
                         />
-                    );
-                })}
-                {thereAreMeasurementToFilter.length !== 0 && (
-                    <MeasurementCountSliderFilter
-                        id="measurements"
-                        title="Number of measurements"
-                        description="Tune this filter to show only cultural properties with number of collected measurements in the selected range"
+                    )} */}
+                    {thereIsTimeToFilter && (
+                        <TimeIntervalFilter
+                            title="Time Interval"
+                            id="time"
+                            description="This filter performs well with location type or geographic filter. Select an year or interval of time and a location. You will see only cultural properties located in a specific area at a certain period of time"
+                        />
+                    )}
+                    {thereAreTypeLocationsToFilter && (
+                        <PropertyFilter
+                            id="locationType"
+                            property="locationType"
+                            title="Location Type"
+                            description="Click on a slice to remove/show cultural properties with specified location type in the list. A grey color slice means cultural properties with given location type are not shown."
+                        />
+                    )}
+                    {thereArePartsToFilter && (
+                        <PartCountSliderFilter
+                            id="parts"
+                            title="Number of parts"
+                            resourceProperty="parts"
+                            description="Tune this filter to show only cultural properties with number of components in the selected range"
+                        />
+                    )}
+                    {map(thereAreMeasurementToFilter, (m) => {
+                        return (
+                            <MeasurementSliderFilter
+                                id={m}
+                                title={`${m}`}
+                                measurementType={m}
+                                description={`Tune this filter to show only cultural properties with ${m} in the selected range`}
+                            />
+                        );
+                    })}
+                    {thereAreMeasurementToFilter.length !== 0 && (
+                        <MeasurementCountSliderFilter
+                            id="measurements"
+                            title="Number of measurements"
+                            description="Tune this filter to show only cultural properties with number of collected measurements in the selected range"
+                        />
+                    )}
+                    <FiltersMountedController
+                        id="filter-flag"
+                        mountedFilters={mountedFilters}
                     />
-                )}
-                <FiltersMountedController
-                    id="filter-flag"
-                    mountedFilters={mountedFilters}
+                </PatternMenu>
+                <List
+                    list={filteredKnowledgeGraph.toList()}
+                    listContainerStyle={{
+                        width: "75%",
+                        marginLeft: "22%",
+                        marginRight: "0%",
+                    }}
                 />
-            </PatternMenu>
-            <List list={filteredKnowledgeGraph.toList()} />)
+                )
+            </div>
         </ODPReactorContainer>
     );
 }

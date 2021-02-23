@@ -22,7 +22,11 @@ import { useHelpCtx } from "../../filters/HelpCtx/useHelpCtx";
 
 const greenText = "#14d014";
 
-export default function PatternMenu({ showLayoutButton = true, children }) {
+export default function PatternMenu({
+    showLayoutButton = true,
+    children,
+    style,
+}) {
     const [open, setOpen] = useBinaryArrayState([]);
     const [layoutButton, setLayoutButton] = useBinaryState();
     const [filterButton, setFilterButton] = useBinaryState();
@@ -109,7 +113,7 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
 
     return (
         <div
-            style={menuStyle}
+            style={{ ...menuStyle, ...style }}
             className={`menu-main ${
                 // menuOpen || exampleMenuOpen ? "menu-main-over" : ""
                 "menu-main-over"
@@ -345,57 +349,57 @@ export default function PatternMenu({ showLayoutButton = true, children }) {
                             })}
                     </Menu.Menu>
                 </Menu.Item>
-                {showLayoutButton && (
-                    <Menu.Item className="menu-item layouts-menu-button">
+                {/* {showLayoutButton && ( */}
+                <Menu.Item className="menu-item layouts-menu-button">
+                    <div
+                        style={{
+                            cursor: "pointer",
+                            fontSize: 18,
+                        }}
+                        onClick={setLayoutButton}
+                    >
+                        <Icon name="picture" />
                         <div
-                            style={{
-                                cursor: "pointer",
-                                fontSize: 18,
-                            }}
-                            onClick={setLayoutButton}
+                            className={`menu-main-title ${
+                                // menuOpen || exampleMenuOpen
+                                //     ? "menu-main-open"
+                                //     : ""
+                                "menu-main-open"
+                            }`}
                         >
-                            <Icon name="picture" />
-                            <div
-                                className={`menu-main-title ${
-                                    // menuOpen || exampleMenuOpen
-                                    //     ? "menu-main-open"
-                                    //     : ""
-                                    "menu-main-open"
-                                }`}
-                            >
-                                Layout
-                            </div>
-                            <DropdownIcon
-                                style={{
-                                    transform:
-                                        layoutButton || exampleLayoutOpen
-                                            ? null
-                                            : "rotate(270deg)",
-                                    position: "relative",
-                                    cursor: "pointer",
-                                    width: "fit-content",
-                                    display:
-                                        // menuOpen || exampleMenuOpen
-                                        //     ? "inline-block"
-                                        //     : "none",
-                                        "inline-block",
-                                    float: "right",
-                                }}
-                                className={
-                                    // menuOpen || exampleMenuOpen
-                                    //     ? "menu-dropdown menu-open-dropdown"
-                                    //     : "menu-dropdown"
-                                    "menu-dropdown menu-open-dropdown"
-                                }
-                            />
+                            Layout
                         </div>
-                        {layoutButton || exampleLayoutOpen ? (
-                            <Menu.Menu>
-                                <LayoutToggle></LayoutToggle>
-                            </Menu.Menu>
-                        ) : null}
-                    </Menu.Item>
-                )}
+                        <DropdownIcon
+                            style={{
+                                transform: null,
+                                // layoutButton || exampleLayoutOpen
+                                // ? null
+                                // : "rotate(270deg)",
+                                position: "relative",
+                                cursor: "pointer",
+                                width: "fit-content",
+                                display:
+                                    // menuOpen || exampleMenuOpen
+                                    //     ? "inline-block"
+                                    //     : "none",
+                                    "inline-block",
+                                float: "right",
+                            }}
+                            className={
+                                // menuOpen || exampleMenuOpen
+                                //     ? "menu-dropdown menu-open-dropdown"
+                                //     : "menu-dropdown"
+                                "menu-dropdown menu-open-dropdown"
+                            }
+                        />
+                    </div>
+                    {/* {layoutButton || exampleLayoutOpen ? ( */}
+                    <Menu.Menu>
+                        <LayoutToggle></LayoutToggle>
+                    </Menu.Menu>
+                    {/* ) : null} */}
+                </Menu.Item>
+                {/* )} */}
                 {layoutOptions.layout === "graph" && (
                     <LayoutSelector
                         value={graphinLayoutHandler.name}

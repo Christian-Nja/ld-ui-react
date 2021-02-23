@@ -48,6 +48,7 @@ export default function List({
     list,
     title,
     itemTooltip = "click to explore resources",
+    listContainerStyle = {},
 }) {
     const resources = list;
 
@@ -193,7 +194,10 @@ export default function List({
     // });
 
     return (
-        <div style={{ ...listContainerStyle }} id="list-container">
+        <div
+            style={{ ...defaultListContainerStyle, ...listContainerStyle }}
+            id="list-container"
+        >
             <div style={{ fontFamily: "Montserrat-Medium" }}>
                 <div
                     id="scroll-to-top-button"
@@ -289,7 +293,7 @@ export default function List({
     );
 }
 
-const listContainerStyle = {
+const defaultListContainerStyle = {
     marginLeft: "5%",
     marginRight: "2%",
     position: "absolute",

@@ -176,7 +176,7 @@ export default function VisualGraph({ visualGraph = [] }) {
             <ActivateRelations trigger="click" />
             <div
                 style={{
-                    position: "absolute",
+                    position: "fixed",
                     right: 0,
                     bottom: 0,
                     /* top: 0; */

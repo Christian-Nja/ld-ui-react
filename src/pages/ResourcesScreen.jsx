@@ -22,18 +22,30 @@ export default function ResourcesScreen({ filteredKnowledgeGraph }) {
                 }}
             />
             <AlertBox />
-            <PatternMenu showLayoutButton={false}>
-                <ViewFilter
-                    id="viewFilter"
-                    title="Resource View"
-                    description="Setting this filter you will see with resources has a specific view"
+            <div style={{ display: "flex", justifyContent: "center" }}>
+                <PatternMenu
+                    showLayoutButton={false}
+                    style={{ position: "absolute" }}
+                >
+                    <ViewFilter
+                        id="viewFilter"
+                        title="Resource View"
+                        description="Setting this filter you will see with resources has a specific view"
+                    />
+                    <FiltersMountedController
+                        id="filter-flag"
+                        mountedFilters={["viewFilter"]}
+                    />
+                </PatternMenu>
+                <List
+                    list={filteredKnowledgeGraph.toList()}
+                    listContainerStyle={{
+                        width: "75%",
+                        marginLeft: "22%",
+                        marginRight: "0%",
+                    }}
                 />
-                <FiltersMountedController
-                    id="filter-flag"
-                    mountedFilters={["viewFilter"]}
-                />
-            </PatternMenu>
-            <List list={filteredKnowledgeGraph.toList()} />
+            </div>
         </ODPReactorContainer>
     );
 }
