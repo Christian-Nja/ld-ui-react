@@ -1,4 +1,5 @@
 import Filter from "../Filter";
+import { FilterStrategyFactory } from "../filter-algorithms/FilterStrategyFactory";
 import { map, remove } from "lodash";
 
 export function safelyLoadFiltersFromSessionStorage(resourceUri) {
@@ -13,7 +14,9 @@ export function safelyLoadFiltersFromSessionStorage(resourceUri) {
                 id: f.id,
                 options: {
                     ...f.options,
-                    filterCallback: Function(f.options.filterCallback),
+                    filterCallback: FilterStrategyFactory.make(
+                        f.options.filterCallback
+                    ),
                 },
             });
         });
@@ -33,7 +36,7 @@ export function saveFiltersToSessionStorage(filters, resourceUri) {
             id: f.getId(),
             options: {
                 ...filterOptions,
-                filterCallback: String(f.options.filterCallback),
+                filterCallback: JSON.stringify(f.options.filterCallback),
             },
         };
     });

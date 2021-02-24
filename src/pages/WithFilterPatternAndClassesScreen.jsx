@@ -18,26 +18,19 @@ export default function WithFilterPatternAndClassesScreen({ knowledgeGraph }) {
             return f.getId() === "centrality" && !f.isActive();
         })
     ) {
+        console.log("We create fixed concepts filter!!!!!!");
         dynamicAndStaticFilters.push(
             Filter.create({
                 id: "showFixedConcepts",
                 options: {
                     active: true,
-                    filterCallback: (resource) => {
-                        if (resource.getType() === "Class") {
-                            if (!resource.alwaysVisible) {
-                                return false;
-                            } else {
-                                return true;
-                            }
-                        } else {
-                            return true;
-                        }
-                    },
+                    filterCallback: new ShowFixedConceptStrategy(),
                 },
             })
         );
     }
+
+    console.log("Filters:", filters);
 
     return (
         <FilteringResource
@@ -47,4 +40,21 @@ export default function WithFilterPatternAndClassesScreen({ knowledgeGraph }) {
             <PatternAndClassesScreen />
         </FilteringResource>
     );
+}
+
+class ShowFixedConceptStrategy {
+    constructor() {}
+    filter(resource) {
+        console.log("IM CALLED ShowFixedConcepts");
+        if (resource.getType() === "Class") {
+            if (!resource.alwaysVisible) {
+                return false;
+            } else {
+                console.log("ONE RESOURCE VISIBLE I RETURN trues");
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
 }

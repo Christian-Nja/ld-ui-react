@@ -1,3 +1,5 @@
+import { PassFilterStrategy } from "./filter-algorithms/PassFilterStrategy";
+
 export default class Filter {
     constructor(id, options) {
         this.id = id;
@@ -6,9 +8,7 @@ export default class Filter {
     static create({ id, options }) {
         const defaultOptions = {
             active: true,
-            filterCallback: (d) => {
-                return d;
-            },
+            filterCallback: new PassFilterStrategy(),
         };
         return new Filter(id, { ...defaultOptions, ...options });
     }
@@ -20,7 +20,7 @@ export default class Filter {
     }
     filter(data) {
         if (this.isActive() && this.options.filterCallback) {
-            return this.options.filterCallback(data);
+            return this.options.filterCallback.filter(data);
         } else {
             return data;
         }

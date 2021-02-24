@@ -9,6 +9,7 @@ import findSliderDomain from "./findSliderDomain";
 import { find } from "lodash";
 
 import Qty from "js-quantities";
+import { FilterIntervalStrategy } from "../../../filters/filter-algorithms/FilterIntervalStrategy";
 const MIN = 0;
 const MAX = 1;
 
@@ -30,35 +31,27 @@ export default function MeasurementSliderFilter({
         return r[measurementUnitKey];
     })[measurementUnitKey];
 
-    const filterCallback = (pattern) => {
-        if (
-            pattern[measurementType] >= range[MIN] &&
-            pattern[measurementType] <= range[MAX]
-        ) {
-            return true;
-        } else {
-            return false;
-        }
-    };
-    const initialFilterOptions = {
-        active: false,
-        filterCallback: filterCallback,
-        isMounted: true,
-    };
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
-
     const initialRange = findSliderDomain(resources, measurementType);
 
     const [range, setRange] = useState(
         (filter && filter.getOption("range")) || initialRange
     );
+    const filterAlgorithm = FilterIntervalStrategy.create({
+        range,
+        resourceProperty: measurementType,
+    });
+
+    const initialFilterOptions = {
+        active: false,
+        filterCallback: filterAlgorithm,
+    };
+    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 
     useEffect(() => {
         if (filter) {
             setFilterOptions({
                 ...filter.options,
-                range: range,
-                filterCallback: filterCallback,
+                filterCallback: filterAlgorithm,
             });
         }
     }, [range]);
