@@ -59,11 +59,15 @@ export default function FilteringShowingJustOneKeyConceptPerView({
                     [(d) => Number.parseInt(d.centralityScore)],
                     ["desc"]
                 );
-                filteredKnowledgeGraph.updateResourceProperty(
-                    classesSortedByRelevance[MORE_IMPORTANT_CONCEPT].getUri(),
-                    "isVisible",
-                    true
-                );
+                if (classesSortedByRelevance[MORE_IMPORTANT_CONCEPT]) {
+                    filteredKnowledgeGraph.updateResourceProperty(
+                        classesSortedByRelevance[
+                            MORE_IMPORTANT_CONCEPT
+                        ].getUri(),
+                        "isVisible",
+                        true
+                    );
+                }
             }
         });
         conceptsFilters.push(

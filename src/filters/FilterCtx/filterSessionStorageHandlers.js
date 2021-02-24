@@ -20,6 +20,7 @@ export function safelyLoadFiltersFromSessionStorage(resourceUri) {
                 },
             });
         });
+        return deserializedFilters;
     } catch (e) {
         console.log("Failed to load from session storage");
         console.log(e);
