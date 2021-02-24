@@ -11,8 +11,6 @@ import { cloneDeep } from "lodash";
 
 import { Icon } from "semantic-ui-react";
 
-import GeoJsonGeometriesLookup from "geojson-geometries-lookup";
-
 const circleToPolygon = require("circle-to-polygon");
 const numberOfEdges = 64;
 
@@ -22,6 +20,8 @@ import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster/dist/leaflet.markercluster";
 import "leaflet-draw/dist/leaflet.draw.css";
 import { blueMarkerIcon } from "../../../icon/ld-ui-icon";
+
+import { FilterOnMapStrategy } from "../../../filters/filter-algorithms/FilterOnMapStrategy";
 
 /**
  * node {
@@ -75,49 +75,27 @@ export default function GeoFilter({
     const { knowledgeGraph } = useKGCtx();
     const resources = knowledgeGraph.getResources();
 
-    // filter definition
-    const filterCallback = (resource) => {
-        console.log("Geo filter");
-        console.log(featureGroup);
-        if (featureGroup.features.length === 0) {
-            // no area selected
-            return true;
-        }
-        if (resource.lat && resource.long) {
-            let geolookup = new GeoJsonGeometriesLookup(featureGroup);
-            let point = {
-                type: "Point",
-                coordinates: [resource.long, resource.lat],
-            };
-            if (geolookup.hasContainers(point)) {
-                // node resource geoJSON keep it
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    };
-
-    const initialFilterOptions = {
-        active: false,
-        filterCallback: filterCallback,
-    };
-
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
-
     const initialFeatureGroup = { type: "FeatureCollection", features: [] };
     const [featureGroup, setFeatureGroup] = useState(
         (filter && filter.getOption("featureGroup")) || initialFeatureGroup
     );
 
+    const filterAlgorithm = FilterOnMapStrategy.create({
+        featureGroup,
+    });
+
+    const initialFilterOptions = {
+        active: false,
+        filterCallback: filterAlgorithm,
+    };
+
+    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+
     useEffect(() => {
         if (filter) {
             setFilterOptions({
                 ...filter.options,
-                featureGroup: featureGroup,
-                filterCallback: filterCallback,
+                filterCallback: filterAlgorithm,
             });
         }
     }, [featureGroup]);

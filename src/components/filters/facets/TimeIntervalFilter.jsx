@@ -4,6 +4,8 @@ import SliderFilter from "./SliderFilter";
 import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
 import useFilter from "../../../filters/FilterCtx/useFilter";
 
+import { FilterTimeIntervalStrategy } from "../../../filters/filter-algorithms/FilterTimeIntervalStrategy";
+
 /**
  * node {
  *     id: uri
@@ -23,70 +25,29 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
     // read nodes from global context
     const resources = knowledgeGraph.getResources();
 
-    // from the age of time
-    const initialTime = -100000;
-    const now = new Date();
-    const currentTime = now.getFullYear();
-
     // if domain not in options compute it
     const initialRange = useMemo(() => findTimeDomain(resources), [resources]);
 
     const defaultRange = [initialRange[1], initialRange[1]];
 
-    const filterCallback = (resource) => {
-        if (!resource.startTime && !resource.endTime) {
-            return false;
-        } else if (!resource.startTime) {
-            if (range[0] >= initialTime && range[1] <= resource.endTime) {
-                // node inside time interval set true
-                return true;
-            } else {
-                // node not in range set false
-                return false;
-            }
-        } else if (!resource.endTime) {
-            // Handle nodes with missing endTime
-            // we consider as if it is today
-            //
-            // get node in map
-            if (range[0] >= resource.startTime && range[1] <= currentTime) {
-                // node inside time interval set true
-                return true;
-            } else {
-                // node not in range set false
-                return false;
-            }
-        } else {
-            // Handle nodes with startTime and endTime defined
-            if (
-                range[0] >= resource.startTime &&
-                range[1] <= resource.endTime
-            ) {
-                // node inside time interval set true
-                return true;
-            } else {
-                // node not in range set false
-                return false;
-            }
-        }
-    };
-    const initialFilterOptions = {
-        active: false,
-        filterCallback: filterCallback,
-        isMounted: true,
-    };
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 
     const [range, setRange] = useState(
         (filter && filter.getOption("range")) || defaultRange || initialRange
     );
 
+    const filterAlgorithm = FilterTimeIntervalStrategy.create({ range });
+
+    const initialFilterOptions = {
+        active: false,
+        filterCallback: filterAlgorithm,
+    };
+
     useEffect(() => {
         if (filter) {
             setFilterOptions({
                 ...filter.options,
-                range: range,
-                filterCallback: filterCallback,
+                filterCallback: filterAlgorithm,
             });
         }
     }, [range]);

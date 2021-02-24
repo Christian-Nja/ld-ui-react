@@ -1,27 +1,25 @@
 import Filter from "../Filter";
+import { FilterStrategyFactory } from "../filter-algorithms/FilterStrategyFactory";
 import { map, remove } from "lodash";
 
 export function safelyLoadFiltersFromSessionStorage(resourceUri) {
     const filtersSessionStorageKey = `filters-${resourceUri}`;
-    console.log("Loading filters from session sotrage");
     try {
         const filters = JSON.parse(
             window.sessionStorage.getItem(filtersSessionStorageKey)
         );
 
         const deserializedFilters = map(filters, (f) => {
-            console.log(f);
-            var filterCallback = new Function(f.options.filterCallback);
             return Filter.create({
                 id: f.id,
                 options: {
                     ...f.options,
-                    filterCallback: filterCallback,
+                    filterCallback: FilterStrategyFactory.make(
+                        f.options.filterCallback
+                    ),
                 },
             });
         });
-        console.log("Loaded from session storage:", deserializedFilters);
-        return deserializedFilters;
     } catch (e) {
         console.log("Failed to load from session storage");
         console.log(e);
@@ -39,7 +37,7 @@ export function saveFiltersToSessionStorage(filters, resourceUri) {
             id: f.getId(),
             options: {
                 ...filterOptions,
-                filterCallback: String(f.options.filterCallback),
+                filterCallback: JSON.stringify(f.options.filterCallback),
             },
         };
     });

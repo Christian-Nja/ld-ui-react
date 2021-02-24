@@ -3,9 +3,7 @@ import useFilter from "../../../filters/FilterCtx/useFilter";
 import SliderFilter from "./SliderFilter";
 
 import findSliderDomain from "./findSliderDomain";
-
-const MIN = 0;
-const MAX = 1;
+import { FilterIntervalStrategy } from "../../../filters/filter-algorithms/FilterIntervalStrategy";
 
 export default function GenericSliderFilter({
     id = "genericSlider",
@@ -13,49 +11,36 @@ export default function GenericSliderFilter({
     resources = [],
     isActive = false,
     defaultRange,
-    resourceFilter = (r) => {
-        //this function filter the knowledge graph resource filter can acts on
-        return r; // example: (r) => {return r.getType() === "Pattern"} only patterns will be touched by filter the other resources discarded
-    },
+    resourceTypeFilterHasEffectOn,
     formatTicks = (d) => {
         return d;
     },
 }) {
-    const filterCallback = (resource) => {
-        if (resourceFilter(resource)) {
-            if (
-                resource[resourceProperty] >= range[MIN] &&
-                resource[resourceProperty] <= range[MAX]
-            ) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return true;
-        }
-    };
-    const initialFilterOptions = {
-        active: isActive,
-        filterCallback: filterCallback,
-        isMounted: true,
-    };
-
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
-
     const initialRange = findSliderDomain(resources, resourceProperty);
 
     const [range, setRange] = useState(
         (filter && filter.getOption("range")) || defaultRange || initialRange
     );
 
+    const filterAlgorithm = FilterIntervalStrategy.create({
+        resourceProperty,
+        resourceType: resourceTypeFilterHasEffectOn,
+        range,
+    });
+
+    const initialFilterOptions = {
+        active: isActive,
+        filterCallback: filterAlgorithm,
+    };
+
+    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+
     useEffect(() => {
         console.log("I should save range in session storage", range);
         if (filter) {
             setFilterOptions({
                 ...filter.options,
-                range: range,
-                filterCallback: filterCallback,
+                filterCallback: filterAlgorithm,
             });
         }
     }, [range]);

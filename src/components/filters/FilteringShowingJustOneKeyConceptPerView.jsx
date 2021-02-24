@@ -30,17 +30,7 @@ export default function FilteringShowingJustOneKeyConceptPerView({
             id: "hideConceptsWithoutViews",
             options: {
                 active: true,
-                filterCallback: (resource) => {
-                    if (resource.getType() === "Class") {
-                        if (!resource.hasViews) {
-                            return false;
-                        } else {
-                            return true;
-                        }
-                    } else {
-                        return true;
-                    }
-                },
+                filterCallback: new HideConceptsWithViewsStrategy(),
             },
         }),
     ];
@@ -81,17 +71,7 @@ export default function FilteringShowingJustOneKeyConceptPerView({
                 id: "showOneKeyConceptPerKey",
                 options: {
                     active: true,
-                    filterCallback: (resource) => {
-                        if (resource.getType() === "Class") {
-                            if (!resource.isVisible) {
-                                return false;
-                            } else {
-                                return true;
-                            }
-                        } else {
-                            return true;
-                        }
-                    },
+                    filterCallback: new ShowOneKeyConceptPerViewStrategy(),
                 },
             })
         );
@@ -113,4 +93,33 @@ export default function FilteringShowingJustOneKeyConceptPerView({
                 : null}
         </div>
     );
+}
+
+class HideConceptsWithViewsStrategy {
+    filter(resource) {
+        if (resource.getType() === "Class") {
+            if (!resource.hasViews) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
+}
+
+class ShowOneKeyConceptPerViewStrategy {
+    constructor() {}
+    filter(resource) {
+        if (resource.getType() === "Class") {
+            if (!resource.isVisible) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
 }

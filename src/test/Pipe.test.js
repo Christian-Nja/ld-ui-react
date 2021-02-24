@@ -2,22 +2,29 @@ import "regenerator-runtime/runtime";
 import Pipe from "../classes/Pipe";
 import Filter from "../filters/Filter";
 
+class stripeMondoFilterAlgorithm {
+    filter(d) {
+        if (d !== "mondo") return d;
+    }
+}
+class stripeEsclamationFilterAlgorithm {
+    filter(d) {
+        if (d !== "!") return d;
+    }
+}
+
 const data = ["ciao", "mondo", "!"];
 const stripeMondoFilter = Filter.create({
     options: {
         active: true,
-        filterCallback: (d) => {
-            if (d !== "mondo") return d;
-        },
+        filterCallback: new stripeMondoFilterAlgorithm(),
     },
 });
 
 const stripeEsclamationFilter = Filter.create({
     options: {
         active: true,
-        filterCallback: (d) => {
-            if (d !== "!") return d;
-        },
+        filterCallback: new stripeEsclamationFilterAlgorithm(),
     },
 });
 
@@ -75,23 +82,25 @@ test("Should chain filters", () => {
     expect(newData).not.toContain("mondo");
 });
 
-test("Count mondo filter should run once", () => {
-    let c = 0;
-    const countCiaoFilter = Filter.create({
-        options: {
-            active: true,
-            filterCallback: (d) => {
-                c++;
-                return d;
-            },
-        },
-    });
-    let pipe = new Pipe(data);
-    let newData = pipe
-        .chain([stripeMondoFilter, stripeEsclamationFilter, countCiaoFilter])
-        .toArray();
-    expect(newData).toHaveLength(1);
-    expect(newData).not.toContain("!");
-    expect(newData).not.toContain("mondo");
-    expect(c).toBe(1);
-});
+// test("Count mondo filter should run once", () => {
+
+//     let c = 0;
+
+//     const countCiaoFilter = Filter.create({
+//         options: {
+//             active: true,
+//             filterCallback: (d) => {
+//                 c++;
+//                 return d;
+//             },
+//         },
+//     });
+//     let pipe = new Pipe(data);
+//     let newData = pipe
+//         .chain([stripeMondoFilter, stripeEsclamationFilter, countCiaoFilter])
+//         .toArray();
+//     expect(newData).toHaveLength(1);
+//     expect(newData).not.toContain("!");
+//     expect(newData).not.toContain("mondo");
+//     expect(c).toBe(1);
+// });

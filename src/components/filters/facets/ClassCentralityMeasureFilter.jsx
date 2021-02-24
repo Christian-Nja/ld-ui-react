@@ -11,9 +11,6 @@ const MAX = 1;
 
 export default function ClassCentralityMeasureFilter({}) {
     const { knowledgeGraph } = useKGCtx();
-    const filterClasses = (resource) => {
-        return resource.getType() === "Class";
-    };
 
     const initialRange = findSliderDomain(
         knowledgeGraph.getClasses(),
@@ -22,7 +19,7 @@ export default function ClassCentralityMeasureFilter({}) {
 
     return (
         <GenericSliderFilter
-            resourceFilter={filterClasses}
+            resourceTypeFilterHasEffectOn={"Class"}
             id="centrality"
             resourceProperty="centralityScore"
             resources={knowledgeGraph.getClasses()}

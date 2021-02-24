@@ -6,6 +6,7 @@ import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
 import useFilter from "../../../filters/FilterCtx/useFilter";
 
 import ColorGenerator from "../../classes/ColorGenerator";
+import { FilterResourceByPropertyStrategy } from "../../../filters/filter-algorithms/FilterResourceByPropertyStrategy";
 
 PropertyFilter.defaultProps = {
     id: "pie",
@@ -30,32 +31,28 @@ export default function PropertyFilter({ id = "pie", property = "id" }) {
 
     const resources = knowledgeGraph.getResources();
 
-    const filterCallback = (pattern) => {
-        if (!filtered.includes(pattern[property])) {
-            return true;
-        }
-        return false;
-    };
-
-    const initialFilterOptions = {
-        active: false,
-        filterCallback: filterCallback,
-        isMounted: true,
-    };
-
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
-
     const [filtered, setFiltered] = useBinaryArrayState(
         (filter && filter.getOption("filtered")) || []
     );
     const [hovered, setHovered] = useState(null);
 
+    const filterAlgorithm = FilterResourceByPropertyStrategy.create({
+        filtered,
+        property,
+    });
+
+    const initialFilterOptions = {
+        active: false,
+        filterCallback: filterAlgorithm,
+    };
+
+    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+
     useEffect(() => {
         if (filter) {
             setFilterOptions({
                 ...filter.options,
-                filtered: filtered,
-                filterCallback: filterCallback,
+                filterCallback: filterAlgorithm,
             });
         }
     }, [filtered]);
