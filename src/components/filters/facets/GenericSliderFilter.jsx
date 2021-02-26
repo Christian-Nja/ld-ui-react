@@ -16,8 +16,13 @@ export default function GenericSliderFilter({
         return d;
     },
 }) {
-    const initialRange = findSliderDomain(resources, resourceProperty);
+    const initialFilterOptions = {
+        active: isActive,
+        filterCallback: filterAlgorithm,
+    };
+    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 
+    const initialRange = findSliderDomain(resources, resourceProperty);
     const [range, setRange] = useState(
         (filter && filter.getOption("range")) || defaultRange || initialRange
     );
@@ -27,13 +32,6 @@ export default function GenericSliderFilter({
         resourceType: resourceTypeFilterHasEffectOn,
         range,
     });
-
-    const initialFilterOptions = {
-        active: isActive,
-        filterCallback: filterAlgorithm,
-    };
-
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 
     useEffect(() => {
         console.log("I should save range in session storage", range);

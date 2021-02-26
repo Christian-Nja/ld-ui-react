@@ -15,6 +15,7 @@ export default function GoToButton({ style = {} }) {
 
     return (
         <div
+            className="go-to-button"
             style={{
                 ...defaultStyle,
                 ...style,

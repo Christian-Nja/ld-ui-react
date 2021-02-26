@@ -13,7 +13,8 @@ export default class Filter {
         return new Filter(id, { ...defaultOptions, ...options });
     }
     getOption(optionName) {
-        if (this.options) return this.options[optionName];
+        if (this.options && this.options.filterCallback)
+            return this.options.filterCallback[optionName];
     }
     setOptions(options) {
         this.options = options;

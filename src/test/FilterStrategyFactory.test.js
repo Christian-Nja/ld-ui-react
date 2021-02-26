@@ -17,4 +17,9 @@ test("Should create FilterPatternByView strategy from DTO", () => {
         strategyClass
     );
     expect(unserializedFilterPatternByView1.class).toBe(strategyClass);
+    expect(unserializedFilterPatternByView1.filtered).toBeDefined();
+    expect(unserializedFilterPatternByView1.filtered.length).toBe(1);
+    expect(
+        unserializedFilterPatternByView1.filtered.includes("id0")
+    ).toBeTruthy();
 });

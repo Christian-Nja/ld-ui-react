@@ -31,21 +31,23 @@ export default function MeasurementSliderFilter({
         return r[measurementUnitKey];
     })[measurementUnitKey];
 
-    const initialRange = findSliderDomain(resources, measurementType);
+    const initialFilterOptions = {
+        active: false,
+        filterCallback: filterAlgorithm,
+    };
 
-    const [range, setRange] = useState(
-        (filter && filter.getOption("range")) || initialRange
-    );
     const filterAlgorithm = FilterIntervalStrategy.create({
         range,
         resourceProperty: measurementType,
     });
 
-    const initialFilterOptions = {
-        active: false,
-        filterCallback: filterAlgorithm,
-    };
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+
+    const initialRange = findSliderDomain(resources, measurementType);
+
+    const [range, setRange] = useState(
+        (filter && filter.getOption("range")) || initialRange
+    );
 
     useEffect(() => {
         if (filter) {

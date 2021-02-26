@@ -6,8 +6,8 @@ import { useHelpCtx } from "../../filters/HelpCtx/useHelpCtx";
 
 import TemporaryMessage from "./TemporaryMessage";
 
-export default function HelpBox() {
-    const { isFirstAccess } = useHelpCtx();
+export default function GraphHelpBox() {
+    const { isFirstAccess } = useHelpCtx("graph");
     const { layoutOptions, setLayoutOptions } = useLayoutCtx();
     const [runTour, setRunTour] = useState(isFirstAccess);
 
@@ -51,7 +51,7 @@ export default function HelpBox() {
                     zIndex: 10000,
                 },
             },
-            placement: "bottom",
+            placement: "left",
             hideCloseButton: true,
         },
         {
@@ -64,7 +64,7 @@ export default function HelpBox() {
                     zIndex: 10000,
                 },
             },
-            placement: "right",
+            placement: "left",
             hideCloseButton: true,
         },
         {
@@ -77,7 +77,7 @@ export default function HelpBox() {
                     zIndex: 10000,
                 },
             },
-            placement: "right",
+            placement: "left",
             hideCloseButton: true,
         },
         {
@@ -90,7 +90,7 @@ export default function HelpBox() {
                     zIndex: 10000,
                 },
             },
-            placement: "right",
+            placement: "left",
             hideCloseButton: true,
         },
         {
@@ -103,7 +103,7 @@ export default function HelpBox() {
                     zIndex: 10000,
                 },
             },
-            placement: "right",
+            placement: "left",
             hideCloseButton: true,
         },
         {
@@ -131,9 +131,6 @@ export default function HelpBox() {
     const handleJoyrideCallback = (data) => {
         const { status, type, step, action, index } = data;
 
-        console.log("JoyRide callback");
-        console.log(data);
-
         const finishedStatuses = [STATUS.FINISHED, STATUS.SKIPPED];
 
         if (finishedStatuses.includes(status)) {
@@ -141,43 +138,11 @@ export default function HelpBox() {
         }
         // main menu
 
-        if (step.target === ".filters-menu-button") {
-            setLayoutOptions({
-                ...layoutOptions,
-                exampleFiltersOpen: true,
-            });
-        }
-
-        if (step.target === ".layouts-menu-button") {
-            setLayoutOptions({
-                ...layoutOptions,
-                exampleLayoutOpen: true,
-            });
-        }
-
-        if (step.target === ".filter-occurences") {
-            setLayoutOptions({
-                ...layoutOptions,
-                exampleFilterOccurencesOpen: true,
-            });
-        }
-
-        if (step.target === ".menu-main") {
-            setLayoutOptions({
-                ...layoutOptions,
-                exampleMenuOpen: true,
-            });
-        }
-
-        if (action === "stop") {
-            setLayoutOptions({
-                ...layoutOptions,
-                exampleMenuOpen: false,
-                exampleLayoutOpen: false,
-                exampleFiltersOpen: false,
-                exampleFilterOccurencesOpen: false,
-            });
-        }
+        const element = document.querySelector(step.target);
+        element.scrollIntoView({
+            // behavior: "smooth",
+            block: "center",
+        });
 
         console.groupCollapsed(type);
         console.groupEnd();
@@ -191,9 +156,11 @@ export default function HelpBox() {
                     steps={steps}
                     continuous={true}
                     run={runTour}
-                    scrollToFirstStep={true}
+                    // scrollToFirstStep={true}
+                    // scrollToSteps={true}
                     showProgress={true}
                     showSkipButton={true}
+                    disableScrolling={true}
                     styles={{
                         options: {
                             zIndex: 10000,
@@ -208,7 +175,7 @@ export default function HelpBox() {
                         borderRadius: 4,
                         color: "rgb(13, 60, 97)",
                         position: "absolute",
-                        top: -90,
+                        top: -125,
                         left: 0,
                         width: "fit-content",
                         fontWeight: "bolder",

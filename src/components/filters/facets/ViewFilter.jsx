@@ -14,6 +14,14 @@ export default function ViewFilter({
     const { knowledgeGraph } = useKGCtx();
 
     const resources = knowledgeGraph.getResources();
+
+    const initialFilterOptions = {
+        active: isActive,
+        filterCallback: filterAlgorithm,
+    };
+    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+    console.log("Filter VIEW retrieved filter", filter);
+
     const defaultAvailableViews = [];
     forEach(resources, (r) => {
         const patternInstances = r.patternInstances;
@@ -32,8 +40,6 @@ export default function ViewFilter({
         });
     });
 
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
-
     const [availableViews, setAvailableViews] = useState(
         (filter && filter.getOption("availableViews")) || defaultAvailableViews
     );
@@ -41,11 +47,6 @@ export default function ViewFilter({
     const filterAlgorithm = FilterResourceByViewStrategy.create({
         views: availableViews,
     });
-
-    const initialFilterOptions = {
-        active: isActive,
-        filterCallback: filterAlgorithm,
-    };
 
     useEffect(() => {
         if (filter) {

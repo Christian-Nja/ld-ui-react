@@ -25,23 +25,21 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
     // read nodes from global context
     const resources = knowledgeGraph.getResources();
 
+    const initialFilterOptions = {
+        active: false,
+        filterCallback: filterAlgorithm,
+    };
+    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+
     // if domain not in options compute it
     const initialRange = useMemo(() => findTimeDomain(resources), [resources]);
-
     const defaultRange = [initialRange[1], initialRange[1]];
-
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 
     const [range, setRange] = useState(
         (filter && filter.getOption("range")) || defaultRange || initialRange
     );
 
     const filterAlgorithm = FilterTimeIntervalStrategy.create({ range });
-
-    const initialFilterOptions = {
-        active: false,
-        filterCallback: filterAlgorithm,
-    };
 
     useEffect(() => {
         if (filter) {

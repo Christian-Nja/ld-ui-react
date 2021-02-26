@@ -31,6 +31,13 @@ export default function PropertyFilter({ id = "pie", property = "id" }) {
 
     const resources = knowledgeGraph.getResources();
 
+    const initialFilterOptions = {
+        active: false,
+        filterCallback: filterAlgorithm,
+    };
+
+    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+
     const [filtered, setFiltered] = useBinaryArrayState(
         (filter && filter.getOption("filtered")) || []
     );
@@ -40,13 +47,6 @@ export default function PropertyFilter({ id = "pie", property = "id" }) {
         filtered,
         property,
     });
-
-    const initialFilterOptions = {
-        active: false,
-        filterCallback: filterAlgorithm,
-    };
-
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 
     useEffect(() => {
         if (filter) {

@@ -31,6 +31,8 @@ export default function PatternFilter({ id = "patternPie" }) {
     const { knowledgeGraph } = useKGCtx();
     const patterns = knowledgeGraph.getPatterns();
 
+    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+
     const [filtered, setFiltered] = useBinaryArrayState(
         (filter && filter.getOption("filtered")) || []
     );
@@ -42,8 +44,6 @@ export default function PatternFilter({ id = "patternPie" }) {
         active: false,
         filterCallback: filterAlgorithm,
     };
-
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 
     useEffect(() => {
         if (filter) {

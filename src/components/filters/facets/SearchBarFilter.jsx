@@ -36,6 +36,15 @@ export default function SearchBarFilter({
     const { knowledgeGraph } = useKGCtx();
     const resources = knowledgeGraph.getResources();
 
+    const initialFilterOptions = {
+        active: true,
+        filterCallback: filterAlgorithm,
+    };
+    const { filter, setFilterOptions } = useNonPersistentFilter(
+        id,
+        initialFilterOptions
+    );
+
     const [search, setSearch] = useState(
         (filter && filter.getOption("search")) || ""
     );
@@ -86,15 +95,6 @@ export default function SearchBarFilter({
         filteredResources,
     });
 
-    const initialFilterOptions = {
-        active: true,
-        filterCallback: filterAlgorithm,
-    };
-    const { filter, setFilterOptions } = useNonPersistentFilter(
-        id,
-        initialFilterOptions
-    );
-
     useEffect(() => {
         // set a delay after a user modify input before updating filtering
         const delayDebounceFn = setTimeout(() => {
@@ -115,7 +115,7 @@ export default function SearchBarFilter({
     };
 
     return (
-        <div>
+        <div className="search-component">
             <Icon name="search" className="search-icon"></Icon>
             <input
                 className="search-item"

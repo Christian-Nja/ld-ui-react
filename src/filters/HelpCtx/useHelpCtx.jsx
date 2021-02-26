@@ -1,12 +1,14 @@
 import React, { useContext, useEffect } from "react";
 import { HelpCtx } from "./HelpCtx";
 
-export function useHelpCtx() {
-    const { isFirstAccess, saveFirstAccessToLocalStorage } = useContext(
-        HelpCtx
-    );
+export function useHelpCtx(key) {
+    const {
+        safelyLoadTutorialCookieFromLocalStorage,
+        saveFirstAccessToLocalStorage,
+    } = useContext(HelpCtx);
+    const isFirstAccess = safelyLoadTutorialCookieFromLocalStorage(key);
     useEffect(() => {
-        saveFirstAccessToLocalStorage();
+        saveFirstAccessToLocalStorage(key);
     }, []);
     return {
         isFirstAccess,

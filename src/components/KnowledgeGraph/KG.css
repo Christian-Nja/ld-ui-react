@@ -1,3 +1,32 @@
+.ui.table td {
+    padding: 0px;
+}
+
+/* .odpreactor-data-container {
+    width: fit-content;
+    height: fit-content;
+    padding: 0px;
+    vertical-align: baseline;
+}
+
+.odpreactor-menu-container {
+    width: 20%;
+} */
+
+/* @media only screen and (min-width: 1200px) { */
+.ui.container {
+    width: auto;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    /* margin-left: auto!important; */
+    /* margin-right: auto!important; */
+}
+.ui.grid.container {
+    /* width: calc(1127px + 2rem)!important; */
+    width: auto !important;
+}
+/* } */
+
 .ant-menu {
     list-style-type: none;
 }
@@ -42,6 +71,9 @@
     justify-content: center;
     align-items: center;
     font-size: 16px;
+    left: 0;
+    right: 0;
+    margin: auto;
 }
 
 #alert-box.show-alert {
@@ -138,6 +170,10 @@ i.show-help {
     padding: 15px;
 }
 
+.enlarged-map-button-hidden {
+    visibility: hidden;
+}
+
 .leaflet-draw-toolbar {
     display: none;
 }
@@ -191,10 +227,11 @@ i.show-help {
 
 .pie-chart-title {
     padding-top: 20px;
-    padding-bottom: 20px;
     text-align: center;
     font-size: 18px;
-    min-height: 60px;
+    min-height: 80px;
+    margin: auto;
+    max-width: fit-content;
 }
 
 .item.menu-item.filter-item.filter-filter-flag {

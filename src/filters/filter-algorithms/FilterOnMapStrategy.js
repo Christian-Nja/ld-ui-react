@@ -9,12 +9,12 @@ export class FilterOnMapStrategy {
         return new FilterOnMapStrategy(featureGroup);
     }
     filter(resource) {
-        if (featureGroup.features.length === 0) {
+        if (this.featureGroup.features.length === 0) {
             // no area selected
             return true;
         }
         if (resource.lat && resource.long) {
-            let geolookup = new GeoJsonGeometriesLookup(featureGroup);
+            let geolookup = new GeoJsonGeometriesLookup(this.featureGroup);
             let point = {
                 type: "Point",
                 coordinates: [resource.long, resource.lat],

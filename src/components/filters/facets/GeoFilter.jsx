@@ -39,11 +39,7 @@ GeoFilter.defaultProps = {
 const POLYGON_CREATED = 1;
 const SHAPE_DELETED = 2;
 
-export default function GeoFilter({
-    id = "geo",
-    options = {},
-    closeFilterMenuItem = () => {},
-}) {
+export default function GeoFilter({ id = "geo", options = {} }) {
     const startDrawFlag = "Start draw";
     const stopDrawFlag = "Stop Draw";
     const [mapUIState, setMapUI] = useState(startDrawFlag);
@@ -55,12 +51,15 @@ export default function GeoFilter({
     const MAX_ZOOM = 9;
     const [center, setCenter] = useState({ lat: 24.2, lng: 54.37 });
 
+    const [enlarged, setEnlarged] = useState(false);
+
     // This code is needed to listen for change on geo button filter class -> change is triggered on opening button
     // Once it opens the resize event is dispatched. This is needed to solve an issue with leaflet
     // if leaflet map container has style display:none it doesn't size properly tiles
     // we did this to mantain decoupled menu button and filter
     var observer = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutationRecord) {
+            console.log("Dispatch resize shit!!!!!!!");
             window.dispatchEvent(new Event("resize"));
         });
     });
@@ -71,18 +70,16 @@ export default function GeoFilter({
             attributeFilter: ["class"],
         });
     }
+    var target2 = document.getElementsByClassName("enlarge-map-button")[0];
+    if (target2) {
+        observer.observe(target2, {
+            attributes: true,
+            attributeFilter: ["class"],
+        });
+    }
 
     const { knowledgeGraph } = useKGCtx();
     const resources = knowledgeGraph.getResources();
-
-    const initialFeatureGroup = { type: "FeatureCollection", features: [] };
-    const [featureGroup, setFeatureGroup] = useState(
-        (filter && filter.getOption("featureGroup")) || initialFeatureGroup
-    );
-
-    const filterAlgorithm = FilterOnMapStrategy.create({
-        featureGroup,
-    });
 
     const initialFilterOptions = {
         active: false,
@@ -90,6 +87,16 @@ export default function GeoFilter({
     };
 
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+
+    const initialFeatureGroup = { type: "FeatureCollection", features: [] };
+    console.log("FILTER, it should return options", filter);
+    const [featureGroup, setFeatureGroup] = useState(
+        (filter && filter.getOption("featureGroup")) || initialFeatureGroup
+    );
+
+    const filterAlgorithm = FilterOnMapStrategy.create({
+        featureGroup,
+    });
 
     useEffect(() => {
         if (filter) {
@@ -210,6 +217,18 @@ export default function GeoFilter({
         }
     }, [mapState]);
 
+    // open whole screen map if enlarged
+    const fullScreenStyle = enlarged
+        ? { position: "fixed", top: 0, left: 0 }
+        : { position: "relative" };
+
+    // useEffect(() => {
+    //     setTimeout(function () {
+    //         mapRef.current.leafletElement.invalidateSize();
+    //     }, 400);
+    //     // mapRef.current.leafletElement.invalidateSize();
+    // }, [enlarged]);
+
     return (
         <div>
             <Map
@@ -221,21 +240,10 @@ export default function GeoFilter({
                 attributionControl={false}
                 id="leaflet-map"
                 style={{
-                    //                 position: fixed;
-                    // top: 0;
-                    // left: 0;
-                    // left: 0;
-                    // h: 1000px;
-                    /* height: 600px; */
-                    /* margin-top: -300px; */
-                    // margin-left: -450px;
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
+                    ...fullScreenStyle,
                     border: "2px solid rgb(54, 48, 74)",
                     borderRadius: 4,
                     zIndex: 4,
-                    // zIndex: 1,
                 }}
             >
                 <FeatureGroup>
@@ -265,44 +273,70 @@ export default function GeoFilter({
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             /> */}
             </Map>
-            <div
-                className="map-button close-button"
-                onClick={closeFilterMenuItem}
-            >
-                <Icon name="arrow left" /> See results
-            </div>
-            <div className="button-container">
+            {enlarged && (
                 <div
-                    className="map-button edit-button"
+                    className="map-button close-button"
                     onClick={() => {
-                        if (mapUIState === startDrawFlag) {
-                            editRef.current.leafletElement._toolbars.draw._modes.polygon.handler.enable();
-                            setMapUI(stopDrawFlag);
-                        }
-                        if (mapUIState === stopDrawFlag) {
-                            editRef.current.leafletElement._toolbars.draw._modes.polygon.handler.completeShape();
-                            editRef.current.leafletElement._toolbars.draw._modes.polygon.handler.disable();
-                            setMapUI(startDrawFlag);
-                        }
+                        setEnlarged(false);
                     }}
                 >
-                    {mapUIState}
+                    <Icon name="arrow left" /> See results
                 </div>
-                {featureGroup.features.length > 0 && (
+            )}
+            {enlarged && (
+                <div className="button-container">
                     <div
-                        className="map-button delete-button"
+                        className="map-button edit-button"
                         onClick={() => {
-                            // startDelete
-                            editRef.current.leafletElement._toolbars.edit._modes.remove.handler.enable();
-                            // saveDelete
-                            editRef.current.leafletElement._toolbars.edit._modes.remove.handler.removeAllLayers();
-                            editRef.current.leafletElement._toolbars.edit._modes.remove.handler.disable();
-                            setMapState({ id: SHAPE_DELETED, e: null });
+                            if (mapUIState === startDrawFlag) {
+                                editRef.current.leafletElement._toolbars.draw._modes.polygon.handler.enable();
+                                setMapUI(stopDrawFlag);
+                            }
+                            if (mapUIState === stopDrawFlag) {
+                                editRef.current.leafletElement._toolbars.draw._modes.polygon.handler.completeShape();
+                                editRef.current.leafletElement._toolbars.draw._modes.polygon.handler.disable();
+                                setMapUI(startDrawFlag);
+                            }
                         }}
                     >
-                        Clear Map
+                        {mapUIState}
                     </div>
-                )}
+                    {featureGroup.features.length > 0 && (
+                        <div
+                            className="map-button delete-button"
+                            onClick={() => {
+                                // startDelete
+                                editRef.current.leafletElement._toolbars.edit._modes.remove.handler.enable();
+                                // saveDelete
+                                editRef.current.leafletElement._toolbars.edit._modes.remove.handler.removeAllLayers();
+                                editRef.current.leafletElement._toolbars.edit._modes.remove.handler.disable();
+                                setMapState({ id: SHAPE_DELETED, e: null });
+                            }}
+                        >
+                            Clear Map
+                        </div>
+                    )}
+                </div>
+            )}
+            <div
+                className={`enlarge-map-button ${
+                    enlarged ? "enlarged-map-button-hidden" : ""
+                }`}
+                style={{
+                    position: "relative",
+                    top: -60,
+                    zIndex: 1500,
+                    width: "fitContent",
+                    padding: 5,
+                    float: "right",
+                    left: -0,
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    setEnlarged(true);
+                }}
+            >
+                <Icon name="expand" size="huge" color="black" />
             </div>
         </div>
     );
