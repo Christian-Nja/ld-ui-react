@@ -5,7 +5,7 @@ import Label from "../Resource/Label";
 
 import "./PropertyValueList.css";
 
-export default function PropertyValueList({ properties = {}, label = false }) {
+export default function PropertyValueList({ properties = {}, title }) {
     const keys = Object.keys(properties);
     const renderItem = (index, key) => {
         const isLinked = properties[keys[index]].onClick ? true : false;
@@ -18,14 +18,16 @@ export default function PropertyValueList({ properties = {}, label = false }) {
                 }`}
                 style={key % 2 == 0 ? { backgroundColor: "#f5f5f5" } : null}
             >
-                <div>{keys[index]}</div>
+                <div style={{ minWidth: "fit-content", marginRight: 50 }}>
+                    {keys[index]}
+                </div>
                 <div
                     onClick={
                         isLinked ? properties[keys[index]].onClick : () => {}
                     }
                     title={isLinked ? `Click to explore resource` : ""}
                 >
-                    {label ? (
+                    {properties[keys[index]].uri ? (
                         <Label uri={properties[keys[index]].uri} />
                     ) : (
                         properties[keys[index]].label
@@ -37,23 +39,24 @@ export default function PropertyValueList({ properties = {}, label = false }) {
 
     return (
         <div>
-            <h1
-                style={{
-                    backgroundColor: "#36304a",
-                    fontFamily: "OpenSans-Regular",
-                    fontSize: 18,
-                    color: "#fff",
-                    padding: 10,
-                    borderRadius: "10px 10px 0px 0px",
-                }}
-            >
-                Information
-            </h1>
-            <div style={{ overflow: "auto", maxHeight: 400 }}>
+            {title && (
+                <h1
+                    style={{
+                        backgroundColor: "#4183c4",
+                        fontFamily: "OpenSans-Regular",
+                        fontSize: 18,
+                        color: "#fff",
+                        padding: 10,
+                    }}
+                >
+                    {title}
+                </h1>
+            )}
+            <div style={{ overflow: "auto" }}>
                 <ReactList
                     itemRenderer={renderItem}
                     length={keys.length}
-                    type="uniform"
+                    type="simple"
                 />
             </div>
         </div>

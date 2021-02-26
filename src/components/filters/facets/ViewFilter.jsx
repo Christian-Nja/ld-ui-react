@@ -2,14 +2,8 @@ import React, { useState, useEffect } from "react";
 import ViewController from "../../KnowledgeGraph/ViewController";
 import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
 import useFilter from "../../../filters/FilterCtx/useFilter";
-import {
-    forEach,
-    clone,
-    every,
-    some,
-    map,
-    filter as lodashFilter,
-} from "lodash";
+import { forEach, clone, some, filter as lodashFilter } from "lodash";
+import { FilterResourceByViewStrategy } from "../../../filters/filter-algorithms/FilterResourceByViewStrategy";
 
 export default function ViewFilter({
     title = "Filter by available views",
@@ -20,6 +14,14 @@ export default function ViewFilter({
     const { knowledgeGraph } = useKGCtx();
 
     const resources = knowledgeGraph.getResources();
+
+    const initialFilterOptions = {
+        active: isActive,
+        filterCallback: filterAlgorithm,
+    };
+    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+    console.log("Filter VIEW retrieved filter", filter);
+
     const defaultAvailableViews = [];
     forEach(resources, (r) => {
         const patternInstances = r.patternInstances;
@@ -38,64 +40,19 @@ export default function ViewFilter({
         });
     });
 
-    const filterCallback = (resource) => {
-        // no view selected return every resource
-        if (
-            !some(availableViews, (view) => {
-                return view.checked === true;
-            })
-        ) {
-            return true;
-        }
-        if (
-            !resource.patternInstances ||
-            resource.patternInstances.length === 0
-        ) {
-            return false;
-        } else {
-            const checkedViewsUri = map(
-                lodashFilter(availableViews, (availableView) => {
-                    return availableView.checked === true;
-                }),
-                (checkedView) => {
-                    return checkedView.uri;
-                }
-            );
-            const patternInstancesViews = map(
-                resource.patternInstances,
-                (patternInstance) => {
-                    return patternInstance.type;
-                }
-            );
-            if (
-                // risorsa compare in almeno un istanza con il tipo tra i tipi selezionati
-                // e.g. selezion Pattern1, Pattern2
-                // risorsa deve comparire in almeno pattern_1 type Pattern1, pattern_2 type Pattern2
-                every(checkedViewsUri, (checkedView) => {
-                    return patternInstancesViews.includes(checkedView);
-                })
-            ) {
-                return true;
-            }
-        }
-    };
-    const initialFilterOptions = {
-        active: isActive,
-        filterCallback: filterCallback,
-    };
-
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
-
     const [availableViews, setAvailableViews] = useState(
         (filter && filter.getOption("availableViews")) || defaultAvailableViews
     );
+
+    const filterAlgorithm = FilterResourceByViewStrategy.create({
+        views: availableViews,
+    });
 
     useEffect(() => {
         if (filter) {
             setFilterOptions({
                 ...filter.options,
-                availableViews: availableViews,
-                filterCallback: filterCallback,
+                filterCallback: filterAlgorithm,
             });
         }
     }, [availableViews]);

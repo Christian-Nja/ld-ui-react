@@ -1,6 +1,7 @@
 import Pipe from "../classes/Pipe";
 import Filter from "../filters/Filter";
 import { map } from "lodash";
+import { DropResourceFromKnowledgeGraphStrategyDecorator } from "./DropResourceFromKnowledgeGraphStrategyDecorator";
 
 export default class KnowledgeGraphPipe {
     constructor(knowledgeGraph) {
@@ -11,26 +12,20 @@ export default class KnowledgeGraphPipe {
         return new KnowledgeGraphPipe(knowledgeGraph);
     }
     chain(filters) {
-        // encapsulate generic filter callbacks in a callback that when
-        // resource is discarded by filters drop it from knowledge graph
         const wrappedFilters = map(filters, (f) => {
             if (f.options.filterCallback) {
-                const genericFilterCallback = f.options.filterCallback;
                 return Filter.create({
                     id: f.id,
                     options: {
                         active: f.isActive(),
-                        filterCallback: (r) => {
-                            if (genericFilterCallback(r)) {
-                                return r;
-                            } else {
-                                this.knowledgeGraph.removeResource(r.getUri());
-                            }
-                        },
+                        filterCallback: new DropResourceFromKnowledgeGraphStrategyDecorator(
+                            f.options.filterCallback,
+                            this.knowledgeGraph
+                        ),
                     },
                 });
             } else {
-                return filter;
+                return f;
             }
         });
 

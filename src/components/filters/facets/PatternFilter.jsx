@@ -7,6 +7,9 @@ import { forEach } from "lodash";
 import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
 import useFilter from "../../../filters/FilterCtx/useFilter";
 
+import { FilterPatternByViewStrategy } from "../../../filters/filter-algorithms/FilterPatternByViewStrategy";
+import Filter from "../../../filters/Filter";
+
 PatternFilter.defaultProps = {
     id: "patternPie",
     options: {},
@@ -26,26 +29,7 @@ PatternFilter.defaultProps = {
  */
 export default function PatternFilter({ id = "patternPie" }) {
     const { knowledgeGraph } = useKGCtx();
-
     const patterns = knowledgeGraph.getPatterns();
-    console.log("Filter by Patterns");
-    console.log(patterns);
-
-    const filterCallback = (pattern) => {
-        if (
-            Number.parseInt(pattern.occurences) !== 0 &&
-            !filtered.includes(pattern.getUri())
-        ) {
-            return true;
-        }
-        return false;
-    };
-
-    const initialFilterOptions = {
-        active: false,
-        filterCallback: filterCallback,
-        isMounted: true,
-    };
 
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 
@@ -54,12 +38,18 @@ export default function PatternFilter({ id = "patternPie" }) {
     );
     const [hovered, setHovered] = useState(null);
 
+    const filterAlgorithm = FilterPatternByViewStrategy.create({ filtered });
+
+    const initialFilterOptions = {
+        active: false,
+        filterCallback: filterAlgorithm,
+    };
+
     useEffect(() => {
         if (filter) {
             setFilterOptions({
                 ...filter.options,
-                filtered: filtered,
-                filterCallback: filterCallback,
+                filterCallback: filterAlgorithm,
             });
         }
     }, [filtered]);

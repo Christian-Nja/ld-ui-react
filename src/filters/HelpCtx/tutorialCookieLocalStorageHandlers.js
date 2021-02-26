@@ -1,9 +1,9 @@
 const tutorialLocalStorageKey = "tutorial-key";
 
-export function safelyLoadTutorialCookieFromLocalStorage() {
+export function safelyLoadTutorialCookieFromLocalStorage(key) {
     try {
         const isFirstAccess = JSON.parse(
-            window.localStorage.getItem(tutorialLocalStorageKey)
+            window.localStorage.getItem(`${key}-${tutorialLocalStorageKey}`)
         );
 
         return isFirstAccess === null;
@@ -12,6 +12,9 @@ export function safelyLoadTutorialCookieFromLocalStorage() {
     }
 }
 
-export function saveFirstAccessToLocalStorage() {
-    window.localStorage.setItem(tutorialLocalStorageKey, JSON.stringify(false));
+export function saveFirstAccessToLocalStorage(key) {
+    window.localStorage.setItem(
+        `${key}-${tutorialLocalStorageKey}`,
+        JSON.stringify(false)
+    );
 }

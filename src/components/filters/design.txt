@@ -1,0 +1,26 @@
+TimeIntervalFilterGui() -> params rangeTime
+
+
+IFilter(options)  
+
+    isActive
+    filterCallback = IFilterAlgorithm
+
+    filter(node) {
+        filterCallback(node)
+        //filterAlgorithm.exec(node)
+    }
+     
+
+IFilterAlgorithm 
+    constructor(params)
+    +exec(node)
+     
+
+FilterPipe
+     IFilter.filter(node)    
+
+
+IFilterGui 
+IFilter
+

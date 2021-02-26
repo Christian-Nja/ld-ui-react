@@ -8,13 +8,14 @@ import PropertyFilter from "../components/filters/facets/PropertyFilter";
 import TimeIntervalFilter from "../components/filters/facets/TimeIntervalFilter";
 import MeasurementCountSliderFilter from "../components/filters/facets/MeasurementCountSliderFilter";
 import PartCountSliderFilter from "../components/filters/facets/PartCountSliderFilter";
-
 import hasResourceToFilter from "../components/filters/facets/hasResourceToFilter";
 import { useKGCtx } from "../knowledgegraph/KGCtx/useKGCtx";
 import { forEach, map } from "lodash";
 import AlertBox from "../components/KnowledgeGraph/AlertBox";
-import GoToButton from "../components/layout/GoToButton";
 import FiltersMountedController from "../components/filters/FiltersMountedController";
+import { Grid } from "semantic-ui-react";
+import Navbar from "../components/layout/Navbar";
+import PatternInstancesHelpBox from "../components/KnowledgeGraph/PatternInstancesHelpBox";
 
 export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
     const { knowledgeGraph } = useKGCtx();
@@ -95,64 +96,72 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
     if (thereIsTimeToFilter) mountedFilters.push("time");
     return (
         <ODPReactorContainer>
-            <GoToButton />
+            {/* <Navbar /> */}
             <AlertBox />
-            <PatternMenu showLayoutButton={false}>
-                {thereIsGeoLocationToFilter && (
-                    <GeoFilter
-                        title="Filter drawing location on a map"
-                        id="geo"
-                        description="Draw an area on the map and show only cultural properties inside it"
-                    />
-                )}
-                {thereIsTimeToFilter && (
-                    <TimeIntervalFilter
-                        title="Filter by time interval"
-                        id="time"
-                        description="This filter performs well with location type or geographic filter. Select an year or interval of time and a location. You will see only cultural properties located in a specific area at a certain period of time"
-                    />
-                )}
-                {thereAreTypeLocationsToFilter && (
-                    <PropertyFilter
-                        id="locationType"
-                        property="locationType"
-                        title="Filter by location type"
-                        description="Click on a slice to remove/show cultural properties with specified location type in the list. A grey color slice means cultural properties with given location type are not shown."
-                    />
-                )}
-                {thereArePartsToFilter && (
-                    <PartCountSliderFilter
-                        id="parts"
-                        title="Filter by number of parts"
-                        resourceProperty="parts"
-                        description="Tune this filter to show only cultural properties with number of components in the selected range"
-                    />
-                )}
-                {map(thereAreMeasurementToFilter, (m) => {
-                    console.log("Measure filter");
-                    console.log(m);
-                    return (
-                        <MeasurementSliderFilter
-                            id={m}
-                            title={`Filter by ${m}`}
-                            measurementType={m}
-                            description={`Tune this filter to show only cultural properties with ${m} in the selected range`}
+            <PatternInstancesHelpBox />
+            <Grid container stackable columns={2}>
+                <Grid.Column width={12}>
+                    <List list={filteredKnowledgeGraph.toList()} />
+                </Grid.Column>
+                <Grid.Column width={4}>
+                    <PatternMenu
+                        showLayoutButton={false}
+                        style={{ position: "absolute" }}
+                    >
+                        {thereIsGeoLocationToFilter && (
+                            <GeoFilter
+                                title="On a map"
+                                id="geo"
+                                description="Draw an area on the map to show only cultural properties located in that area."
+                            />
+                        )}
+                        {thereIsTimeToFilter && (
+                            <TimeIntervalFilter
+                                title="Time Interval"
+                                id="time"
+                                description="This filter performs well with location type or geographic filter. Select an year or interval of time and a location. You will see only cultural properties located in a specific area at a certain period of time"
+                            />
+                        )}
+                        {thereAreTypeLocationsToFilter && (
+                            <PropertyFilter
+                                id="locationType"
+                                property="locationType"
+                                title="Location Type"
+                                description="Click on a slice to remove/show cultural properties with the specified location type. A grey color slice means cultural properties with that location type are not shown."
+                            />
+                        )}
+                        {thereArePartsToFilter && (
+                            <PartCountSliderFilter
+                                id="parts"
+                                title="Number of parts"
+                                resourceProperty="parts"
+                                description="Tune this filter to show only cultural properties with their number of components in the selected range."
+                            />
+                        )}
+                        {map(thereAreMeasurementToFilter, (m) => {
+                            return (
+                                <MeasurementSliderFilter
+                                    id={m}
+                                    title={`${m}`}
+                                    measurementType={m}
+                                    description={`Tune this filter to show only cultural properties with ${m} in the selected range.`}
+                                />
+                            );
+                        })}
+                        {thereAreMeasurementToFilter.length !== 0 && (
+                            <MeasurementCountSliderFilter
+                                id="measurements"
+                                title="Number of measurements"
+                                description="Tune this filter to show only cultural properties with their number of collected measurements in the selected range."
+                            />
+                        )}
+                        <FiltersMountedController
+                            id="filter-flag"
+                            mountedFilters={mountedFilters}
                         />
-                    );
-                })}
-                {thereAreMeasurementToFilter.length !== 0 && (
-                    <MeasurementCountSliderFilter
-                        id="measurements"
-                        title="Filter by number of measurements"
-                        description="Tune this filter to show only cultural properties with number of collected measurements in the selected range"
-                    />
-                )}
-                <FiltersMountedController
-                    id="filter-flag"
-                    mountedFilters={mountedFilters}
-                />
-            </PatternMenu>
-            <List list={filteredKnowledgeGraph.toList()} />)
+                    </PatternMenu>
+                </Grid.Column>
+            </Grid>
         </ODPReactorContainer>
     );
 }

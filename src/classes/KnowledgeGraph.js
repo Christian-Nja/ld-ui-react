@@ -66,6 +66,23 @@ export default class KnowledgeGraph {
             return r.getType() === "Class";
         });
     }
+    getNeighbors(resourceURI) {
+        const rawNeighbours = this.graph.neighbors(resourceURI);
+        const neighbors = map(rawNeighbours, (n) => {
+            return this.getResource(n);
+        });
+        return neighbors;
+    }
+    getClassesNativeToPattern(patternUri) {
+        return filter(this.getNeighbors(patternUri), (patternNeighbor) => {
+            return patternNeighbor.getType() === "Class";
+        });
+    }
+    getPatternsByClassIsNativeTo(classUri) {
+        return filter(this.getNeighbors(classUri), (patternNeighbor) => {
+            return patternNeighbor.getType() === "Pattern";
+        });
+    }
     getProperty(uri) {
         try {
             const propertyAttributes = this.graph.getEdgeAttributes(uri);
@@ -87,6 +104,14 @@ export default class KnowledgeGraph {
             }
         };
         this.graph.forEachNode(wrappedPatternCallback);
+    }
+    forEachClass(callback = (resourceURI, attributes) => {}) {
+        const wrappedClassCallback = (resourceURI, attributes) => {
+            if (attributes && attributes.type === "Class") {
+                callback(resourceURI, attributes);
+            }
+        };
+        this.graph.forEachNode(wrappedClassCallback);
     }
     getResourceProperty(uri, property) {
         return this.graph.getNodeAttribute(uri, property);
@@ -163,6 +188,48 @@ export default class KnowledgeGraph {
                     stroke: resource.getProperty("nodeColor"), //g6 interface
                     fill: resource.getProperty("nodeBorderColor"), //g6 interface
                     cursor: "pointer",
+                    fillOpacity: 0.2,
+                },
+                stateStyles: {
+                    hover: {
+                        // show shadow
+                        fillOpacity: 0.2,
+                        shadowColor: resource.getProperty("nodeColor"),
+                        shadowBlur: 10,
+                    },
+                    highlight: {
+                        stroke: resource.getProperty("nodeColor"),
+                        fill: resource.getProperty("nodeColor"),
+                        shadowColor: resource.getProperty("nodeColor"),
+                        shadowBlur: 0.6,
+                        shadowOffsetX: 1,
+                        shadowOffsetY: 1,
+                    },
+                    clicked: {
+                        stroke: resource.getProperty("nodeColor"),
+                        fill: resource.getProperty("nodeColor"),
+                        fillOpacity: 0.6,
+                        shadowColor: resource.getProperty("nodeColor"),
+                        shadowBlur: 10,
+                    },
+                    active: {
+                        // this when clicked a neighbour
+                        stroke: resource.getProperty("nodeColor"),
+                        fill: resource.getProperty("nodeColor"),
+                        fillOpacity: 0.4,
+                        lineWidth: 3,
+                        shadowColor: resource.getProperty("nodeColor"),
+                        shadowBlur: 10,
+                    },
+                    selected: {
+                        // this when clicked the node
+                        stroke: resource.getProperty("nodeColor"),
+                        fill: resource.getProperty("nodeColor"),
+                        fillOpacity: 0.6,
+                        lineWidth: 6,
+                        shadowColor: resource.getProperty("nodeColor"),
+                        shadowBlur: 10,
+                    },
                 },
                 data: this.dataMapper.toJson(resource),
             };

@@ -11,7 +11,6 @@ import Measurement from "./measurements/Measurement";
 import ODPReactor from "./components/KnowledgeGraph/ODPReactor";
 import KnowledgeGraph from "./classes/KnowledgeGraph";
 import Resource from "./classes/Resource";
-import ColorGenerator from "./components/classes/ColorGenerator";
 import ResourceFactory from "./classes/ResourceFactory";
 import PatternsAndClassesPage from "./pages/PatternsAndClassesPage";
 import PatternInstancesPage from "./pages/PatternInstancesPage";
@@ -34,7 +33,6 @@ export {
     KG,
     ImageGrid,
     PropertyValueList,
-    ColorGenerator,
     ResourceFactory,
     PatternsAndClassesPage,
     PatternInstancesPage,

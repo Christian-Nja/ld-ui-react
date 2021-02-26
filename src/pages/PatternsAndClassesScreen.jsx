@@ -1,5 +1,6 @@
 import React from "react";
 import PatternMenu from "../components/layout/PatternMenu";
+import Navbar from "../components/layout/Navbar";
 import List from "../components/KnowledgeGraph/List";
 import ODPReactorContainer from "../components/layout/ODPReactorContainer";
 import { useLayoutCtx } from "../layout/LayoutCtx/useLayoutCtx";
@@ -10,8 +11,9 @@ import PatternFilter from "../components/filters/facets/PatternFilter";
 import OccurencesSliderFilter from "../components/filters/facets/OccurencesSliderFilter";
 import ClassCentralityMeasureFilter from "../components/filters/facets/ClassCentralityMeasureFilter";
 import FiltersMountedController from "../components/filters/FiltersMountedController";
+import { Grid } from "semantic-ui-react";
 
-import HelpBox from "../components/KnowledgeGraph/HelpBox";
+import GraphHelpBox from "../components/KnowledgeGraph/GraphHelpBox";
 
 export default function PatternsAndClassesScreen({ filteredKnowledgeGraph }) {
     const { layoutOptions } = useLayoutCtx();
@@ -20,42 +22,52 @@ export default function PatternsAndClassesScreen({ filteredKnowledgeGraph }) {
 
     return (
         <ODPReactorContainer>
+            {/* <Navbar /> */}
             <AlertBox />
-            <HelpBox />
-            <PatternMenu>
-                <PatternFilter
-                    title="Filter by view"
-                    id="patternPie"
-                    description="Click on a slice to remove nodes of that type by the graph/list. A grey color slice means nodes of that kind are not displayed"
-                />
-                <OccurencesSliderFilter
-                    title="Filter views by occurences"
-                    id="occurences"
-                    description="Tune this filter to show only views with number of occurences in the selected range"
-                />
-                <ClassCentralityMeasureFilter
-                    title="Filter concepts by relevance"
-                    id="centrality"
-                    description="The centrality of a concept is given by the highest interconnection with other concept. Tune this filter to show only views with importance score in the selected range"
-                />
-                <FiltersMountedController
-                    id="filter-flag"
-                    mountedFilters={[
-                        "centrality",
-                        "occurences",
-                        "patternPie",
-                        "search",
-                    ]}
-                />
-            </PatternMenu>
-            {layoutOptions.layout === "list" && kg && (
-                <List list={filteredKnowledgeGraph.toList()} title="Views" /> // queste pagine dovrebbero andare fuori dalla lib
-            )}
-            {kg && (
-                <VisualGraph
-                    visualGraph={filteredKnowledgeGraph.toVisualGraph()}
-                />
-            )}
+            <GraphHelpBox />
+            <Grid container stackable columns={2}>
+                <Grid.Column width={12}>
+                    {layoutOptions.layout === "list" && kg && (
+                        <List
+                            list={filteredKnowledgeGraph.toList()}
+                            title="Views"
+                        /> // queste pagine dovrebbero andare fuori dalla lib
+                    )}
+                    {kg && (
+                        <VisualGraph
+                            visualGraph={filteredKnowledgeGraph.toVisualGraph()}
+                        />
+                    )}
+                </Grid.Column>
+                <Grid.Column width={4}>
+                    <PatternMenu>
+                        <PatternFilter
+                            title="View"
+                            id="patternPie"
+                            description="Click on a slice to remove views (diamonds) of the specified type. A grey color slice means the views of that type and all related concepts are not shown."
+                        />
+                        <OccurencesSliderFilter
+                            title="View occurences"
+                            id="occurences"
+                            description="Tune this filter to show only views with the number of occurences in the selected range"
+                        />
+                        <ClassCentralityMeasureFilter
+                            title="Concept relevance"
+                            id="centrality"
+                            description="Tune this filter to show concepts with an importance score in the selected range. The importance score is computed as the number of associated entities in the knowledge graph, normalized into 0-1. By default one key concept per view is shown."
+                        />
+                        <FiltersMountedController
+                            id="filter-flag"
+                            mountedFilters={[
+                                "centrality",
+                                "occurences",
+                                "patternPie",
+                                "search",
+                            ]}
+                        />
+                    </PatternMenu>
+                </Grid.Column>
+            </Grid>
         </ODPReactorContainer>
     );
 }

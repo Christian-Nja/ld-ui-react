@@ -12,6 +12,7 @@ import {
 
 import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
 import { Icon } from "semantic-ui-react";
+import { FilterSearchBarStrategy } from "../../../filters/filter-algorithms/FilterSearchBarStrategy";
 
 const stringSimilarity = require("string-similarity");
 
@@ -34,6 +35,15 @@ export default function SearchBarFilter({
 }) {
     const { knowledgeGraph } = useKGCtx();
     const resources = knowledgeGraph.getResources();
+
+    const initialFilterOptions = {
+        active: true,
+        filterCallback: filterAlgorithm,
+    };
+    const { filter, setFilterOptions } = useNonPersistentFilter(
+        id,
+        initialFilterOptions
+    );
 
     const [search, setSearch] = useState(
         (filter && filter.getOption("search")) || ""
@@ -80,31 +90,10 @@ export default function SearchBarFilter({
         filteredResources = resources;
     }
 
-    const filterCallback = (pattern) => {
-        if (search === "") {
-            return true;
-        }
-        if (search !== "") {
-            if (
-                find(filteredResources, (f) => {
-                    return f.getUri() === pattern.getUri();
-                })
-            ) {
-                return true;
-            }
-            // const sorted = orderBy(filtered, (x) => index[x.id], ["desc"]);
-        }
-    };
-
-    const initialFilterOptions = {
-        active: true,
-        filterCallback: filterCallback,
-        isMounted: true,
-    };
-    const { filter, setFilterOptions } = useNonPersistentFilter(
-        id,
-        initialFilterOptions
-    );
+    const filterAlgorithm = FilterSearchBarStrategy.create({
+        search,
+        filteredResources,
+    });
 
     useEffect(() => {
         // set a delay after a user modify input before updating filtering
@@ -114,8 +103,7 @@ export default function SearchBarFilter({
                 setFilterOptions({
                     ...filter.options,
                     active: true,
-                    search: search,
-                    filterCallback: filterCallback,
+                    filterCallback: filterAlgorithm,
                 });
             }
         }, 400);
@@ -127,7 +115,7 @@ export default function SearchBarFilter({
     };
 
     return (
-        <div>
+        <div className="search-component">
             <Icon name="search" className="search-icon"></Icon>
             <input
                 className="search-item"
