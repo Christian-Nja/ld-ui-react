@@ -10,6 +10,8 @@ export default function PatternsAndClassesPage({
     knowledgeGraph,
     knowledgeGraphUri,
 }) {
+    console.log("Pattern and classes page importing semantic ui!");
+
     return (
         <KGCtxProvider
             knowledgeGraph={knowledgeGraph}

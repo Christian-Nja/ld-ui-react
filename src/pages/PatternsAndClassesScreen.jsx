@@ -41,11 +41,11 @@ export default function PatternsAndClassesScreen({ filteredKnowledgeGraph }) {
                 </Grid.Column>
                 <Grid.Column width={4}>
                     <PatternMenu>
-                        <PatternFilter
+                        {/* <PatternFilter
                             title="View"
                             id="patternPie"
                             description="Click on a slice to remove views (diamonds) of the specified type. A grey color slice means the views of that type and all related concepts are not shown."
-                        />
+                        /> */}
                         <OccurencesSliderFilter
                             title="View occurences"
                             id="occurences"

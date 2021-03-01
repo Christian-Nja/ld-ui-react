@@ -20,7 +20,7 @@ export default function AlertCtxProvider({ children }) {
 
         const showAlert = (/*message*/) => {
             setAlert({
-                switch: context.alert ? !context.alert.switch : true,
+                switch: alert ? !alert.switch : true,
                 active: true,
                 // message: message,
             });
