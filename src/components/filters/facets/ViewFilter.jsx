@@ -20,7 +20,6 @@ export default function ViewFilter({
         filterCallback: filterAlgorithm,
     };
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
-    console.log("Filter VIEW retrieved filter", filter);
 
     const defaultAvailableViews = [];
     forEach(resources, (r) => {
@@ -41,7 +40,7 @@ export default function ViewFilter({
     });
 
     const [availableViews, setAvailableViews] = useState(
-        (filter && filter.getOption("availableViews")) || defaultAvailableViews
+        (filter && filter.getOption("views")) || defaultAvailableViews
     );
 
     const filterAlgorithm = FilterResourceByViewStrategy.create({

@@ -30,6 +30,7 @@ export default function PropertyFilter({ id = "pie", property = "id" }) {
     const { knowledgeGraph } = useKGCtx();
 
     const resources = knowledgeGraph.getResources();
+    console.log(resources);
 
     const initialFilterOptions = {
         active: false,

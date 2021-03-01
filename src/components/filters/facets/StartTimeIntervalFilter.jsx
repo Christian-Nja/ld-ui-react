@@ -4,7 +4,7 @@ import SliderFilter from "./SliderFilter";
 import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
 import useFilter from "../../../filters/FilterCtx/useFilter";
 
-import { FilterTimeIntervalStrategy } from "../../../filters/filter-algorithms/FilterTimeIntervalStrategy";
+import { FilterStartTimeStrategy } from "../../../filters/filter-algorithms/FilterStartTimeStrategy";
 
 /**
  * node {
@@ -26,7 +26,7 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
     const resources = knowledgeGraph.getResources();
 
     const initialFilterOptions = {
-        active: false,
+        active: true,
         filterCallback: filterAlgorithm,
     };
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
@@ -35,10 +35,12 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
     const initialRange = useMemo(() => findTimeDomain(resources), [resources]);
 
     const [range, setRange] = useState(
-        (filter && filter.getOption("range")) || initialRange
+        (filter && filter.getOption("range")) || [initialRange[0]]
     );
 
-    const filterAlgorithm = FilterTimeIntervalStrategy.create({ range });
+    const filterAlgorithm = FilterStartTimeStrategy.create({
+        startTime: range[0],
+    });
 
     useEffect(() => {
         if (filter) {

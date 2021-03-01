@@ -3,6 +3,7 @@ import { every, some, map, filter as lodashFilter } from "lodash";
 export class FilterResourceByViewStrategy {
     constructor(views) {
         this.views = views;
+        this.class = this.constructor.name;
     }
     static create({ views }) {
         if (!views) return undefined;

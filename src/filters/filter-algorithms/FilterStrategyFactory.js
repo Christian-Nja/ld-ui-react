@@ -5,6 +5,10 @@ import { FilterOnMapStrategy } from "./FilterOnMapStrategy";
 import { FilterResourceByViewStrategy } from "./FilterResourceByViewStrategy";
 import { FilterTimeIntervalStrategy } from "./FilterTimeIntervalStrategy";
 import { FilterResourceByPropertyStrategy } from "./FilterResourceByPropertyStrategy";
+import { FilterPatternStrategy } from "./FilterPatternStrategy";
+import { FilterLocationTypeStrategy } from "./FilterLocationTypeStrategy";
+import { FilterStartTimeStrategy } from "./FilterStartTimeStrategy";
+import { FilterEndTimeStrategy } from "./FilterEndTimeStrategy";
 
 // we use this class
 // when unserializing strategy by session storage
@@ -40,6 +44,14 @@ export class FilterStrategyFactory {
                 return FilterResourceByPropertyStrategy.create({
                     ...strategyDTO,
                 });
+            case "FilterPatternStrategy":
+                return FilterPatternStrategy.create({ ...strategyDTO });
+            case "FilterLocationTypeStrategy":
+                return FilterLocationTypeStrategy.create({ ...strategyDTO });
+            case "FilterStartTimeStrategy":
+                return FilterStartTimeStrategy.create({ ...strategyDTO });
+            case "FilterEndTimeStrategy":
+                return FilterEndTimeStrategy.create({ ...strategyDTO });
         }
         return undefined;
     }

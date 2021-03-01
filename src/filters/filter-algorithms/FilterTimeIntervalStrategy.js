@@ -19,7 +19,7 @@ export class FilterTimeIntervalStrategy {
     }
     filter(resource) {
         if (!resource.startTime && !resource.endTime) {
-            return false;
+            return true;
         } else if (!resource.startTime) {
             if (
                 this.range[rangeEnum.MIN] >= initialTime &&

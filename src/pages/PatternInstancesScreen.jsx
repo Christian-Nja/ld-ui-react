@@ -17,6 +17,9 @@ import { Grid } from "semantic-ui-react";
 import Navbar from "../components/layout/Navbar";
 import GoToButton from "../components/layout/GoToButton";
 import PatternInstancesHelpBox from "../components/KnowledgeGraph/PatternInstancesHelpBox";
+import LocationTypeFilter from "../components/filters/facets/LocationTypeFilter";
+import StartTimeIntervalFilter from "../components/filters/facets/StartTimeIntervalFilter";
+import EndTimeIntervalFilter from "../components/filters/facets/EndTimeIntervalFilter";
 
 export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
     const { knowledgeGraph } = useKGCtx();
@@ -125,15 +128,29 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                                 description="Draw an area on the map to show only cultural properties located in that area."
                             />
                         )}
-                        {thereIsTimeToFilter && (
+                        {/* {thereIsTimeToFilter && (
                             <TimeIntervalFilter
                                 title="Time Interval"
                                 id="time"
                                 description="This filter performs well with location type or geographic filter. Select an year or interval of time and a location. You will see only cultural properties located in a specific area at a certain period of time"
                             />
+                        )} */}
+                        {thereIsTimeToFilter && (
+                            <StartTimeIntervalFilter
+                                title="Start Time"
+                                id="startTime"
+                                description="This filter performs well with location type or geographic filter. Select an year or interval of time and a location. You will see only cultural properties located in a specific area at a certain period of time"
+                            />
+                        )}
+                        {thereIsTimeToFilter && (
+                            <EndTimeIntervalFilter
+                                title="End Time"
+                                id="endTime"
+                                description="This filter performs well with location type or geographic filter. Select an year or interval of time and a location. You will see only cultural properties located in a specific area at a certain period of time"
+                            />
                         )}
                         {thereAreTypeLocationsToFilter && (
-                            <PropertyFilter
+                            <LocationTypeFilter
                                 id="locationType"
                                 property="locationType"
                                 title="Location Type"

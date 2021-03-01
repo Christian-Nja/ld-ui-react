@@ -2,38 +2,46 @@ import React, { useState, useEffect } from "react";
 import ViewController from "../../KnowledgeGraph/ViewController";
 import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
 import useFilter from "../../../filters/FilterCtx/useFilter";
-import { forEach, clone, map } from "lodash";
-import { FilterPatternStrategy } from "../../../filters/filter-algorithms/FilterPatternStrategy";
+import { forEach, clone, some } from "lodash";
+import { FilterLocationTypeStrategy } from "../../../filters/filter-algorithms/FilterLocationTypeStrategy";
 
-export default function PatternFilter({ id = "patternPie", isActive = false }) {
-    // get knowledge graph and resources to analyze
+export default function LocationTypeFilter({
+    id = "locationType",
+    isActive = false,
+}) {
     const { knowledgeGraph } = useKGCtx();
-    const patterns = knowledgeGraph.getPatterns();
 
-    // set default filter options
+    const resources = knowledgeGraph.getResources();
+
     const initialFilterOptions = {
         active: isActive,
         filterCallback: filterAlgorithm,
     };
-    // get filter component or create it for the first time
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 
-    // compute initial arguments for filter
-    const defaultCheckboxItemPatterns = map(patterns, (p) => {
-        return { uri: p.uri, checked: false, label: p.label };
+    const defaultLocations = [];
+    forEach(resources, (r) => {
+        if (
+            !some(defaultLocations, (loc) => {
+                return loc.label === r.locationType;
+            })
+        ) {
+            defaultLocations.push({
+                uri: r.locationType,
+                label: r.locationType,
+                checked: false,
+            });
+        }
     });
 
-    // set as state first argument for filter
-    const [checkboxItemPatterns, setCheckboxItemPatterns] = useState(
-        (filter && filter.getOption("patterns")) || defaultCheckboxItemPatterns
+    const [locations, setLocations] = useState(
+        (filter && filter.getOption("locations")) || defaultLocations
     );
 
-    // create filter strategy based on first calculated or saved arguments
-    const filterAlgorithm = FilterPatternStrategy.create({
-        patterns: checkboxItemPatterns,
+    const filterAlgorithm = FilterLocationTypeStrategy.create({
+        locations: locations,
     });
 
-    // update filter when arguments change
     useEffect(() => {
         if (filter) {
             setFilterOptions({
@@ -41,7 +49,7 @@ export default function PatternFilter({ id = "patternPie", isActive = false }) {
                 filterCallback: filterAlgorithm,
             });
         }
-    }, [checkboxItemPatterns]);
+    }, [locations]);
 
     return (
         <div style={{ marginLeft: 40, marginTop: 20 }}>
@@ -52,7 +60,7 @@ export default function PatternFilter({ id = "patternPie", isActive = false }) {
                     },
                     checkboxLabel: {
                         fontSize: 20,
-                        marginLeft: 0,
+                        marginLeft: 10,
                         cursor: "pointer",
                     },
                     checkboxButton: {
@@ -61,18 +69,18 @@ export default function PatternFilter({ id = "patternPie", isActive = false }) {
                         cursor: "pointer",
                     },
                 }}
-                availableViews={checkboxItemPatterns}
+                availableViews={locations}
                 onViewConfigurationChange={(
                     clickedViewUri,
                     clickedViewState
                 ) => {
-                    const newCheckboxItemPatterns = clone(checkboxItemPatterns);
-                    forEach(checkboxItemPatterns, (checkboxItem) => {
-                        if (checkboxItem.uri === clickedViewUri) {
-                            checkboxItem.checked = clickedViewState;
+                    const newLocations = clone(locations);
+                    forEach(newLocations, (location) => {
+                        if (location.uri === clickedViewUri) {
+                            location.checked = clickedViewState;
                         }
                     });
-                    setCheckboxItemPatterns(newCheckboxItemPatterns);
+                    setLocations(newLocations);
                 }}
             />
         </div>
