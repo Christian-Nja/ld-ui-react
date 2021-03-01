@@ -5,7 +5,7 @@ export class FilterResourceByViewStrategy {
         this.views = views;
     }
     static create({ views }) {
-        console.log("Creating strategy VIEWS:", views);
+        if (!views) return undefined;
         return new FilterResourceByViewStrategy(views);
     }
     filter(resource) {

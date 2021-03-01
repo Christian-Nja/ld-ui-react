@@ -14,6 +14,8 @@ export class FilterIntervalStrategy {
         this.class = this.constructor.name;
     }
     static create({ resourceProperty, range, resourceType }) {
+        console.log("FilterCallback interval params:", resourceProperty, range);
+        if (!resourceProperty || !range) return undefined;
         return new FilterIntervalStrategy(
             resourceProperty,
             range,

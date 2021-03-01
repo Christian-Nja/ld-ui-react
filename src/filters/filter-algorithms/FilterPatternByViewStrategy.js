@@ -7,6 +7,7 @@ export class FilterPatternByViewStrategy {
         this.class = this.constructor.name;
     }
     static create({ filtered }) {
+        if (!filtered) return undefined;
         return new FilterPatternByViewStrategy(filtered);
     }
     // you can pass a type to the strategy

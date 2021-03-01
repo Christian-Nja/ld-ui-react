@@ -52,7 +52,7 @@ export default function PatternMenu({
                             fontSize: 18,
                         }}
                     >
-                        <Icon name="search" className="filters-icon" />
+                        <Icon name="filter" className="filters-icon" />
                         <div
                             className={`menu-main-title ${"menu-main-open"} filters-title`}
                         >

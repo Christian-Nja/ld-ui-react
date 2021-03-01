@@ -15,6 +15,7 @@ import AlertBox from "../components/KnowledgeGraph/AlertBox";
 import FiltersMountedController from "../components/filters/FiltersMountedController";
 import { Grid } from "semantic-ui-react";
 import Navbar from "../components/layout/Navbar";
+import GoToButton from "../components/layout/GoToButton";
 import PatternInstancesHelpBox from "../components/KnowledgeGraph/PatternInstancesHelpBox";
 
 export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
@@ -96,6 +97,15 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
     if (thereIsTimeToFilter) mountedFilters.push("time");
     return (
         <ODPReactorContainer>
+            <GoToButton
+                style={{
+                    background: "#6c7ae0",
+                    width: "fit-content",
+                    position: "absolute",
+                    padding: 15,
+                    marginTop: 14,
+                }}
+            />
             {/* <Navbar /> */}
             <AlertBox />
             <PatternInstancesHelpBox />
