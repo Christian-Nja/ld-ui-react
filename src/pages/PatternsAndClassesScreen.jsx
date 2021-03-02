@@ -8,7 +8,8 @@ import VisualGraph from "../components/KnowledgeGraph/VisualGraph";
 import AlertBox from "../components/KnowledgeGraph/AlertBox";
 
 import PatternFilter from "../components/filters/facets/PatternFilter";
-import OccurencesSliderFilter from "../components/filters/facets/OccurencesSliderFilter";
+import LeftOccurencesSliderFilter from "../components/filters/facets/LeftOccurencesSliderFilter";
+import RightOccurencesSliderFilter from "../components/filters/facets/RightOccurencesSliderFilter";
 import ClassCentralityMeasureFilter from "../components/filters/facets/ClassCentralityMeasureFilter";
 import FiltersMountedController from "../components/filters/FiltersMountedController";
 import { Grid } from "semantic-ui-react";
@@ -46,9 +47,14 @@ export default function PatternsAndClassesScreen({ filteredKnowledgeGraph }) {
                             id="patternPie"
                             description="Click on a slice to remove views (diamonds) of the specified type. A grey color slice means the views of that type and all related concepts are not shown."
                         />
-                        <OccurencesSliderFilter
-                            title="View occurences"
-                            id="occurences"
+                        <LeftOccurencesSliderFilter
+                            title="Min occurences"
+                            id="leftOccurences"
+                            description="Tune this filter to show only views with the number of occurences in the selected range"
+                        />
+                        <RightOccurencesSliderFilter
+                            title="Max occurences"
+                            id="rightOccurences"
                             description="Tune this filter to show only views with the number of occurences in the selected range"
                         />
                         <ClassCentralityMeasureFilter

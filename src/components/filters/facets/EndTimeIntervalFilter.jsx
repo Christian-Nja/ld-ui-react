@@ -35,7 +35,7 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
     const initialRange = useMemo(() => findTimeDomain(resources), [resources]);
 
     const [range, setRange] = useState(
-        (filter && filter.getOption("range")) || [initialRange[1]]
+        [filter && filter.getOption("endTime")] || [initialRange[1]]
     );
 
     const filterAlgorithm = FilterEndTimeStrategy.create({ endTime: range[0] });

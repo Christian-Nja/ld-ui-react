@@ -3,9 +3,9 @@ import useFilter from "../../../filters/FilterCtx/useFilter";
 import SliderFilter from "./SliderFilter";
 
 import findSliderDomain from "./findSliderDomain";
-import { FilterIntervalStrategy } from "../../../filters/filter-algorithms/FilterIntervalStrategy";
+import { FilterMaxValueStrategy } from "../../../filters/filter-algorithms/FilterMaxValueStrategy";
 
-export default function GenericSliderFilter({
+export default function RightGenericSliderFilter({
     id = "genericSlider",
     resourceProperty,
     resources = [],
@@ -24,13 +24,14 @@ export default function GenericSliderFilter({
 
     const initialRange = findSliderDomain(resources, resourceProperty);
     const [range, setRange] = useState(
-        (filter && filter.getOption("range")) || defaultRange || initialRange
+        [filter && filter.getOption("maxValue")] ||
+            defaultRange || [initialRange[1]]
     );
 
-    const filterAlgorithm = FilterIntervalStrategy.create({
+    const filterAlgorithm = FilterMaxValueStrategy.create({
         resourceProperty,
         resourceType: resourceTypeFilterHasEffectOn,
-        range,
+        maxValue: range[0],
     });
 
     useEffect(() => {
@@ -52,6 +53,7 @@ export default function GenericSliderFilter({
             setRange={setRange}
             domain={initialRange}
             formatTicks={formatTicks}
+            reversed={true}
         />
     );
 }

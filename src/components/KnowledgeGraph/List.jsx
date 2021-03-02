@@ -204,8 +204,8 @@ export default function List({
                     onClick={scrollToTop}
                     style={{
                         position: "absolute",
-                        right: -50,
-                        top: 400,
+                        left: -50,
+                        top: 380,
                         cursor: "pointer",
                     }}
                 >

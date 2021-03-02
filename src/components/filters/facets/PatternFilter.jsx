@@ -5,7 +5,7 @@ import useFilter from "../../../filters/FilterCtx/useFilter";
 import { forEach, clone, map } from "lodash";
 import { FilterPatternStrategy } from "../../../filters/filter-algorithms/FilterPatternStrategy";
 
-export default function PatternFilter({ id = "patternPie", isActive = false }) {
+export default function PatternFilter({ id = "patternPie", isActive = true }) {
     // get knowledge graph and resources to analyze
     const { knowledgeGraph } = useKGCtx();
     const patterns = knowledgeGraph.getPatterns();

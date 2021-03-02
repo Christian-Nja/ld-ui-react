@@ -3,11 +3,12 @@ import PatternMenu from "../components/layout/PatternMenu";
 import List from "../components/KnowledgeGraph/List";
 import ODPReactorContainer from "../components/layout/ODPReactorContainer";
 import GeoFilter from "../components/filters/facets/GeoFilter";
-import MeasurementSliderFilter from "../components/filters/facets/MeasurementSliderFilter";
-import PropertyFilter from "../components/filters/facets/PropertyFilter";
-import TimeIntervalFilter from "../components/filters/facets/TimeIntervalFilter";
-import MeasurementCountSliderFilter from "../components/filters/facets/MeasurementCountSliderFilter";
-import PartCountSliderFilter from "../components/filters/facets/PartCountSliderFilter";
+import MinMeasurementSliderFilter from "../components/filters/facets/MinMeasurementSliderFilter";
+import MaxMeasurementSliderFilter from "../components/filters/facets/MaxMeasurementSliderFilter";
+import MaxMeasurementCountSliderFilter from "../components/filters/facets/MaxMeasurementCountSliderFilter";
+import MinMeasurementCountSliderFilter from "../components/filters/facets/MinMeasurementCountSliderFilter";
+import MinPartCountSliderFilter from "../components/filters/facets/MinPartCountSliderFilter";
+import MaxPartCountSliderFilter from "../components/filters/facets/MaxPartCountSliderFilter";
 import hasResourceToFilter from "../components/filters/facets/hasResourceToFilter";
 import { useKGCtx } from "../knowledgegraph/KGCtx/useKGCtx";
 import { forEach, map } from "lodash";
@@ -20,6 +21,7 @@ import PatternInstancesHelpBox from "../components/KnowledgeGraph/PatternInstanc
 import LocationTypeFilter from "../components/filters/facets/LocationTypeFilter";
 import StartTimeIntervalFilter from "../components/filters/facets/StartTimeIntervalFilter";
 import EndTimeIntervalFilter from "../components/filters/facets/EndTimeIntervalFilter";
+import { SwitcherTwoTone } from "@ant-design/icons";
 
 export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
     const { knowledgeGraph } = useKGCtx();
@@ -72,8 +74,10 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
         "diameter",
         "thickness",
     ];
-    const thereAreMeasurementToFilter = [];
+
+    const measurementFilters = [];
     forEach(measurementSet, (m) => {
+        const iterator = ["minValue", "maxValue"];
         const thereIsMeasureToFilter = hasResourceToFilter(
             resources,
             (resource) => {
@@ -85,19 +89,33 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
             }
         );
         if (thereIsMeasureToFilter) {
-            thereAreMeasurementToFilter.push(m);
+            forEach(iterator, (i) => {
+                switch (i) {
+                    case "minValue":
+                        measurementFilters.push(
+                            <MinMeasurementSliderFilter
+                                id={`min-${m}`}
+                                title={`Min ${m}`}
+                                measurementType={m}
+                                description={`Tune this filter to show only cultural properties with min ${m}.`}
+                            />
+                        );
+                        break;
+                    case "maxValue":
+                        measurementFilters.push(
+                            <MaxMeasurementSliderFilter
+                                id={`max-${m}`}
+                                title={`Max ${m}`}
+                                measurementType={m}
+                                description={`Tune this filter to show only cultural properties with max ${m}.`}
+                            />
+                        );
+                        break;
+                }
+            });
         }
     });
 
-    const mountedFilters = ["search"];
-
-    if (thereIsGeoLocationToFilter) mountedFilters.push("geo");
-    thereAreMeasurementToFilter.forEach((m) => mountedFilters.push(m));
-    if (thereAreMeasurementToFilter.length > 0)
-        mountedFilters.push("measurements");
-    if (thereArePartsToFilter) mountedFilters.push("parts");
-    if (thereAreTypeLocationsToFilter) mountedFilters.push("locationType");
-    if (thereIsTimeToFilter) mountedFilters.push("time");
     return (
         <ODPReactorContainer>
             <GoToButton
@@ -128,13 +146,6 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                                 description="Draw an area on the map to show only cultural properties located in that area."
                             />
                         )}
-                        {/* {thereIsTimeToFilter && (
-                            <TimeIntervalFilter
-                                title="Time Interval"
-                                id="time"
-                                description="This filter performs well with location type or geographic filter. Select an year or interval of time and a location. You will see only cultural properties located in a specific area at a certain period of time"
-                            />
-                        )} */}
                         {thereIsTimeToFilter && (
                             <StartTimeIntervalFilter
                                 title="Start Time"
@@ -158,34 +169,39 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                             />
                         )}
                         {thereArePartsToFilter && (
-                            <PartCountSliderFilter
-                                id="parts"
-                                title="Number of parts"
+                            <MinPartCountSliderFilter
+                                id="minParts"
+                                title="Min Parts"
                                 resourceProperty="parts"
                                 description="Tune this filter to show only cultural properties with their number of components in the selected range."
                             />
                         )}
-                        {map(thereAreMeasurementToFilter, (m) => {
-                            return (
-                                <MeasurementSliderFilter
-                                    id={m}
-                                    title={`${m}`}
-                                    measurementType={m}
-                                    description={`Tune this filter to show only cultural properties with ${m} in the selected range.`}
-                                />
-                            );
-                        })}
-                        {thereAreMeasurementToFilter.length !== 0 && (
-                            <MeasurementCountSliderFilter
-                                id="measurements"
-                                title="Number of measurements"
+                        {thereArePartsToFilter && (
+                            <MaxPartCountSliderFilter
+                                id="maxParts"
+                                title="Max Parts"
+                                resourceProperty="parts"
+                                description="Tune this filter to show only cultural properties with their number of components in the selected range."
+                            />
+                        )}
+                        {measurementFilters.length !== 0 &&
+                            map(measurementFilters, (m) => {
+                                return m;
+                            })}
+                        {measurementFilters.length !== 0 && (
+                            <MinMeasurementCountSliderFilter
+                                id="minMeasurements"
+                                title="Min measurements"
                                 description="Tune this filter to show only cultural properties with their number of collected measurements in the selected range."
                             />
                         )}
-                        <FiltersMountedController
-                            id="filter-flag"
-                            mountedFilters={mountedFilters}
-                        />
+                        {measurementFilters.length !== 0 && (
+                            <MaxMeasurementCountSliderFilter
+                                id="maxMeasurements"
+                                title="Max measurements"
+                                description="Tune this filter to show only cultural properties with their number of collected measurements in the selected range."
+                            />
+                        )}
                     </PatternMenu>
                 </Grid.Column>
             </Grid>

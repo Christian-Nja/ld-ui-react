@@ -9,6 +9,8 @@ import { FilterPatternStrategy } from "./FilterPatternStrategy";
 import { FilterLocationTypeStrategy } from "./FilterLocationTypeStrategy";
 import { FilterStartTimeStrategy } from "./FilterStartTimeStrategy";
 import { FilterEndTimeStrategy } from "./FilterEndTimeStrategy";
+import { FilterMaxValueStrategy } from "./FilterMaxValueStrategy";
+import { FilterMinValueStrategy } from "./FilterMinValueStrategy";
 
 // we use this class
 // when unserializing strategy by session storage
@@ -52,6 +54,10 @@ export class FilterStrategyFactory {
                 return FilterStartTimeStrategy.create({ ...strategyDTO });
             case "FilterEndTimeStrategy":
                 return FilterEndTimeStrategy.create({ ...strategyDTO });
+            case "FilterMaxValueStrategy":
+                return FilterMaxValueStrategy.create({ ...strategyDTO });
+            case "FilterMinValueStrategy":
+                return FilterMinValueStrategy.create({ ...strategyDTO });
         }
         return undefined;
     }
