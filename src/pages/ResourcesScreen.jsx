@@ -3,9 +3,7 @@ import PatternMenu from "../components/layout/PatternMenu";
 import List from "../components/KnowledgeGraph/List";
 import ODPReactorContainer from "../components/layout/ODPReactorContainer";
 import AlertBox from "../components/KnowledgeGraph/AlertBox";
-import FiltersMountedController from "../components/filters/FiltersMountedController";
 import ViewFilter from "../components/filters/facets/ViewFilter";
-import Navbar from "../components/layout/Navbar";
 import GoToButton from "../components/layout/GoToButton";
 import { Grid } from "semantic-ui-react";
 import ClassInstancesHelpBox from "../components/KnowledgeGraph/ClassInstancesHelpBox";
@@ -41,10 +39,6 @@ export default function ResourcesScreen({ filteredKnowledgeGraph }) {
                             id="viewFilter"
                             title="Resource View"
                             description="Show only resources that are associated with the selected view."
-                        />
-                        <FiltersMountedController
-                            id="filter-flag"
-                            mountedFilters={["viewFilter"]}
                         />
                     </PatternMenu>
                 </Grid.Column>

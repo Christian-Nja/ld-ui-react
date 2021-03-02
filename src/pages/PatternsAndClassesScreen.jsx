@@ -11,7 +11,6 @@ import PatternFilter from "../components/filters/facets/PatternFilter";
 import LeftOccurencesSliderFilter from "../components/filters/facets/LeftOccurencesSliderFilter";
 import RightOccurencesSliderFilter from "../components/filters/facets/RightOccurencesSliderFilter";
 import ClassCentralityMeasureFilter from "../components/filters/facets/ClassCentralityMeasureFilter";
-import FiltersMountedController from "../components/filters/FiltersMountedController";
 import { Grid } from "semantic-ui-react";
 
 import GraphHelpBox from "../components/KnowledgeGraph/GraphHelpBox";
@@ -61,15 +60,6 @@ export default function PatternsAndClassesScreen({ filteredKnowledgeGraph }) {
                             title="Concept relevance"
                             id="centrality"
                             description="Tune this filter to show concepts with an importance score in the selected range. The importance score is computed as the number of associated entities in the knowledge graph, normalized into 0-1. By default one key concept per view is shown."
-                        />
-                        <FiltersMountedController
-                            id="filter-flag"
-                            mountedFilters={[
-                                "centrality",
-                                "occurences",
-                                "patternPie",
-                                "search",
-                            ]}
                         />
                     </PatternMenu>
                 </Grid.Column>
