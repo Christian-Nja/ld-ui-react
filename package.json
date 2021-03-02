@@ -24,7 +24,9 @@
             "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/.mocks/fileMock.js",
             "\\.(css|less)$": "<rootDir>/.mocks/styleMock.js"
         },
-	"setupFilesAfterEnv": ["mock-local-storage"]
+        "setupFilesAfterEnv": [
+            "mock-local-storage"
+        ]
     },
     "lint-staged": {
         "*.js": [
@@ -84,6 +86,7 @@
         "leaflet.markercluster": "^1.4.1",
         "lodash": "^4.17.20",
         "lodash-contrib": "^4.1200.1",
+        "nanoid": "^3.1.20",
         "overlapping-marker-spiderfier-leaflet": "^0.2.7",
         "pondjs": "^0.8.9",
         "prop-types": "^15.7.2",

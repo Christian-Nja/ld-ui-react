@@ -3,9 +3,10 @@ import { every, some, map, filter as lodashFilter } from "lodash";
 export class FilterResourceByViewStrategy {
     constructor(views) {
         this.views = views;
+        this.class = this.constructor.name;
     }
     static create({ views }) {
-        console.log("Creating strategy VIEWS:", views);
+        if (!views) return undefined;
         return new FilterResourceByViewStrategy(views);
     }
     filter(resource) {

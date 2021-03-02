@@ -14,6 +14,7 @@ export class FilterIntervalStrategy {
         this.class = this.constructor.name;
     }
     static create({ resourceProperty, range, resourceType }) {
+        if (!resourceProperty || !range) return undefined;
         return new FilterIntervalStrategy(
             resourceProperty,
             range,

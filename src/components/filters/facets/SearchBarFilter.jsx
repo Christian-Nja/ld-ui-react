@@ -46,7 +46,7 @@ export default function SearchBarFilter({
     );
 
     const [search, setSearch] = useState(
-        (filter && filter.getOption("search")) || ""
+        (filter && filter.getStrategyOption("search")) || ""
     );
 
     // compute filteredResources

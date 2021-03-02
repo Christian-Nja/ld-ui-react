@@ -18,7 +18,7 @@ export default function useFilter(id, options) {
         if (filter && filter.isActive()) {
             showAlert();
         }
-    }, [filters]);
+    }, [filter]);
 
     // if no filter we mount it
     useEffect(() => {

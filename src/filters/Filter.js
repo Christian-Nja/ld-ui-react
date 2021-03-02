@@ -12,9 +12,12 @@ export default class Filter {
         };
         return new Filter(id, { ...defaultOptions, ...options });
     }
-    getOption(optionName) {
+    getStrategyOption(optionName) {
         if (this.options && this.options.filterCallback)
             return this.options.filterCallback[optionName];
+    }
+    getOption(optionName) {
+        if (this.options) return this.options[optionName];
     }
     setOptions(options) {
         this.options = options;

@@ -52,7 +52,7 @@ export default function PatternMenu({
                             fontSize: 18,
                         }}
                     >
-                        <Icon name="search" className="filters-icon" />
+                        <Icon name="filter" className="filters-icon" />
                         <div
                             className={`menu-main-title ${"menu-main-open"} filters-title`}
                         >
@@ -84,23 +84,24 @@ export default function PatternMenu({
                                                 trigger={
                                                     <div
                                                         className={
-                                                            getFilterById(
-                                                                child.props.id
-                                                            ) &&
-                                                            getFilterById(
-                                                                child.props.id
-                                                            ).isActive()
-                                                                ? "active-filter filter-title"
-                                                                : "filter-title"
+                                                            // getFilterById(
+                                                            //     child.props.id
+                                                            // ) &&
+                                                            // getFilterById(
+                                                            //     child.props.id
+                                                            // ).isActive()
+                                                            //     ? "active-filter filter-title"
+                                                            //     : "filter-title"
+                                                            "filter-title"
                                                         }
-                                                        style={{
-                                                            cursor: "pointer",
-                                                        }}
-                                                        onClick={() => {
-                                                            setInvertedFilterStateById(
-                                                                child.props.id
-                                                            );
-                                                        }}
+                                                        // style={{
+                                                        //     cursor: "pointer",
+                                                        // }}
+                                                        // onClick={() => {
+                                                        //     setInvertedFilterStateById(
+                                                        //         child.props.id
+                                                        //     );
+                                                        // }}
                                                     >
                                                         {child.props.title}
                                                     </div>
@@ -119,7 +120,7 @@ export default function PatternMenu({
                                                     alignItems: "center",
                                                 }}
                                             >
-                                                <Popup
+                                                {/* <Popup
                                                     trigger={
                                                         <div>
                                                             <Toggle
@@ -153,7 +154,7 @@ export default function PatternMenu({
                                                     on="hover"
                                                     content="Enable/disable filter"
                                                     position="top center"
-                                                />
+                                                /> */}
                                                 <div>
                                                     <Popup
                                                         trigger={

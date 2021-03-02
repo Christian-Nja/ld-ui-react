@@ -14,11 +14,12 @@ export class FilterTimeIntervalStrategy {
         this.class = this.constructor.name;
     }
     static create({ range }) {
+        if (!range) return undefined;
         return new FilterTimeIntervalStrategy(range);
     }
     filter(resource) {
         if (!resource.startTime && !resource.endTime) {
-            return false;
+            return true;
         } else if (!resource.startTime) {
             if (
                 this.range[rangeEnum.MIN] >= initialTime &&

@@ -10,10 +10,8 @@ export default function FilterCtxProvider({ children, resourceUri }) {
 
     const [filtersMountedFlag, setFiltersMountedFlag] = useState(false);
     const [filters, setFilters] = useState(filterRepository.loadAll() || []);
-    console.log("FilterCtxProvider filters:", filters);
 
     const setNewFilter = (id, options) => {
-        console.log("SetNewFilter I'm setting new filter", id, options);
         if (!getFilterById(id)) {
             const filter = Filter.create({ id, options });
             filters.push(filter);
@@ -47,7 +45,6 @@ export default function FilterCtxProvider({ children, resourceUri }) {
     };
 
     const setFilterOptionsById = (id, options) => {
-        console.log("StFilterOptions This are new options", options);
         let filterToUpdate = getFilterById(id);
         filterToUpdate.setOptions(options);
         const newFilters = cloneDeep(filters);

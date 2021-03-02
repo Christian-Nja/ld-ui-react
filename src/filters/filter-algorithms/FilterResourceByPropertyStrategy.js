@@ -6,6 +6,7 @@ export class FilterResourceByPropertyStrategy {
         this.class = this.constructor.name;
     }
     static create({ filtered, property }) {
+        if (!filtered || !property) return undefined;
         return new FilterResourceByPropertyStrategy(filtered, property);
     }
     // you can pass a type to the strategy

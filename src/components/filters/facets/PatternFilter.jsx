@@ -1,50 +1,40 @@
-import React, { useEffect, useState, useContext, useRef } from "react";
-
-import { PieChart } from "react-minimal-pie-chart";
-import { useBinaryArrayState } from "../../hooks/ld-ui-hooks";
-
-import { forEach } from "lodash";
+import React, { useState, useEffect } from "react";
+import ViewController from "../../KnowledgeGraph/ViewController";
 import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
 import useFilter from "../../../filters/FilterCtx/useFilter";
+import { forEach, clone, map } from "lodash";
+import { FilterPatternStrategy } from "../../../filters/filter-algorithms/FilterPatternStrategy";
 
-import { FilterPatternByViewStrategy } from "../../../filters/filter-algorithms/FilterPatternByViewStrategy";
-import Filter from "../../../filters/Filter";
-
-PatternFilter.defaultProps = {
-    id: "patternPie",
-    options: {},
-};
-
-/**
- * @description Filter data
- * @author Christian Colonna
- * @date 29-11-2020
- * @export
- * @param {[{ label : string, count : number, color : string, id : string
- * }]} {Object[]} { properties } label: Property label, count: number of instances, color: color
- * @param {function} onFilter callback is called every time change filtered array,
- *                            it receives as argument the array of element filtered out.
- *                            Array contains index of the element as it passed as input to the filter.
- * @returns {JSX.Element}
- */
-export default function PatternFilter({ id = "patternPie" }) {
+export default function PatternFilter({ id = "patternPie", isActive = true }) {
+    // get knowledge graph and resources to analyze
     const { knowledgeGraph } = useKGCtx();
     const patterns = knowledgeGraph.getPatterns();
 
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
-
-    const [filtered, setFiltered] = useBinaryArrayState(
-        (filter && filter.getOption("filtered")) || []
-    );
-    const [hovered, setHovered] = useState(null);
-
-    const filterAlgorithm = FilterPatternByViewStrategy.create({ filtered });
-
+    // set default filter options
     const initialFilterOptions = {
-        active: false,
+        active: isActive,
         filterCallback: filterAlgorithm,
     };
+    // get filter component or create it for the first time
+    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 
+    // compute initial arguments for filter
+    const defaultCheckboxItemPatterns = map(patterns, (p) => {
+        return { uri: p.uri, checked: false, label: p.label };
+    });
+
+    // set as state first argument for filter
+    const [checkboxItemPatterns, setCheckboxItemPatterns] = useState(
+        (filter && filter.getStrategyOption("patterns")) ||
+            defaultCheckboxItemPatterns
+    );
+
+    // create filter strategy based on first calculated or saved arguments
+    const filterAlgorithm = FilterPatternStrategy.create({
+        patterns: checkboxItemPatterns,
+    });
+
+    // update filter when arguments change
     useEffect(() => {
         if (filter) {
             setFilterOptions({
@@ -52,48 +42,39 @@ export default function PatternFilter({ id = "patternPie" }) {
                 filterCallback: filterAlgorithm,
             });
         }
-    }, [filtered]);
-
-    const data = patterns.map((entry) => {
-        return {
-            ...entry,
-            color: filtered.includes(entry.getUri()) ? "grey" : entry.nodeColor,
-            title: entry.getLabel(),
-            value: Number.parseInt(entry.occurences),
-            id: entry.getUri(),
-        };
-    });
+    }, [checkboxItemPatterns]);
 
     return (
-        <div>
-            <div class="pie-chart-title">
-                {data[hovered] ? data[hovered].title : null}
-            </div>
-            <PieChart
-                lengthAngle={-360}
-                animate
-                paddingAngle={1}
-                data={data}
-                label={() => {
-                    return data[hovered] ? data[hovered].value : null;
+        <div style={{ marginLeft: 40, marginTop: 20 }}>
+            <ViewController
+                styles={{
+                    checkboxContainer: {
+                        marginBottom: 20,
+                    },
+                    checkboxLabel: {
+                        fontSize: 20,
+                        marginLeft: 0,
+                        cursor: "pointer",
+                    },
+                    checkboxButton: {
+                        width: 20,
+                        height: 20,
+                        cursor: "pointer",
+                    },
                 }}
-                segmentsStyle={{ transition: "stroke .3s", cursor: "pointer" }}
-                labelStyle={{
-                    fontSize: "20px",
-                    fontFamily: "sans-serif",
-                    fill: data[hovered] ? data[hovered].nodeColor : null,
+                availableViews={checkboxItemPatterns}
+                onViewConfigurationChange={(
+                    clickedViewUri,
+                    clickedViewState
+                ) => {
+                    const newCheckboxItemPatterns = clone(checkboxItemPatterns);
+                    forEach(checkboxItemPatterns, (checkboxItem) => {
+                        if (checkboxItem.uri === clickedViewUri) {
+                            checkboxItem.checked = clickedViewState;
+                        }
+                    });
+                    setCheckboxItemPatterns(newCheckboxItemPatterns);
                 }}
-                onMouseOver={(_, index) => {
-                    setHovered(index);
-                }}
-                onMouseOut={() => {
-                    setHovered(null);
-                }}
-                onClick={(_, index) => {
-                    setFiltered(data[index].id);
-                }}
-                lineWidth={30}
-                labelPosition={0}
             />
         </div>
     );

@@ -6,6 +6,7 @@ export class FilterOnMapStrategy {
         this.class = this.constructor.name;
     }
     static create({ featureGroup }) {
+        if (!featureGroup) return undefined;
         return new FilterOnMapStrategy(featureGroup);
     }
     filter(resource) {

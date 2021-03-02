@@ -91,7 +91,8 @@ export default function GeoFilter({ id = "geo", options = {} }) {
     const initialFeatureGroup = { type: "FeatureCollection", features: [] };
     console.log("FILTER, it should return options", filter);
     const [featureGroup, setFeatureGroup] = useState(
-        (filter && filter.getOption("featureGroup")) || initialFeatureGroup
+        (filter && filter.getStrategyOption("featureGroup")) ||
+            initialFeatureGroup
     );
 
     const filterAlgorithm = FilterOnMapStrategy.create({

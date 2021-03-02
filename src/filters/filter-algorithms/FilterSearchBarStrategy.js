@@ -7,6 +7,7 @@ export class FilterSearchBarStrategy {
         this.class = this.constructor.name;
     }
     static create({ filteredResources, searchTerm }) {
+        if (!filteredResources || !searchTerm) return undefined;
         return new FilterSearchBarStrategy(searchTerm, filteredResources);
     }
     filter(node) {

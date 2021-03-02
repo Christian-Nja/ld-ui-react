@@ -36,18 +36,17 @@ export default function MeasurementSliderFilter({
         filterCallback: filterAlgorithm,
     };
 
-    const filterAlgorithm = FilterIntervalStrategy.create({
-        range,
-        resourceProperty: measurementType,
-    });
-
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 
     const initialRange = findSliderDomain(resources, measurementType);
 
     const [range, setRange] = useState(
-        (filter && filter.getOption("range")) || initialRange
+        (filter && filter.getStrategyOption("range")) || initialRange
     );
+    const filterAlgorithm = FilterIntervalStrategy.create({
+        range,
+        resourceProperty: measurementType,
+    });
 
     useEffect(() => {
         if (filter) {

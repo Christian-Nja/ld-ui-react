@@ -24,13 +24,14 @@ export default function SliderFilter({
     formatTicks = (d) => {
         return d;
     },
+    reversed = false,
 }) {
     // filter cannot work with one node
     const onChange = (newRange) => {
         if (!Number.isNaN(newRange[0]) && !Number.isNaN(newRange[1])) {
             setRange(newRange);
         } else {
-            setRange(domain);
+            setRange([domain[reversed ? 1 : 0]]);
         }
     };
 
@@ -73,7 +74,10 @@ export default function SliderFilter({
                             </div>
                         )}
                     </Handles>
-                    <Tracks left={false} right={false}>
+                    <Tracks
+                        left={reversed ? true : false}
+                        right={reversed ? false : true}
+                    >
                         {({ tracks, getTrackProps }) => (
                             <div className="slider-tracks">
                                 {tracks.map(({ id, source, target }) => (

@@ -30,6 +30,7 @@ export default function PropertyFilter({ id = "pie", property = "id" }) {
     const { knowledgeGraph } = useKGCtx();
 
     const resources = knowledgeGraph.getResources();
+    console.log(resources);
 
     const initialFilterOptions = {
         active: false,
@@ -39,7 +40,7 @@ export default function PropertyFilter({ id = "pie", property = "id" }) {
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 
     const [filtered, setFiltered] = useBinaryArrayState(
-        (filter && filter.getOption("filtered")) || []
+        (filter && filter.getStrategyOption("filtered")) || []
     );
     const [hovered, setHovered] = useState(null);
 

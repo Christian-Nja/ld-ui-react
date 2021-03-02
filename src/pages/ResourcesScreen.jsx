@@ -6,6 +6,7 @@ import AlertBox from "../components/KnowledgeGraph/AlertBox";
 import FiltersMountedController from "../components/filters/FiltersMountedController";
 import ViewFilter from "../components/filters/facets/ViewFilter";
 import Navbar from "../components/layout/Navbar";
+import GoToButton from "../components/layout/GoToButton";
 import { Grid } from "semantic-ui-react";
 import ClassInstancesHelpBox from "../components/KnowledgeGraph/ClassInstancesHelpBox";
 
@@ -15,6 +16,15 @@ export default function ResourcesScreen({ filteredKnowledgeGraph }) {
 
     return (
         <ODPReactorContainer>
+            <GoToButton
+                style={{
+                    background: "#6c7ae0",
+                    width: "fit-content",
+                    position: "absolute",
+                    padding: 15,
+                    marginTop: 14,
+                }}
+            />
             {/* <Navbar /> */}
             <AlertBox />
             <ClassInstancesHelpBox />

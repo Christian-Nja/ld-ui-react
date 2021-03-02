@@ -3,9 +3,9 @@ import useFilter from "../../../filters/FilterCtx/useFilter";
 import SliderFilter from "./SliderFilter";
 
 import findSliderDomain from "./findSliderDomain";
-import { FilterIntervalStrategy } from "../../../filters/filter-algorithms/FilterIntervalStrategy";
+import { FilterMinValueStrategy } from "../../../filters/filter-algorithms/FilterMinValueStrategy";
 
-export default function GenericSliderFilter({
+export default function LeftGenericSliderFilter({
     id = "genericSlider",
     resourceProperty,
     resources = [],
@@ -24,15 +24,14 @@ export default function GenericSliderFilter({
 
     const initialRange = findSliderDomain(resources, resourceProperty);
     const [range, setRange] = useState(
-        (filter && filter.getStrategyOption("range")) ||
-            defaultRange ||
-            initialRange
+        [filter && filter.getStrategyOption("minValue")] ||
+            defaultRange || [initialRange[0]]
     );
 
-    const filterAlgorithm = FilterIntervalStrategy.create({
+    const filterAlgorithm = FilterMinValueStrategy.create({
         resourceProperty,
         resourceType: resourceTypeFilterHasEffectOn,
-        range,
+        minValue: range[0],
     });
 
     useEffect(() => {

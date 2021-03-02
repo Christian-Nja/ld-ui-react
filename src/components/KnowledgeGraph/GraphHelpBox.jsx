@@ -93,26 +93,13 @@ export default function GraphHelpBox() {
             placement: "left",
             hideCloseButton: true,
         },
-        {
-            target: ".react-toggle",
-            content: "Switch the toggle to enable or disable filters",
-            locale: { skip: <strong aria-label="skip">End tutorial</strong> },
-            spotlightClicks: true,
-            styles: {
-                options: {
-                    zIndex: 10000,
-                },
-            },
-            placement: "left",
-            hideCloseButton: true,
-        },
-        {
-            target: ".filter-occurences",
-            content:
-                "Tune filter values to refine your search within the knowledge graph",
-            locale: { skip: <strong aria-label="skip">End tutorial</strong> },
-            hideCloseButton: true,
-        },
+        // {
+        //     target: ".filter-occurences",
+        //     content:
+        //         "Tune filter values to refine your search within the knowledge graph",
+        //     locale: { skip: <strong aria-label="skip">End tutorial</strong> },
+        //     hideCloseButton: true,
+        // },
         {
             target: ".graph-tooltip-checkbox",
             content:
@@ -139,10 +126,12 @@ export default function GraphHelpBox() {
         // main menu
 
         const element = document.querySelector(step.target);
-        element.scrollIntoView({
-            // behavior: "smooth",
-            block: "center",
-        });
+        if (element) {
+            element.scrollIntoView({
+                // behavior: "smooth",
+                block: "center",
+            });
+        }
 
         console.groupCollapsed(type);
         console.groupEnd();
