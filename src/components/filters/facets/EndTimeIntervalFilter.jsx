@@ -5,6 +5,7 @@ import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
 import useFilter from "../../../filters/FilterCtx/useFilter";
 
 import { FilterEndTimeStrategy } from "../../../filters/filter-algorithms/FilterEndTimeStrategy";
+import { IncludeElementsWithMissingPropertyCheckbox } from "./IncludeElementsWithMissingPropertyCheckbox";
 
 /**
  * node {
@@ -14,12 +15,12 @@ import { FilterEndTimeStrategy } from "../../../filters/filter-algorithms/Filter
  * }
  */
 
-TimeIntervalFilter.defaultProps = {
+EndTimeIntervalFilter.defaultProps = {
     id: "time",
     options: {},
 };
 
-export default function TimeIntervalFilter({ id = "time", options = {} }) {
+export default function EndTimeIntervalFilter({ id = "time", options = {} }) {
     const { knowledgeGraph } = useKGCtx();
 
     // read nodes from global context
@@ -28,17 +29,33 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
     const initialFilterOptions = {
         active: true,
         filterCallback: filterAlgorithm,
+        showElementsWithMissingProperty: showElementsWithMissingProperty,
     };
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+
+    const defaultShowElementsWithMissingProperty =
+        filter &&
+        typeof filter.getStrategyOption("showElementsWithMissingProperty") !==
+            "undefined"
+            ? filter.getStrategyOption("showElementsWithMissingProperty")
+            : true;
+
+    const [
+        showElementsWithMissingProperty,
+        setShowElementsWithMissingProperty,
+    ] = useState(defaultShowElementsWithMissingProperty);
 
     // if domain not in options compute it
     const initialRange = useMemo(() => findTimeDomain(resources), [resources]);
 
     const [range, setRange] = useState(
-        [filter && filter.getOption("endTime")] || [initialRange[1]]
+        [filter && filter.getStrategyOption("endTime")] || [initialRange[1]]
     );
 
-    const filterAlgorithm = FilterEndTimeStrategy.create({ endTime: range[0] });
+    const filterAlgorithm = FilterEndTimeStrategy.create({
+        endTime: range[0],
+        showElementsWithMissingProperty: showElementsWithMissingProperty,
+    });
 
     useEffect(() => {
         if (filter) {
@@ -47,15 +64,40 @@ export default function TimeIntervalFilter({ id = "time", options = {} }) {
                 filterCallback: filterAlgorithm,
             });
         }
-    }, [range]);
+    }, [range, showElementsWithMissingProperty]);
+
+    const onChangeElementsWithMissingPropertyFlag = (checked) => {
+        setShowElementsWithMissingProperty(checked);
+    };
 
     return (
-        <SliderFilter
-            range={range}
-            setRange={setRange}
-            domain={initialRange}
-            reversed={true}
-        />
+        <div>
+            <SliderFilter
+                range={range}
+                setRange={setRange}
+                domain={initialRange}
+                reversed={true}
+            />
+            <IncludeElementsWithMissingPropertyCheckbox
+                styles={{
+                    checkbox: {
+                        marginTop: 20,
+                    },
+                    checkboxLabel: {
+                        fontSize: 16,
+                        cursor: "pointer",
+                    },
+                    checkboxButton: {
+                        width: 20,
+                        height: 20,
+                        marginRight: 5,
+                        cursor: "pointer",
+                    },
+                }}
+                checked={showElementsWithMissingProperty}
+                onChange={onChangeElementsWithMissingPropertyFlag}
+            />
+        </div>
     );
 }
 

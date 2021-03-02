@@ -41,7 +41,7 @@ export default function MeasurementSliderFilter({
     const initialRange = findSliderDomain(resources, measurementType);
 
     const [range, setRange] = useState(
-        (filter && filter.getOption("range")) || initialRange
+        (filter && filter.getStrategyOption("range")) || initialRange
     );
     const filterAlgorithm = FilterIntervalStrategy.create({
         range,

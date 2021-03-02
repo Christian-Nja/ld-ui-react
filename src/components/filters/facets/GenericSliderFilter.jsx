@@ -24,7 +24,9 @@ export default function GenericSliderFilter({
 
     const initialRange = findSliderDomain(resources, resourceProperty);
     const [range, setRange] = useState(
-        (filter && filter.getOption("range")) || defaultRange || initialRange
+        (filter && filter.getStrategyOption("range")) ||
+            defaultRange ||
+            initialRange
     );
 
     const filterAlgorithm = FilterIntervalStrategy.create({

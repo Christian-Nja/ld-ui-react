@@ -272,6 +272,7 @@ export default function List({
                                     ? true
                                     : false
                             }
+                            style={{ overflow: "hidden" }}
                             loader={<h4>Loading...</h4>}
                         >
                             <ReactList

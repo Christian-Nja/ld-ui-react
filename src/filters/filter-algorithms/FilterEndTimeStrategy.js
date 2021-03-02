@@ -1,15 +1,26 @@
 export class FilterEndTimeStrategy {
-    constructor(endTime) {
+    constructor(endTime, showElementsWithMissingProperty) {
         this.endTime = endTime;
+        this.showElementsWithMissingProperty = showElementsWithMissingProperty;
         this.class = this.constructor.name;
     }
-    static create({ endTime }) {
+    static create({ endTime, showElementsWithMissingProperty }) {
         if (!endTime) return undefined;
-        return new FilterEndTimeStrategy(endTime);
+        if (typeof showElementsWithMissingProperty === "undefined") {
+            showElementsWithMissingProperty = true;
+        }
+        return new FilterEndTimeStrategy(
+            endTime,
+            showElementsWithMissingProperty
+        );
     }
     filter(resource) {
         if (!resource.endTime) {
-            return true;
+            if (this.showElementsWithMissingProperty) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
             if (resource.endTime <= this.endTime) {
                 // stratTime greater than selected startTime

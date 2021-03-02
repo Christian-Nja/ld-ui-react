@@ -2,17 +2,33 @@ import { byResourceTypeFilterFunction } from "./byResourceTipeFilterFunction";
 
 export class FilterMaxValueStrategy {
     // resource type is optional
-    constructor(resourceProperty, maxValue, resourceType) {
+    constructor(
+        resourceProperty,
+        maxValue,
+        showElementsWithMissingProperty,
+        resourceType
+    ) {
         this.resourceProperty = resourceProperty;
         this.maxValue = maxValue;
         this.resourceType = resourceType;
+        this.showElementsWithMissingProperty = showElementsWithMissingProperty;
+
         this.class = this.constructor.name;
     }
-    static create({ resourceProperty, maxValue, resourceType }) {
+    static create({
+        resourceProperty,
+        maxValue,
+        resourceType,
+        showElementsWithMissingProperty,
+    }) {
         if (!resourceProperty || !maxValue) return undefined;
+        if (typeof showElementsWithMissingProperty === "undefined") {
+            showElementsWithMissingProperty = true;
+        }
         return new FilterMaxValueStrategy(
             resourceProperty,
             maxValue,
+            showElementsWithMissingProperty,
             resourceType
         );
     }
@@ -25,7 +41,11 @@ export class FilterMaxValueStrategy {
         }
         // if resource has no property return true
         if (!node[this.resourceProperty]) {
-            return true;
+            if (this.showElementsWithMissingProperty) {
+                return true;
+            } else {
+                return false;
+            }
         }
         if (node[this.resourceProperty] <= this.maxValue) {
             return true;

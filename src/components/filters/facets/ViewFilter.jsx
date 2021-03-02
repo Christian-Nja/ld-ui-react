@@ -9,7 +9,7 @@ export default function ViewFilter({
     title = "Filter by available views",
     id = "viewFilter",
     description = "Filter description",
-    isActive = false,
+    isActive = true,
 }) {
     const { knowledgeGraph } = useKGCtx();
 
@@ -40,7 +40,7 @@ export default function ViewFilter({
     });
 
     const [availableViews, setAvailableViews] = useState(
-        (filter && filter.getOption("views")) || defaultAvailableViews
+        (filter && filter.getStrategyOption("views")) || defaultAvailableViews
     );
 
     const filterAlgorithm = FilterResourceByViewStrategy.create({

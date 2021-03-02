@@ -10,6 +10,8 @@ import { find } from "lodash";
 
 import Qty from "js-quantities";
 import { FilterMaxValueStrategy } from "../../../filters/filter-algorithms/FilterMaxValueStrategy";
+import { IncludeElementsWithMissingPropertyCheckbox } from "./IncludeElementsWithMissingPropertyCheckbox";
+
 const MIN = 0;
 const MAX = 1;
 
@@ -34,18 +36,32 @@ export default function MaxMeasurementSliderFilter({
     const initialFilterOptions = {
         active: true,
         filterCallback: filterAlgorithm,
+        showElementsWithMissingProperty: showElementsWithMissingProperty,
     };
 
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 
+    const defaultShowElementsWithMissingProperty =
+        filter &&
+        typeof filter.getStrategyOption("showElementsWithMissingProperty") !==
+            "undefined"
+            ? filter.getStrategyOption("showElementsWithMissingProperty")
+            : true;
+
+    const [
+        showElementsWithMissingProperty,
+        setShowElementsWithMissingProperty,
+    ] = useState(defaultShowElementsWithMissingProperty);
+
     const initialRange = findSliderDomain(resources, measurementType);
 
     const [range, setRange] = useState(
-        [filter && filter.getOption("maxValue")] || initialRange[0]
+        [filter && filter.getStrategyOption("maxValue")] || initialRange[0]
     );
     const filterAlgorithm = FilterMaxValueStrategy.create({
         maxValue: range[0],
         resourceProperty: measurementType,
+        showElementsWithMissingProperty: showElementsWithMissingProperty,
     });
 
     useEffect(() => {
@@ -55,19 +71,44 @@ export default function MaxMeasurementSliderFilter({
                 filterCallback: filterAlgorithm,
             });
         }
-    }, [range]);
+    }, [range, showElementsWithMissingProperty]);
+
+    const onChangeElementsWithMissingPropertyFlag = (checked) => {
+        setShowElementsWithMissingProperty(checked);
+    };
 
     if (resources.length < 2) {
         return null;
     }
 
     return (
-        <SliderFilter
-            range={range}
-            setRange={setRange}
-            domain={initialRange}
-            formatTicks={formatTicks}
-            reversed={true}
-        />
+        <div>
+            <SliderFilter
+                range={range}
+                setRange={setRange}
+                domain={initialRange}
+                formatTicks={formatTicks}
+                reversed={true}
+            />
+            <IncludeElementsWithMissingPropertyCheckbox
+                styles={{
+                    checkbox: {
+                        marginTop: 20,
+                    },
+                    checkboxLabel: {
+                        fontSize: 16,
+                        cursor: "pointer",
+                    },
+                    checkboxButton: {
+                        width: 20,
+                        height: 20,
+                        marginRight: 5,
+                        cursor: "pointer",
+                    },
+                }}
+                checked={showElementsWithMissingProperty}
+                onChange={onChangeElementsWithMissingPropertyFlag}
+            />
+        </div>
     );
 }

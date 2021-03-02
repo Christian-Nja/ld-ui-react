@@ -7,7 +7,7 @@ import { FilterLocationTypeStrategy } from "../../../filters/filter-algorithms/F
 
 export default function LocationTypeFilter({
     id = "locationType",
-    isActive = false,
+    isActive = true,
 }) {
     const { knowledgeGraph } = useKGCtx();
 
@@ -35,7 +35,7 @@ export default function LocationTypeFilter({
     });
 
     const [locations, setLocations] = useState(
-        (filter && filter.getOption("locations")) || defaultLocations
+        (filter && filter.getStrategyOption("locations")) || defaultLocations
     );
 
     const filterAlgorithm = FilterLocationTypeStrategy.create({

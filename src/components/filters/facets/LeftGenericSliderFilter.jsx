@@ -24,7 +24,7 @@ export default function LeftGenericSliderFilter({
 
     const initialRange = findSliderDomain(resources, resourceProperty);
     const [range, setRange] = useState(
-        [filter && filter.getOption("minValue")] ||
+        [filter && filter.getStrategyOption("minValue")] ||
             defaultRange || [initialRange[0]]
     );
 

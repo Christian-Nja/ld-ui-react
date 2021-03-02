@@ -37,7 +37,7 @@ describe("Integration test for save and load a filter", () => {
         expect(loadedFilterPatternByView).toBeDefined();
         expect(loadedFilterPatternByView.getId()).toBe(sampleFilterId);
         expect(loadedFilterPatternByView.isActive()).toBeTruthy();
-        const filteredResource = loadedFilterPatternByView.getOption(
+        const filteredResource = loadedFilterPatternByView.getStrategyOption(
             "filtered"
         );
         console.log(filteredResource);
@@ -57,7 +57,7 @@ describe("Integration test for save and load a filter", () => {
         expect(loadedFilterPatternByView).toBeDefined();
         expect(loadedFilterPatternByView.getId()).toBe(sampleFilterId);
         expect(loadedFilterPatternByView.isActive()).toBeTruthy();
-        const filteredResource = loadedFilterPatternByView.getOption(
+        const filteredResource = loadedFilterPatternByView.getStrategyOption(
             "filtered"
         );
         console.log(filteredResource);

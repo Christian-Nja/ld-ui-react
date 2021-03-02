@@ -25,7 +25,8 @@ export default function PatternFilter({ id = "patternPie", isActive = true }) {
 
     // set as state first argument for filter
     const [checkboxItemPatterns, setCheckboxItemPatterns] = useState(
-        (filter && filter.getOption("patterns")) || defaultCheckboxItemPatterns
+        (filter && filter.getStrategyOption("patterns")) ||
+            defaultCheckboxItemPatterns
     );
 
     // create filter strategy based on first calculated or saved arguments

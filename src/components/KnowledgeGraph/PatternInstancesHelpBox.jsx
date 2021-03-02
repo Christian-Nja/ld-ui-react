@@ -96,9 +96,6 @@ export default function PatternInstancesHelpBox() {
     const handleJoyrideCallback = (data) => {
         const { status, type, step, action, index } = data;
 
-        console.log("JoyRide callback");
-        console.log(data);
-
         const finishedStatuses = [STATUS.FINISHED, STATUS.SKIPPED];
 
         if (finishedStatuses.includes(status)) {

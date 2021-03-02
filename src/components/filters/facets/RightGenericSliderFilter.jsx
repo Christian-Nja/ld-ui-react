@@ -24,7 +24,7 @@ export default function RightGenericSliderFilter({
 
     const initialRange = findSliderDomain(resources, resourceProperty);
     const [range, setRange] = useState(
-        [filter && filter.getOption("maxValue")] ||
+        [filter && filter.getStrategyOption("maxValue")] ||
             defaultRange || [initialRange[1]]
     );
 

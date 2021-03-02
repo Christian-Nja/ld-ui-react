@@ -13,7 +13,6 @@ import hasResourceToFilter from "../components/filters/facets/hasResourceToFilte
 import { useKGCtx } from "../knowledgegraph/KGCtx/useKGCtx";
 import { forEach, map } from "lodash";
 import AlertBox from "../components/KnowledgeGraph/AlertBox";
-import FiltersMountedController from "../components/filters/FiltersMountedController";
 import { Grid } from "semantic-ui-react";
 import Navbar from "../components/layout/Navbar";
 import GoToButton from "../components/layout/GoToButton";
@@ -21,7 +20,6 @@ import PatternInstancesHelpBox from "../components/KnowledgeGraph/PatternInstanc
 import LocationTypeFilter from "../components/filters/facets/LocationTypeFilter";
 import StartTimeIntervalFilter from "../components/filters/facets/StartTimeIntervalFilter";
 import EndTimeIntervalFilter from "../components/filters/facets/EndTimeIntervalFilter";
-import { SwitcherTwoTone } from "@ant-design/icons";
 
 export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
     const { knowledgeGraph } = useKGCtx();
