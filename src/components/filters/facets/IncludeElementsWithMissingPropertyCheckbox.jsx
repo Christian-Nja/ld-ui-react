@@ -26,9 +26,7 @@ export function IncludeElementsWithMissingPropertyCheckbox({
                 style={{ ...styles.checkboxLabel }}
                 className={`${classes.checkboxLabel}`}
             >
-                {`${
-                    checked ? "Exclude" : "Include"
-                } elements with missing property`}
+                Include elements with missing property
             </label>
         </div>
     );
