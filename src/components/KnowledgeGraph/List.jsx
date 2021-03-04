@@ -42,8 +42,6 @@ const clearRowLight = (e) => {
     }
 };
 
-const SAMPLE_RESOURCE = 0;
-
 export default function List({
     list,
     title,
@@ -52,43 +50,24 @@ export default function List({
 }) {
     const resources = list;
 
-    console.log("Where is resource with more than one mesure ????");
-
     const renderMoreData = () => {
         setResourcesToRenderCount(resourcesToRenderCount + 20);
     };
     const [resourcesToRenderCount, setResourcesToRenderCount] = useState(20);
     const resourcesToRender = resources.slice(0, resourcesToRenderCount);
 
+    const SAMPLE_RESOURCE = resources.length - 1;
     // keys will be used to render header and access node information
-    const allPossiblekeys = resources[SAMPLE_RESOURCE]
+    const keys = resources[SAMPLE_RESOURCE]
         ? resources[SAMPLE_RESOURCE].getListKeys()
         : [];
-
-    title = resources[SAMPLE_RESOURCE]
-        ? resources[SAMPLE_RESOURCE].getListTitle()
-        : "Instances";
-
-    const keys = [];
-
-    // WARNING THIS APPROACH MAY BE PERFORMANCE CRITIC
-    // we parse list keys, only if there is at least one object with the key we show the row
-    forEach(allPossiblekeys, (k) => {
-        const thereIsOneDataWithKey = find(resources, (r) => {
-            // if (typeof r[k] !== "undefined") console.log("Value:", r[k]);
-            return typeof r[k] !== "undefined";
-        });
-        // console.log("Found data with key", k);
-        // console.log(thereIsOneDataWithKey);
-        if (thereIsOneDataWithKey) {
-            keys.push(k);
-        }
-    });
 
     const headerLabels = resources[SAMPLE_RESOURCE]
         ? resources[SAMPLE_RESOURCE].getHeaderLabels(keys)
         : [];
     // remove id key from rendered elements
+    console.log(resources[SAMPLE_RESOURCE]);
+    console.log("List keys", keys, headerLabels);
 
     const [stickyWidth, setStickyWidth] = useState(null);
 
