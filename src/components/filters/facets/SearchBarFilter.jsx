@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import useNonPersistentFilter from "../../../filters/FilterCtx/useNonPersistentFilter";
+import useFilter from "../../../filters/FilterCtx/useFilter";
 import {
     orderBy,
     fromPairs,
@@ -40,10 +40,9 @@ export default function SearchBarFilter({
         active: true,
         filterCallback: filterAlgorithm,
     };
-    const { filter, setFilterOptions } = useNonPersistentFilter(
-        id,
-        initialFilterOptions
-    );
+    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+    console.log("Initializae filter");
+    console.log(filter);
 
     const [search, setSearch] = useState(
         (filter && filter.getStrategyOption("search")) || ""
@@ -91,9 +90,13 @@ export default function SearchBarFilter({
     }
 
     const filterAlgorithm = FilterSearchBarStrategy.create({
-        search,
+        searchTerm: search,
         filteredResources,
     });
+
+    console.log(filter);
+    console.log("search bar");
+    console.log(filterAlgorithm, search, filteredResources);
 
     useEffect(() => {
         // set a delay after a user modify input before updating filtering

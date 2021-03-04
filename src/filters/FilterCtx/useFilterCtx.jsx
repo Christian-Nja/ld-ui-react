@@ -4,8 +4,6 @@ import { FilterCtx } from "./FilterCtx";
 export function useFilterCtx() {
     const {
         filters,
-        filtersMountedFlag,
-        setFiltersMountedFlag,
         setNewFilter,
         setInvertedFilterStateById,
         setFilterOptionsById,
@@ -16,8 +14,6 @@ export function useFilterCtx() {
     return {
         filters,
         setNewFilter,
-        filtersMountedFlag,
-        setFiltersMountedFlag,
         setInvertedFilterStateById,
         getFilterById,
         setFilterOptionsById,
