@@ -2,7 +2,7 @@ import React from "react";
 
 import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
 
-import GenericSliderFilter from "./GenericSliderFilter";
+import LeftGenericSliderFilter from "./LeftGenericSliderFilter";
 import { scaleInto01 } from "../../../utilities/math";
 import findSliderDomain from "./findSliderDomain";
 
@@ -18,11 +18,12 @@ export default function ClassCentralityMeasureFilter({}) {
     );
 
     return (
-        <GenericSliderFilter
+        <LeftGenericSliderFilter
             resourceTypeFilterHasEffectOn={"Class"}
             id="centrality"
             resourceProperty="centralityScore"
             resources={knowledgeGraph.getClasses()}
+            defaultRange={[initialRange[MAX]]}
             formatTicks={(d) => {
                 return scaleInto01(
                     d,
