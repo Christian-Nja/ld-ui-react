@@ -95,7 +95,7 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                                 id={`min-${m}`}
                                 title={`Min ${m}`}
                                 measurementType={m}
-                                description={`Tune this filter to show only cultural properties with min ${m}.`}
+                                description={`Tune this filter to show only cultural properties with a value for ${m} greater than the selected value.`}
                             />
                         );
                         break;
@@ -105,7 +105,7 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                                 id={`max-${m}`}
                                 title={`Max ${m}`}
                                 measurementType={m}
-                                description={`Tune this filter to show only cultural properties with max ${m}.`}
+                                description={`Tune this filter to show only cultural properties with a value for ${m} less than the selected value.`}
                             />
                         );
                         break;
@@ -148,14 +148,14 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                             <StartTimeIntervalFilter
                                 title="Start Time"
                                 id="startTime"
-                                description="This filter performs well with location type or geographic filter. Select an year or interval of time and a location. You will see only cultural properties located in a specific area at a certain period of time"
+                                description="Select the minimum start time of the time interval of a location. You will see all the views with the beginning year of location in a place greater than the selected value. You can choose to include or exclude values with no specified start time value. There may be two cases: (A) the object has always been located in a place; (B) data is missing"
                             />
                         )}
                         {thereIsTimeToFilter && (
                             <EndTimeIntervalFilter
                                 title="End Time"
                                 id="endTime"
-                                description="This filter performs well with location type or geographic filter. Select an year or interval of time and a location. You will see only cultural properties located in a specific area at a certain period of time"
+                                description="Select the maximum start time of the time interval of a location. You will see all the views with the ending year of location in a place less than the selected value. You can choose to include or exclude values with no specified end time value. There may be two cases: (A) the object is currently been located in the place; (B) data is missing"
                             />
                         )}
                         {thereAreTypeLocationsToFilter && (
@@ -163,7 +163,7 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                                 id="locationType"
                                 property="locationType"
                                 title="Location Type"
-                                description="Click on a slice to remove/show cultural properties with the specified location type. A grey color slice means cultural properties with that location type are not shown."
+                                description="Check items to show show objects with the specified location type. If no view is selected all the objects with any location type are shown."
                             />
                         )}
                         {thereArePartsToFilter && (
@@ -171,7 +171,7 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                                 id="minParts"
                                 title="Min Parts"
                                 resourceProperty="parts"
-                                description="Tune this filter to show only cultural properties with their number of components in the selected range."
+                                description="Tune this filter to show only cultural properties with a number of components less than the selected value."
                             />
                         )}
                         {thereArePartsToFilter && (
@@ -179,7 +179,7 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                                 id="maxParts"
                                 title="Max Parts"
                                 resourceProperty="parts"
-                                description="Tune this filter to show only cultural properties with their number of components in the selected range."
+                                description="Tune this filter to show only cultural properties with a number of components less greater the selected value."
                             />
                         )}
                         {measurementFilters.length !== 0 &&
@@ -190,14 +190,14 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                             <MinMeasurementCountSliderFilter
                                 id="minMeasurements"
                                 title="Min measurements"
-                                description="Tune this filter to show only cultural properties with their number of collected measurements in the selected range."
+                                description="Tune this filter to show only cultural properties with their number of collected measurements greater than the selected value."
                             />
                         )}
                         {measurementFilters.length !== 0 && (
                             <MaxMeasurementCountSliderFilter
                                 id="maxMeasurements"
                                 title="Max measurements"
-                                description="Tune this filter to show only cultural properties with their number of collected measurements in the selected range."
+                                description="Tune this filter to show only cultural properties with their number of collected measurements less than the selected value."
                             />
                         )}
                     </PatternMenu>

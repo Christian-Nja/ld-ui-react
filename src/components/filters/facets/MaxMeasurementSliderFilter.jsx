@@ -91,6 +91,7 @@ export default function MaxMeasurementSliderFilter({
                 reversed={true}
             />
             <IncludeElementsWithMissingPropertyCheckbox
+                propertyName={measurementType}
                 styles={{
                     checkbox: {
                         marginTop: 20,

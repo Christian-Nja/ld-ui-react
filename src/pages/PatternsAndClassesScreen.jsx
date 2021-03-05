@@ -44,22 +44,22 @@ export default function PatternsAndClassesScreen({ filteredKnowledgeGraph }) {
                         <PatternFilter
                             title="View"
                             id="patternPie"
-                            description="Click on a slice to remove views (diamonds) of the specified type. A grey color slice means the views of that type and all related concepts are not shown."
+                            description="Check items to show views of the specified type. While a view is unchecked all related concepts are not shown. If no view is selected all the views are shown by default"
                         />
                         <LeftOccurencesSliderFilter
                             title="Min occurences"
                             id="leftOccurences"
-                            description="Tune this filter to show only views with the number of occurences in the selected range"
+                            description="Tune this filter to show only views with the number of occurences greater than the selected value"
                         />
                         <RightOccurencesSliderFilter
                             title="Max occurences"
                             id="rightOccurences"
-                            description="Tune this filter to show only views with the number of occurences in the selected range"
+                            description="Tune this filter to show only views with the number of occurences less than the selected value"
                         />
                         <ClassCentralityMeasureFilter
                             title="Concept relevance"
                             id="centrality"
-                            description="Tune this filter to show concepts with an importance score in the selected range. The importance score is computed as the number of associated entities in the knowledge graph, normalized into 0-1. By default one key concept per view is shown."
+                            description="Tune this filter to show concepts with an importance score greater than the selected value. The importance score is computed as the number of associated entities in the knowledge graph, normalized into 0-1. By default one key concept per view is shown."
                         />
                     </PatternMenu>
                 </Grid.Column>

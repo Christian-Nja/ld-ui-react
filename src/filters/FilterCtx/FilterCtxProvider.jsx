@@ -8,8 +8,9 @@ import { FilterRepository } from "./FilterRepository";
 export default function FilterCtxProvider({ children, resourceUri }) {
     const filterRepository = new FilterRepository(resourceUri);
 
-    const [filtersMountedFlag, setFiltersMountedFlag] = useState(false);
     const [filters, setFilters] = useState(filterRepository.loadAll() || []);
+
+    console.log("FILTERS:,", filters);
 
     const setNewFilter = (id, options) => {
         if (!getFilterById(id)) {
@@ -64,8 +65,6 @@ export default function FilterCtxProvider({ children, resourceUri }) {
         <FilterCtx.Provider
             value={{
                 filters,
-                filtersMountedFlag,
-                setFiltersMountedFlag,
                 getFilterById,
                 setNewFilter,
                 setFilterOptionsById,

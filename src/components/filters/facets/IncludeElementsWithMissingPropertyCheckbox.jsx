@@ -6,6 +6,7 @@ export function IncludeElementsWithMissingPropertyCheckbox({
     classes = {},
     onChange,
     checked,
+    propertyName = "property",
 }) {
     const checkboxId = `show-missing-property-elements-${nanoid()}`;
 
@@ -26,7 +27,7 @@ export function IncludeElementsWithMissingPropertyCheckbox({
                 style={{ ...styles.checkboxLabel }}
                 className={`${classes.checkboxLabel}`}
             >
-                Include elements with missing property
+                {`Include elements with missing ${propertyName}`}
             </label>
         </div>
     );

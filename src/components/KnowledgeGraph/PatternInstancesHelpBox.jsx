@@ -141,8 +141,8 @@ export default function PatternInstancesHelpBox() {
             });
         }
 
-        console.groupCollapsed(type);
-        console.groupEnd();
+        // console.groupCollapsed(type);
+        // console.groupEnd();
     };
 
     return (

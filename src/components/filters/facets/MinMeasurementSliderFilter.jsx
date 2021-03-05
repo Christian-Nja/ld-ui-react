@@ -89,7 +89,7 @@ export default function MinMeasurementSliderFilter({
                 domain={initialRange}
                 formatTicks={formatTicks}
             />
-            <IncludeElementsWithMissingPropertyCheckbox
+            {/* <IncludeElementsWithMissingPropertyCheckbox
                 styles={{
                     checkbox: {
                         marginTop: 20,
@@ -107,7 +107,7 @@ export default function MinMeasurementSliderFilter({
                 }}
                 checked={showElementsWithMissingProperty}
                 onChange={onChangeElementsWithMissingPropertyFlag}
-            />
+            /> */}
         </div>
     );
 }

@@ -17,7 +17,7 @@ export class FilterSearchBarStrategy {
         if (this.searchTerm !== "") {
             if (
                 find(this.filteredResources, (f) => {
-                    return f.getUri() === node.getUri();
+                    return f.uri === node.getUri();
                 })
             ) {
                 return true;
