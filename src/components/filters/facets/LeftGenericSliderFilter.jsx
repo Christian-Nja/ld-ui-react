@@ -23,15 +23,12 @@ export default function LeftGenericSliderFilter({
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
 
     const initialRange = findSliderDomain(resources, resourceProperty);
-    console.log(defaultRange);
     defaultRange = defaultRange ? defaultRange : [initialRange[0]];
-    console.log(defaultRange);
     const [range, setRange] = useState(
         filter && filter.getStrategyOption("minValue")
             ? [filter && filter.getStrategyOption("minValue")]
             : defaultRange
     );
-    console.log(range);
 
     const filterAlgorithm = FilterMinValueStrategy.create({
         resourceProperty,
@@ -47,6 +44,15 @@ export default function LeftGenericSliderFilter({
             });
         }
     }, [range]);
+
+    useEffect(() => {
+        if (filter && !filter.getOption("filterCallback")) {
+            setFilterOptions({
+                ...filter.options,
+                filterCallback: filterAlgorithm,
+            });
+        }
+    }, [filterAlgorithm]);
 
     if (resources.length < 2) {
         return null;

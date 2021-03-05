@@ -65,9 +65,9 @@ export default function List({
     const headerLabels = resources[SAMPLE_RESOURCE]
         ? resources[SAMPLE_RESOURCE].getHeaderLabels(keys)
         : [];
-    // remove id key from rendered elements
-    console.log(resources[SAMPLE_RESOURCE]);
-    console.log("List keys", keys, headerLabels);
+    title = resources[SAMPLE_RESOURCE]
+        ? resources[SAMPLE_RESOURCE].getListTitle()
+        : "Instances";
 
     const [stickyWidth, setStickyWidth] = useState(null);
 

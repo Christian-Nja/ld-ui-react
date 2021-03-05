@@ -35,7 +35,7 @@ const CONFIG = {
                 '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         },
     ],
-    TRANSITION_DURATION: 10000,
+    TRANSITION_DURATION: 2000,
     DEFAULT_PROVIDER: DAY_PROVIDER,
 };
 
