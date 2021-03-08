@@ -153,7 +153,7 @@ export default class KnowledgeGraph {
     toList() {
         return this.getResources();
     }
-    toVisualGraph() {
+    toVisualGraph(mobile = false) {
         const toGraphinNode = (uri) => {
             const resource = this.getResource(uri);
             return {
@@ -256,9 +256,62 @@ export default class KnowledgeGraph {
                 data: this.dataMapper.toJson(property),
             };
         };
-        return {
-            nodes: map(this.getNodes(), toGraphinNode),
-            edges: map(this.getEdges(), toGraphinEdge),
+        const toD3Node = (uri) => {
+            const resource = this.getResource(uri);
+            return {
+                id: resource.getUri(),
+                label: resource.getLabel(),
+                color: resource.getProperty("nodeColor"),
+                size: resource.getProperty("nodeSize") * 20,
+                opacity: 0.8,
+                strokeWidth: 1.5,
+                symbolType: resource.getProperty("mobileNodeType"),
+                data: this.dataMapper.toJson(resource),
+            };
         };
+        const toD3Edge = (uri) => {
+            const property = this.getProperty(uri);
+            return {
+                id: property.getUri(),
+                // label: property.getLabel(),
+                source: this.graph.source(uri),
+                target: this.graph.target(uri),
+                highlightColor: property.getProperty("edgeColor"),
+                renderLabel: true,
+                label: property.getLabel(),
+                data: this.dataMapper.toJson(property),
+            };
+        };
+
+        return mobile
+            ? {
+                  nodes: decorateGraphNodesWithInitialPositioning(
+                      map(this.getNodes(), toD3Node)
+                  ),
+                  links: map(this.getEdges(), toD3Edge),
+              }
+            : {
+                  nodes: map(this.getNodes(), toGraphinNode),
+                  edges: map(this.getEdges(), toGraphinEdge),
+              };
     }
+}
+
+// https://github.com/anvaka/ngraph.forcelayout
+
+/**
+ * This function decorates nodes and links with positions. The motivation
+ * for this function its to set `config.staticGraph` to true on the first render
+ * call, and to get nodes and links statically set to their initial positions.
+ * @param  {Object} nodes nodes and links with minimalist structure.
+ * @return {Object} the graph where now nodes containing (x,y) coords.
+ */
+function decorateGraphNodesWithInitialPositioning(nodes) {
+    return map(nodes, (n) => {
+        return {
+            ...n,
+            x: n.x || Math.floor(Math.random() * 500),
+            y: n.y || Math.floor(Math.random() * 500),
+        };
+    });
 }
