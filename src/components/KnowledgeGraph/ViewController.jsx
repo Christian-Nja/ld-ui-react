@@ -49,7 +49,7 @@ export default function ViewController({
                             type="checkbox"
                             id={`view-checkbox-${availableView.uri}`}
                             style={{ ...styles.checkboxButton }}
-                            defaultChecked={availableView.checked}
+                            checked={availableView.checked}
                             name={availableView.label}
                             value={availableView.uri}
                             onChange={(e) => {

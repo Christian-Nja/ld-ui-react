@@ -33,8 +33,8 @@ export default function ViewFilter({
                 defaultAvailableViews.push({
                     uri: patternInstance.type,
                     label: patternInstance.typeLabel,
-                    checked: false,
-                }); // initialized with default checked value to false
+                    checked: true,
+                }); // initialized with default checked value to true
             }
         });
     });

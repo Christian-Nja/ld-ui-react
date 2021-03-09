@@ -20,7 +20,7 @@ export default function PatternFilter({ id = "patternPie", isActive = true }) {
 
     // compute initial arguments for filter
     const defaultCheckboxItemPatterns = map(patterns, (p) => {
-        return { uri: p.uri, checked: false, label: p.label };
+        return { uri: p.uri, checked: true, label: p.label };
     });
 
     // set as state first argument for filter

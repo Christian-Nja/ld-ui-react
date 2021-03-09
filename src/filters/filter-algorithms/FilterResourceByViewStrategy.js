@@ -10,13 +10,13 @@ export class FilterResourceByViewStrategy {
         return new FilterResourceByViewStrategy(views);
     }
     filter(resource) {
-        // no view selected return every resource
+        // no view selected return no resource
         if (
             !some(this.views, (view) => {
                 return view.checked === true;
             })
         ) {
-            return true;
+            return false;
         }
         if (
             !resource.patternInstances ||
