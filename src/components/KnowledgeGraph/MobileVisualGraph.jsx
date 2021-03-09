@@ -34,14 +34,16 @@ export function MobileVisualGraph({ visualGraph = [] }) {
     };
 
     return (
-        <Graph
-            id="graph-id" // id is mandatory
-            data={visualGraph}
-            config={myConfig}
-            onClickNode={onClickNode}
-            onClickLink={onClickLink}
-            nodeHighlightBehavior={true}
-        />
+        <div id="d3-graph-container">
+            <Graph
+                id="graph-id" // id is mandatory
+                data={visualGraph}
+                config={myConfig}
+                onClickNode={onClickNode}
+                onClickLink={onClickLink}
+                nodeHighlightBehavior={true}
+            />
+        </div>
     );
 }
 
