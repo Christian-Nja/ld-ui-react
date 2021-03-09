@@ -1,5 +1,6 @@
 import { MultiDirectedGraph } from "graphology";
 import { map, filter } from "lodash";
+import { LayoutProvider } from "./LayoutProvider";
 import ResourceDataMapper from "./ResourceDataMapper";
 
 /**
@@ -27,7 +28,11 @@ export default class KnowledgeGraph {
                 property.getUri(),
                 r1Uri,
                 r2Uri,
-                this.dataMapper.toJson(property)
+                this.dataMapper.toJson({
+                    ...property,
+                    source: r1Uri,
+                    target: r2Uri,
+                })
             );
         }
     }
@@ -54,6 +59,12 @@ export default class KnowledgeGraph {
         const uris = this.getNodes();
         return map(uris, (uri) => {
             return this.getResource(uri);
+        });
+    }
+    getProperties() {
+        const uris = this.getEdges();
+        return map(uris, (uri) => {
+            return this.getProperty(uri);
         });
     }
     getPatterns() {
@@ -153,7 +164,8 @@ export default class KnowledgeGraph {
     toList() {
         return this.getResources();
     }
-    toVisualGraph() {
+    toVisualGraph(mobile = false) {
+        const layoutProvider = new LayoutProvider(this.getProperties());
         const toGraphinNode = (uri) => {
             const resource = this.getResource(uri);
             return {
@@ -256,9 +268,45 @@ export default class KnowledgeGraph {
                 data: this.dataMapper.toJson(property),
             };
         };
-        return {
-            nodes: map(this.getNodes(), toGraphinNode),
-            edges: map(this.getEdges(), toGraphinEdge),
+        const toD3Node = (uri) => {
+            const resource = this.getResource(uri);
+            const coordinates = layoutProvider.getCoordinates(uri);
+            return {
+                id: resource.getUri(),
+                label: resource.getLabel(),
+                color: resource.getProperty("nodeMobileColor"),
+                size: resource.getProperty("nodeMobileSize"),
+                opacity: 0.8,
+                strokeWidth: 1,
+                strokeColor: resource.getProperty("nodeBorderMobileColor"),
+                symbolType: resource.getProperty("mobileNodeType"),
+                data: this.dataMapper.toJson(resource),
+                x: coordinates.x * 10 + 500,
+                y: coordinates.y * 10 + 400,
+            };
         };
+        const toD3Edge = (uri) => {
+            const property = this.getProperty(uri);
+            return {
+                id: property.getUri(),
+                // label: property.getLabel(),
+                source: this.graph.source(uri),
+                target: this.graph.target(uri),
+                highlightColor: property.getProperty("edgeColor"),
+                renderLabel: true,
+                label: property.getLabel(),
+                data: this.dataMapper.toJson(property),
+            };
+        };
+
+        return mobile
+            ? {
+                  nodes: map(this.getNodes(), toD3Node),
+                  links: map(this.getEdges(), toD3Edge),
+              }
+            : {
+                  nodes: map(this.getNodes(), toGraphinNode),
+                  edges: map(this.getEdges(), toGraphinEdge),
+              };
     }
 }

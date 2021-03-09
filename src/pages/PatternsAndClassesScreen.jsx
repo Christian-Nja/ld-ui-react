@@ -5,6 +5,8 @@ import List from "../components/KnowledgeGraph/List";
 import ODPReactorContainer from "../components/layout/ODPReactorContainer";
 import { useLayoutCtx } from "../layout/LayoutCtx/useLayoutCtx";
 import VisualGraph from "../components/KnowledgeGraph/VisualGraph";
+import { MobileVisualGraph } from "../components/KnowledgeGraph/MobileVisualGraph";
+import { useTouch } from "../components/hooks/ld-ui-hooks";
 import AlertBox from "../components/KnowledgeGraph/AlertBox";
 
 import PatternFilter from "../components/filters/facets/PatternFilter";
@@ -17,8 +19,11 @@ import GraphHelpBox from "../components/KnowledgeGraph/GraphHelpBox";
 
 export default function PatternsAndClassesScreen({ filteredKnowledgeGraph }) {
     const { layoutOptions } = useLayoutCtx();
+    const { isTouch } = useTouch();
 
     const kg = filteredKnowledgeGraph !== null;
+
+    console.log("Istouch:", isTouch);
 
     return (
         <ODPReactorContainer>
@@ -33,9 +38,15 @@ export default function PatternsAndClassesScreen({ filteredKnowledgeGraph }) {
                             title="Views"
                         /> // queste pagine dovrebbero andare fuori dalla lib
                     )}
-                    {kg && (
+                    {kg && !isTouch ? (
                         <VisualGraph
                             visualGraph={filteredKnowledgeGraph.toVisualGraph()}
+                        />
+                    ) : (
+                        <MobileVisualGraph
+                            visualGraph={filteredKnowledgeGraph.toVisualGraph(
+                                true
+                            )}
                         />
                     )}
                 </Grid.Column>

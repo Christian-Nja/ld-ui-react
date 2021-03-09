@@ -3,6 +3,33 @@ import { useState, useEffect } from "react";
 /* LD-UI-REACT
 _____________________________________________________________ */
 
+export function useTouch() {
+    const [isTouch, setIsTouch] = useState(isTouchDevice());
+
+    useEffect(() => {
+        function handleResize() {
+            console.log("I should handle resize");
+            const isStillTouch = isTouchDevice();
+            console.log("touch:", isStillTouch);
+            if (isTouch !== isStillTouch) {
+                setIsTouch(isStillTouch);
+            }
+        }
+
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+    return { isTouch };
+}
+
+function isTouchDevice() {
+    return (
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        navigator.msMaxTouchPoints > 0
+    );
+}
+
 // to refactor you need to initialize the state outside o KG and pass the context, setContext from there
 export function useHelp(context, setContext, message) {
     const setMessage = () => {
