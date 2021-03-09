@@ -15,13 +15,13 @@ export class FilterPatternStrategy {
             return true;
         }
         // no view selected return every resource
-        if (
-            !some(this.patterns, (pattern) => {
-                return pattern.checked === true;
-            })
-        ) {
-            return true;
-        }
+        // if (
+        //     !some(this.patterns, (pattern) => {
+        //         return pattern.checked === true;
+        //     })
+        // ) {
+        //     return true;
+        // }
         const index = fromPairs(
             map(this.patterns, (x, i) => [x.uri, x.checked])
         );

@@ -33,8 +33,8 @@ export default function ViewFilter({
                 defaultAvailableViews.push({
                     uri: patternInstance.type,
                     label: patternInstance.typeLabel,
-                    checked: false,
-                }); // initialized with default checked value to false
+                    checked: true,
+                }); // initialized with default checked value to true
             }
         });
     });
@@ -62,11 +62,12 @@ export default function ViewFilter({
     //     conceptViewConfigRepository.read(classUri) || {}
     // );
     return (
-        <div style={{ marginLeft: 70, marginTop: 20 }}>
+        <div style={{ marginTop: 20 }}>
             <ViewController
                 styles={{
                     checkboxContainer: {
                         marginBottom: 20,
+                        paddingLeft: 70,
                     },
                     checkboxLabel: {
                         fontSize: 20,
@@ -91,6 +92,32 @@ export default function ViewFilter({
                         }
                     });
                     setAvailableViews(newAvailableViews);
+                }}
+                onSelectAll={() => {
+                    if (
+                        some(availableViews, (view) => {
+                            return view.checked === false;
+                        })
+                    ) {
+                        const newAvailableViews = clone(availableViews);
+                        forEach(availableViews, (availableView) => {
+                            availableView.checked = true;
+                        });
+                        setAvailableViews(newAvailableViews);
+                    }
+                }}
+                onDeselectAll={() => {
+                    if (
+                        some(availableViews, (view) => {
+                            return view.checked === true;
+                        })
+                    ) {
+                        const newAvailableViews = clone(availableViews);
+                        forEach(availableViews, (availableView) => {
+                            availableView.checked = false;
+                        });
+                        setAvailableViews(newAvailableViews);
+                    }
                 }}
             />
         </div>

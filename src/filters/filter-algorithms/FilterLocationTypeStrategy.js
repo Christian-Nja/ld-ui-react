@@ -13,7 +13,7 @@ export class FilterLocationTypeStrategy {
         // no view selected return every resource
         if (
             !some(this.locations, (location) => {
-                return location.checked === true;
+                return location.checked === false;
             })
         ) {
             return true;

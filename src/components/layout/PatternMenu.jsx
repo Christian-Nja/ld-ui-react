@@ -6,17 +6,11 @@ import LayoutToggle from "../KnowledgeGraph/LayoutToggle";
 
 import { useLayoutCtx } from "../../layout/LayoutCtx/useLayoutCtx";
 
-import { useBinaryArrayState, useBinaryState } from "../hooks/ld-ui-hooks";
-import Toggle from "react-toggle";
+import { useTouch } from "../hooks/ld-ui-hooks";
 
 import "react-toggle/style.css"; // for ES6 modules
 
 import "./PatternMenu.css";
-
-import { some } from "lodash";
-import { useFilterCtx } from "../../filters/FilterCtx/useFilterCtx";
-
-const greenText = "#14d014";
 
 export default function PatternMenu({
     showLayoutButton = true,
@@ -27,11 +21,7 @@ export default function PatternMenu({
 
     const exampleMenuOpen = layoutOptions.exampleMenuOpen;
 
-    const {
-        setInvertedFilterStateById,
-        filters,
-        getFilterById,
-    } = useFilterCtx();
+    const { isTouch } = useTouch();
 
     const menuStyle = {
         // position: "fixed",
@@ -206,15 +196,17 @@ export default function PatternMenu({
                         </Menu.Menu>
                     </Menu.Item>
                 )}
-                {showLayoutButton && layoutOptions.layout === "graph" && (
-                    <LayoutSelector
-                        value={graphinLayoutHandler.name}
-                        onClick={(newLayout) => {
-                            graphinLayoutHandler.setLayout(newLayout);
-                        }}
-                        menuOpen={exampleMenuOpen}
-                    ></LayoutSelector>
-                )}
+                {showLayoutButton &&
+                    layoutOptions.layout === "graph" &&
+                    !isTouch && (
+                        <LayoutSelector
+                            value={graphinLayoutHandler.name}
+                            onClick={(newLayout) => {
+                                graphinLayoutHandler.setLayout(newLayout);
+                            }}
+                            menuOpen={exampleMenuOpen}
+                        ></LayoutSelector>
+                    )}
             </Menu>
         </div>
     );

@@ -29,7 +29,7 @@ export default function LocationTypeFilter({
             defaultLocations.push({
                 uri: r.locationType,
                 label: r.locationType,
-                checked: false,
+                checked: true,
             });
         }
     });
@@ -52,10 +52,11 @@ export default function LocationTypeFilter({
     }, [locations]);
 
     return (
-        <div style={{ marginLeft: 40, marginTop: 20 }}>
+        <div style={{ marginTop: 20 }}>
             <ViewController
                 styles={{
                     checkboxContainer: {
+                        paddingLeft: 40,
                         marginBottom: 20,
                     },
                     checkboxLabel: {
@@ -81,6 +82,32 @@ export default function LocationTypeFilter({
                         }
                     });
                     setLocations(newLocations);
+                }}
+                onSelectAll={() => {
+                    if (
+                        some(locations, (loc) => {
+                            return loc.checked === false;
+                        })
+                    ) {
+                        const newLocations = clone(locations);
+                        forEach(newLocations, (location) => {
+                            location.checked = true;
+                        });
+                        setLocations(newLocations);
+                    }
+                }}
+                onDeselectAll={() => {
+                    if (
+                        some(locations, (loc) => {
+                            return loc.checked === true;
+                        })
+                    ) {
+                        const newLocations = clone(locations);
+                        forEach(newLocations, (location) => {
+                            location.checked = false;
+                        });
+                        setLocations(newLocations);
+                    }
                 }}
             />
         </div>

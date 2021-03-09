@@ -33,7 +33,11 @@ export default function ViewController({
     styles = {},
     classes = {},
     onViewConfigurationChange = (clickedUri, checked) => {},
+    onSelectAll = () => {},
+    onDeselectAll = () => {},
+    showSelectAllButtons = true,
 }) {
+    if (availableViews.length < 2) showSelectAllButtons = false;
     return (
         <div
             style={{ ...styles.controllerContainer }}
@@ -49,7 +53,7 @@ export default function ViewController({
                             type="checkbox"
                             id={`view-checkbox-${availableView.uri}`}
                             style={{ ...styles.checkboxButton }}
-                            defaultChecked={availableView.checked}
+                            checked={availableView.checked}
                             name={availableView.label}
                             value={availableView.uri}
                             onChange={(e) => {
@@ -69,6 +73,54 @@ export default function ViewController({
                     </div>
                 );
             })}
+            {showSelectAllButtons && (
+                <div
+                    style={{
+                        border: "1px solid",
+                        borderRadius: 2,
+                        ...styles.selectAllButtonContainer,
+                    }}
+                >
+                    <div
+                        style={{
+                            fontSize: 15,
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-around",
+                        }}
+                    >
+                        <div
+                            style={{
+                                cursor: "pointer",
+                                margin: "auto",
+                                paddingBottom: 15,
+                                paddingTop: 15,
+                                flexGrow: 1,
+                                borderRight: "1px solid",
+                                textAlign: "center",
+                                ...styles.selectAllButton,
+                            }}
+                            onClick={onSelectAll}
+                        >
+                            Select All
+                        </div>
+                        <div
+                            style={{
+                                cursor: "pointer",
+                                margin: "auto",
+                                paddingBottom: 15,
+                                paddingTop: 15,
+                                flexGrow: 1,
+                                textAlign: "center",
+                                ...styles.deSelectAllButton,
+                            }}
+                            onClick={onDeselectAll}
+                        >
+                            Deselect All
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
