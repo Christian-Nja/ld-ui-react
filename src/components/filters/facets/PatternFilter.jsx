@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ViewController from "../../KnowledgeGraph/ViewController";
 import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
 import useFilter from "../../../filters/FilterCtx/useFilter";
-import { forEach, clone, map } from "lodash";
+import { forEach, clone, map, some } from "lodash";
 import { FilterPatternStrategy } from "../../../filters/filter-algorithms/FilterPatternStrategy";
 
 export default function PatternFilter({ id = "patternPie", isActive = true }) {
@@ -45,11 +45,12 @@ export default function PatternFilter({ id = "patternPie", isActive = true }) {
     }, [checkboxItemPatterns]);
 
     return (
-        <div style={{ marginLeft: 40, marginTop: 20 }}>
+        <div style={{ marginTop: 20 }}>
             <ViewController
                 styles={{
                     checkboxContainer: {
                         marginBottom: 20,
+                        paddingLeft: 40,
                     },
                     checkboxLabel: {
                         fontSize: 20,
@@ -74,6 +75,36 @@ export default function PatternFilter({ id = "patternPie", isActive = true }) {
                         }
                     });
                     setCheckboxItemPatterns(newCheckboxItemPatterns);
+                }}
+                onSelectAll={() => {
+                    if (
+                        some(checkboxItemPatterns, (p) => {
+                            return p.checked === false;
+                        })
+                    ) {
+                        const newCheckboxItemPatterns = clone(
+                            checkboxItemPatterns
+                        );
+                        forEach(newCheckboxItemPatterns, (checkboxItem) => {
+                            checkboxItem.checked = true;
+                        });
+                        setCheckboxItemPatterns(newCheckboxItemPatterns);
+                    }
+                }}
+                onDeselectAll={() => {
+                    if (
+                        some(checkboxItemPatterns, (p) => {
+                            return p.checked === true;
+                        })
+                    ) {
+                        const newCheckboxItemPatterns = clone(
+                            checkboxItemPatterns
+                        );
+                        forEach(newCheckboxItemPatterns, (checkboxItem) => {
+                            checkboxItem.checked = false;
+                        });
+                        setCheckboxItemPatterns(newCheckboxItemPatterns);
+                    }
                 }}
             />
         </div>
