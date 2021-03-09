@@ -87,6 +87,8 @@
         "lodash": "^4.17.20",
         "lodash-contrib": "^4.1200.1",
         "nanoid": "^3.1.20",
+        "ngraph.forcelayout": "^3.0.1",
+        "ngraph.graph": "^19.1.0",
         "overlapping-marker-spiderfier-leaflet": "^0.2.7",
         "pondjs": "^0.8.9",
         "prop-types": "^15.7.2",

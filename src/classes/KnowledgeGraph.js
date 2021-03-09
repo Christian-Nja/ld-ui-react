@@ -1,5 +1,6 @@
 import { MultiDirectedGraph } from "graphology";
 import { map, filter } from "lodash";
+import { LayoutProvider } from "./LayoutProvider";
 import ResourceDataMapper from "./ResourceDataMapper";
 
 /**
@@ -27,7 +28,11 @@ export default class KnowledgeGraph {
                 property.getUri(),
                 r1Uri,
                 r2Uri,
-                this.dataMapper.toJson(property)
+                this.dataMapper.toJson({
+                    ...property,
+                    source: r1Uri,
+                    target: r2Uri,
+                })
             );
         }
     }
@@ -54,6 +59,12 @@ export default class KnowledgeGraph {
         const uris = this.getNodes();
         return map(uris, (uri) => {
             return this.getResource(uri);
+        });
+    }
+    getProperties() {
+        const uris = this.getEdges();
+        return map(uris, (uri) => {
+            return this.getProperty(uri);
         });
     }
     getPatterns() {
@@ -154,6 +165,7 @@ export default class KnowledgeGraph {
         return this.getResources();
     }
     toVisualGraph(mobile = false) {
+        const layoutProvider = new LayoutProvider(this.getProperties());
         const toGraphinNode = (uri) => {
             const resource = this.getResource(uri);
             return {
@@ -258,15 +270,19 @@ export default class KnowledgeGraph {
         };
         const toD3Node = (uri) => {
             const resource = this.getResource(uri);
+            const coordinates = layoutProvider.getCoordinates(uri);
             return {
                 id: resource.getUri(),
                 label: resource.getLabel(),
-                color: resource.getProperty("nodeColor"),
-                size: resource.getProperty("nodeSize") * 20,
+                color: resource.getProperty("nodeMobileColor"),
+                size: resource.getProperty("nodeMobileSize"),
                 opacity: 0.8,
-                strokeWidth: 1.5,
+                strokeWidth: 1,
+                strokeColor: resource.getProperty("nodeBorderMobileColor"),
                 symbolType: resource.getProperty("mobileNodeType"),
                 data: this.dataMapper.toJson(resource),
+                x: coordinates.x * 10 + 500,
+                y: coordinates.y * 10 + 400,
             };
         };
         const toD3Edge = (uri) => {
@@ -285,9 +301,7 @@ export default class KnowledgeGraph {
 
         return mobile
             ? {
-                  nodes: decorateGraphNodesWithInitialPositioning(
-                      map(this.getNodes(), toD3Node)
-                  ),
+                  nodes: map(this.getNodes(), toD3Node),
                   links: map(this.getEdges(), toD3Edge),
               }
             : {
@@ -295,23 +309,4 @@ export default class KnowledgeGraph {
                   edges: map(this.getEdges(), toGraphinEdge),
               };
     }
-}
-
-// https://github.com/anvaka/ngraph.forcelayout
-
-/**
- * This function decorates nodes and links with positions. The motivation
- * for this function its to set `config.staticGraph` to true on the first render
- * call, and to get nodes and links statically set to their initial positions.
- * @param  {Object} nodes nodes and links with minimalist structure.
- * @return {Object} the graph where now nodes containing (x,y) coords.
- */
-function decorateGraphNodesWithInitialPositioning(nodes) {
-    return map(nodes, (n) => {
-        return {
-            ...n,
-            x: n.x || Math.floor(Math.random() * 500),
-            y: n.y || Math.floor(Math.random() * 500),
-        };
-    });
 }
