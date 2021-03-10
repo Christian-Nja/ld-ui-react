@@ -118,7 +118,9 @@ export default function List({
                     }}
                     id={resources[index].getUri()}
                 >
-                    {keys.map((k) => {
+                    {keys.map((keyObject) => {
+                        const k = keyObject.id;
+                        const kUri = keyObject.uri;
                         columnId++;
                         if (resources[index])
                             return (
@@ -136,6 +138,19 @@ export default function List({
                                               `${k}MeasurementUnit`
                                           ]
                                         : null}
+                                    {kUri && resources[index][kUri] ? (
+                                        <div
+                                            onClick={resources[
+                                                index
+                                            ].onListEntityClick(
+                                                resources[index][kUri]
+                                            )}
+                                        >
+                                            <Icon name="linkify" />
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
                                 </div>
                             );
                     })}
@@ -145,32 +160,6 @@ export default function List({
     };
 
     let headerColumnId = -1;
-
-    // useEffect(() => {
-    //     const clickedListElement = window.sessionStorage.getItem(
-    //         "clickedListElement"
-    //     );
-    //     const scrollToThis = document.getElementById(clickedListElement);
-    //     let activateScrollInterval;
-    //     if (scrollToThis) {
-    //         if (!scrolledToElement) {
-    //             activateScrollInterval = setInterval(() => {
-    //                 console.log("Scrolled:", scrollToThis);
-    //                 scrollToThis.scrollIntoView({
-    //                     behavior: "smooth",
-    //                     block: "center",
-    //                 });
-    //                 scrollToThis.classList.add("highlight-scroll");
-    //                 setScrolledToElement(true);
-    //             }, 500);
-    //         }
-    //     }
-    //     if (activateScrollInterval) {
-    //         return () => {
-    //             clearInterval(activateScrollInterval);
-    //         };
-    //     }
-    // });
 
     return (
         <div
