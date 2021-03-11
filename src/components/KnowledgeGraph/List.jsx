@@ -109,13 +109,10 @@ export default function List({
                     key={key}
                     className="table-item body-row "
                     // style={key % 2 == 0 ? { backgroundColor: "#f5f5f5" } : null}
-                    onClick={() => {
-                        // window.sessionStorage.setItem(
-                        //     resources[index].getUri()
-                        // );
-                        console.log("CLICKED LIST ITEM", resources[index]);
-                        resources[index].listProperties.listItemClick();
-                    }}
+                    // onClick={() => {
+                    //     console.log("CLICKED LIST ITEM", resources[index]);
+                    //     resources[index].listProperties.listItemClick();
+                    // }}
                     id={resources[index].getUri()}
                 >
                     {keys.map((keyObject) => {
@@ -128,6 +125,18 @@ export default function List({
                                     className={`body-cell column-cell-${columnId}`}
                                     onMouseEnter={highlightRow}
                                     onMouseOut={clearRowLight}
+                                    style={
+                                        kUri && resources[index][kUri]
+                                            ? { cursor: "pointer" }
+                                            : {}
+                                    }
+                                    onClick={
+                                        kUri &&
+                                        resources[index][kUri] &&
+                                        resources[index].onListEntityClick(
+                                            resources[index][kUri]
+                                        )
+                                    }
                                 >
                                     {resources[index][k]
                                         ? resources[index][k]
@@ -139,13 +148,7 @@ export default function List({
                                           ]
                                         : null}
                                     {kUri && resources[index][kUri] ? (
-                                        <div
-                                            onClick={resources[
-                                                index
-                                            ].onListEntityClick(
-                                                resources[index][kUri]
-                                            )}
-                                        >
+                                        <div>
                                             <Icon name="linkify" />
                                         </div>
                                     ) : (
