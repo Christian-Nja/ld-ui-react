@@ -109,16 +109,15 @@ export default function List({
                     key={key}
                     className="table-item body-row "
                     // style={key % 2 == 0 ? { backgroundColor: "#f5f5f5" } : null}
-                    onClick={() => {
-                        // window.sessionStorage.setItem(
-                        //     resources[index].getUri()
-                        // );
-                        console.log("CLICKED LIST ITEM", resources[index]);
-                        resources[index].listProperties.listItemClick();
-                    }}
+                    // onClick={() => {
+                    //     console.log("CLICKED LIST ITEM", resources[index]);
+                    //     resources[index].listProperties.listItemClick();
+                    // }}
                     id={resources[index].getUri()}
                 >
-                    {keys.map((k) => {
+                    {keys.map((keyObject) => {
+                        const k = keyObject.id;
+                        const kUri = keyObject.uri;
                         columnId++;
                         if (resources[index])
                             return (
@@ -126,6 +125,18 @@ export default function List({
                                     className={`body-cell column-cell-${columnId}`}
                                     onMouseEnter={highlightRow}
                                     onMouseOut={clearRowLight}
+                                    style={
+                                        kUri && resources[index][kUri]
+                                            ? { cursor: "pointer" }
+                                            : {}
+                                    }
+                                    onClick={
+                                        kUri &&
+                                        resources[index][kUri] &&
+                                        resources[index].onListEntityClick(
+                                            resources[index][kUri]
+                                        )
+                                    }
                                 >
                                     {resources[index][k]
                                         ? resources[index][k]
@@ -136,6 +147,13 @@ export default function List({
                                               `${k}MeasurementUnit`
                                           ]
                                         : null}
+                                    {kUri && resources[index][kUri] ? (
+                                        <div>
+                                            <Icon name="linkify" />
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
                                 </div>
                             );
                     })}
@@ -145,32 +163,6 @@ export default function List({
     };
 
     let headerColumnId = -1;
-
-    // useEffect(() => {
-    //     const clickedListElement = window.sessionStorage.getItem(
-    //         "clickedListElement"
-    //     );
-    //     const scrollToThis = document.getElementById(clickedListElement);
-    //     let activateScrollInterval;
-    //     if (scrollToThis) {
-    //         if (!scrolledToElement) {
-    //             activateScrollInterval = setInterval(() => {
-    //                 console.log("Scrolled:", scrollToThis);
-    //                 scrollToThis.scrollIntoView({
-    //                     behavior: "smooth",
-    //                     block: "center",
-    //                 });
-    //                 scrollToThis.classList.add("highlight-scroll");
-    //                 setScrolledToElement(true);
-    //             }, 500);
-    //         }
-    //     }
-    //     if (activateScrollInterval) {
-    //         return () => {
-    //             clearInterval(activateScrollInterval);
-    //         };
-    //     }
-    // });
 
     return (
         <div

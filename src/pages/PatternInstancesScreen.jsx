@@ -20,6 +20,7 @@ import PatternInstancesHelpBox from "../components/KnowledgeGraph/PatternInstanc
 import LocationTypeFilter from "../components/filters/facets/LocationTypeFilter";
 import StartTimeIntervalFilter from "../components/filters/facets/StartTimeIntervalFilter";
 import EndTimeIntervalFilter from "../components/filters/facets/EndTimeIntervalFilter";
+import SinglePropertySearchBarFilter from "../components/filters/facets/SinglePropertySearchBarFilter";
 
 export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
     const { knowledgeGraph } = useKGCtx();
@@ -62,6 +63,17 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
             return false;
         }
     });
+
+    const thereIsCulturalPropertyToFilter = hasResourceToFilter(
+        resources,
+        (resource) => {
+            if (resource.culturalProperty) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    );
 
     const measurementSet = [
         "height",
@@ -142,6 +154,14 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                                 title="On a map"
                                 id="geo"
                                 description="Draw an area on the map to show only cultural properties located in that area."
+                            />
+                        )}
+                        {thereIsCulturalPropertyToFilter && (
+                            <SinglePropertySearchBarFilter
+                                title="Cultural Property"
+                                propertyToSearch="culturalProperty"
+                                searchBarPlaceholder="Search"
+                                description="Search a specific cultural property."
                             />
                         )}
                         {thereIsTimeToFilter && (

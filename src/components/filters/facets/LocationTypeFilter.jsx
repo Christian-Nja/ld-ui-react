@@ -21,18 +21,21 @@ export default function LocationTypeFilter({
 
     const defaultLocations = [];
     forEach(resources, (r) => {
-        if (
-            !some(defaultLocations, (loc) => {
-                return loc.label === r.locationType;
-            })
-        ) {
-            defaultLocations.push({
-                uri: r.locationType,
-                label: r.locationType,
-                checked: true,
-            });
+        if (r.locationType && r.locationType != "") {
+            if (
+                !some(defaultLocations, (loc) => {
+                    return loc.label === r.locationType;
+                })
+            ) {
+                defaultLocations.push({
+                    uri: r.locationType,
+                    label: r.locationType,
+                    checked: true,
+                });
+            }
         }
     });
+    console.log(defaultLocations);
 
     const [locations, setLocations] = useState(
         (filter && filter.getStrategyOption("locations")) || defaultLocations

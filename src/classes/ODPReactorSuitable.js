@@ -39,13 +39,22 @@ export default class ODPReactorSuitable {
     onListItemClick() {
         if (this.listProperties) return this.listProperties.listItemClick;
     }
+    onListEntityClick(entityURI) {
+        if (this.listProperties)
+            return () => {
+                this.listProperties.listEntityClick(entityURI);
+            };
+    }
     getListKeys() {
         if (this.listProperties)
             return map(this.listProperties.listKeys, (keysObject) => {
-                return keysObject.id;
+                return keysObject;
             });
     }
-    getHeaderLabels(keyIds) {
+    getHeaderLabels(keys) {
+        const keyIds = keys.map((k) => {
+            return k.id;
+        });
         if (this.listProperties) {
             return map(keyIds, (keyId) => {
                 const keyObjectWithIdK = filter(
