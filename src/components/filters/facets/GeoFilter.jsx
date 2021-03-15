@@ -82,7 +82,7 @@ export default function GeoFilter({ id = "geo", options = {} }) {
     const resources = knowledgeGraph.getResources();
 
     const initialFilterOptions = {
-        active: false,
+        active: true,
         filterCallback: filterAlgorithm,
     };
 
