@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import ReactList from "react-list";
 
 import "./List.css";
-import { Icon } from "semantic-ui-react";
+import { Icon, Popup } from "semantic-ui-react";
 
 import SearchBarFilter from "../filters/facets/SearchBarFilter";
-import { find, forEach } from "lodash";
+import { find, forEach, orderBy, map, cloneDeep, uniqBy } from "lodash";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 /**
@@ -20,11 +20,13 @@ const highlightRow = (e) => {
     let columnClass = e.target.classList[1];
     let columnCells = document.getElementsByClassName(columnClass);
     for (let c of columnCells) {
-        let isHeader = c.classList[0] === "header-cell";
-        if (isHeader) {
-            c.classList.add("header-column-hover");
-        } else {
-            c.classList.add("column-hover");
+        if (typeof c !== "undefined") {
+            let isHeader = c.classList[0] === "header-cell";
+            if (isHeader) {
+                c.classList.add("header-column-hover");
+            } else {
+                c.classList.add("column-hover");
+            }
         }
     }
 };
@@ -48,7 +50,55 @@ export default function List({
     itemTooltip = "click to explore resources",
     listContainerStyle = {},
 }) {
-    const resources = list;
+    const [resources, setResources] = useState(list);
+    const [sortResourceBy, setSortBy] = useState({
+        uri: undefined,
+        label: undefined,
+        id: undefined,
+    });
+
+    const sortingFunction = (resourcesList) => {
+        let orderByKey = sortResourceBy.id;
+        return orderBy(
+            resourcesList,
+            [
+                (resourcesList) => {
+                    if (resourcesList[orderByKey])
+                        if (typeof resourcesList[orderByKey] === "string") {
+                            return resourcesList[orderByKey].toLowerCase();
+                        }
+                    return resourcesList[orderByKey];
+                },
+            ],
+            ["asc"]
+        );
+    };
+
+    const taggingFunction = (resourcesList) => {
+        let resourceData = "";
+
+        const newResources = [];
+        forEach(resourcesList, (r) => {
+            let orderByKey = sortResourceBy.uri
+                ? sortResourceBy.uri
+                : sortResourceBy.id;
+
+            if (r[orderByKey] !== resourceData) {
+                resourceData = r[orderByKey];
+                r.initialRow = true;
+                newResources.push(r);
+            } else {
+                r.initalRow = false;
+                newResources.push(r);
+            }
+        });
+        return newResources;
+    };
+
+    useEffect(() => {
+        const newResources = taggingFunction(sortingFunction(cloneDeep(list)));
+        setResources(newResources);
+    }, [sortResourceBy, list]);
 
     const renderMoreData = () => {
         setResourcesToRenderCount(resourcesToRenderCount + 20);
@@ -105,7 +155,7 @@ export default function List({
         if (resources.length > 0) {
             return (
                 <div
-                    title={itemTooltip}
+                    // title={itemTooltip}
                     key={key}
                     className="table-item body-row "
                     // style={key % 2 == 0 ? { backgroundColor: "#f5f5f5" } : null}
@@ -114,6 +164,13 @@ export default function List({
                     //     resources[index].listProperties.listItemClick();
                     // }}
                     id={resources[index].getUri()}
+                    style={
+                        resources[index].initialRow
+                            ? {
+                                  borderTop: "1px solid black",
+                              }
+                            : {}
+                    }
                 >
                     {keys.map((keyObject) => {
                         const k = keyObject.id;
@@ -139,7 +196,12 @@ export default function List({
                                     }
                                 >
                                     {resources[index][k]
-                                        ? resources[index][k]
+                                        ? truncate(
+                                              resources[index][k],
+                                              Number.parseInt(
+                                                  160 / headerLabels.length
+                                              )
+                                          )
                                         : "--"}
                                     {resources[index][`${k}MeasurementUnit`]
                                         ? " " +
@@ -213,17 +275,43 @@ export default function List({
                                 style={{ marginRight: 50 }}
                             >
                                 Showing 1 to {resources.length} of{" "}
-                                {resources.length} resources
+                                {resources.length} resources |{" "}
+                                {
+                                    uniqBy(
+                                        list,
+                                        sortResourceBy && sortResourceBy.uri
+                                            ? sortResourceBy.uri
+                                            : sortResourceBy.id
+                                    ).length
+                                }{" "}
+                                {sortResourceBy.label
+                                    ? `different ${sortResourceBy.label.toLowerCase()}`
+                                    : "different view"}
                             </div>
                         </div>
                         <div className="header" id="list-header">
                             <div className="header-row">
-                                {headerLabels.map((h) => {
+                                {headerLabels.map((hk) => {
+                                    const h = hk.label;
                                     headerColumnId++;
                                     // get keys from first node
                                     return (
                                         <div
-                                            className={`header-cell column-cell-${headerColumnId}`}
+                                            className={`header-cell column-cell-${headerColumnId} `}
+                                            onClick={() => {
+                                                setSortBy(hk);
+                                            }}
+                                            style={
+                                                hk.id === sortResourceBy.id
+                                                    ? {
+                                                          backgroundColor:
+                                                              "rgb(108, 122, 224)",
+                                                          cursor: "pointer",
+                                                      }
+                                                    : {
+                                                          cursor: "pointer",
+                                                      }
+                                            }
                                         >
                                             {h}
                                         </div>
@@ -285,3 +373,18 @@ const scrollToTop = () => {
 //   top: elementPosition - 10, //add your necessary value
 //   behavior: "smooth"  //Smooth transition to roll
 // });
+
+function truncate(s, maxLength = 40) {
+    if (s.length > maxLength)
+        return (
+            <Popup
+                trigger={<div>{s.substring(0, maxLength)} ...</div>}
+                mouseEnterDelay={0}
+                on="hover"
+                content={`${s}`}
+                inverted
+                position="bottom left"
+            />
+        );
+    else return s;
+}
