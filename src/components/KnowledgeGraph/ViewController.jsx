@@ -31,7 +31,11 @@ import { clone, filter, find } from "lodash";
 export default function ViewController({
     availableViews = [],
     styles = {},
-    classes = {},
+    classes = {
+        controllerContainer: "",
+        checkboxContainer: "",
+        checkboxLabel: "",
+    },
     onViewConfigurationChange = (clickedUri, checked) => {},
     onSelectAll = () => {},
     onDeselectAll = () => {},

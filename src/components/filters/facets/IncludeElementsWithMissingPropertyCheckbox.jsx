@@ -2,8 +2,8 @@ import React from "react";
 import { nanoid } from "nanoid";
 
 export function IncludeElementsWithMissingPropertyCheckbox({
-    styles = {},
-    classes = {},
+    styles = { checkbox: {}, checkboxLabel: {} },
+    classes = { checkbox: "", checkboxLabel: "" },
     onChange,
     checked,
     propertyName = "property",

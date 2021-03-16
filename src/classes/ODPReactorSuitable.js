@@ -63,7 +63,7 @@ export default class ODPReactorSuitable {
                         return keyObject.id === keyId;
                     }
                 )[0];
-                return keyObjectWithIdK.label;
+                return keyObjectWithIdK;
             });
         }
     }
