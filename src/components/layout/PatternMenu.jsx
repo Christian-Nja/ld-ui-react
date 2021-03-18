@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, Icon, Popup } from "semantic-ui-react";
+import { Menu, Icon, Popup, Divider } from "semantic-ui-react";
 
 import LayoutSelector from "../KnowledgeGraph/LayoutSelector";
 import LayoutToggle from "../KnowledgeGraph/LayoutToggle";
@@ -57,50 +57,56 @@ export default function PatternMenu({
                                 return (
                                     <Menu.Item
                                         key={index}
-                                        className={`menu-item filter-item filter-${child.props.id}`}
+                                        className={`menu-item filter-item filter-${
+                                            child.props.id
+                                        } ${
+                                            child.props.topBorder
+                                                ? "filter-item-border-top"
+                                                : ""
+                                        }`}
                                     >
                                         <div
                                             style={{
                                                 display: "flex",
                                                 justifyContent: "space-between",
                                                 alignItems: "center",
-                                                marginBottom: 5,
-                                                paddingLeft: 30,
+                                                marginBottom: 25,
                                                 marginTop: 10,
-                                                marginBottom: 10,
                                             }}
                                         >
-                                            <Popup
-                                                trigger={
-                                                    <div
-                                                        className={
-                                                            // getFilterById(
-                                                            //     child.props.id
-                                                            // ) &&
-                                                            // getFilterById(
-                                                            //     child.props.id
-                                                            // ).isActive()
-                                                            //     ? "active-filter filter-title"
-                                                            //     : "filter-title"
-                                                            "filter-title"
-                                                        }
-                                                        // style={{
-                                                        //     cursor: "pointer",
-                                                        // }}
-                                                        // onClick={() => {
-                                                        //     setInvertedFilterStateById(
-                                                        //         child.props.id
-                                                        //     );
-                                                        // }}
-                                                    >
-                                                        {child.props.title}
-                                                    </div>
+                                            {/* <Popup
+                                                trigger={ */}
+
+                                            <div
+                                                className={
+                                                    // getFilterById(
+                                                    //     child.props.id
+                                                    // ) &&
+                                                    // getFilterById(
+                                                    //     child.props.id
+                                                    // ).isActive()
+                                                    //     ? "active-filter filter-title"
+                                                    //     : "filter-title"
+                                                    "filter-title"
                                                 }
+                                                // style={{
+                                                //     cursor: "pointer",
+                                                // }}
+                                                // onClick={() => {
+                                                //     setInvertedFilterStateById(
+                                                //         child.props.id
+                                                //     );
+                                                // }}
+                                            >
+                                                {child.props.title}
+                                            </div>
+
+                                            {/* }
                                                 mouseEnterDelay={500}
                                                 on="hover"
                                                 content="Enable/disable filter"
                                                 position="top center"
-                                            />
+                                            /> */}
                                             <div
                                                 className={
                                                     "toggle-help-container"
@@ -145,7 +151,12 @@ export default function PatternMenu({
                                                     content="Enable/disable filter"
                                                     position="top center"
                                                 /> */}
-                                                <div>
+                                                <div
+                                                    className={`filter-help-tooltip-${child.props.id}`}
+                                                    style={{
+                                                        cursor: "pointer",
+                                                    }}
+                                                >
                                                     <Popup
                                                         trigger={
                                                             <Icon
@@ -154,14 +165,13 @@ export default function PatternMenu({
                                                                 circular
                                                             />
                                                         }
-                                                        mouseEnterDelay={500}
-                                                        on="hover"
+                                                        on={["hover", "click"]}
                                                         content={
                                                             child.props
                                                                 .description ||
                                                             "Filter Data"
                                                         }
-                                                        position="right center"
+                                                        position="top left"
                                                     />
                                                 </div>
                                             </div>

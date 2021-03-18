@@ -11,7 +11,7 @@ import {
 } from "lodash";
 
 import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
-import { Icon } from "semantic-ui-react";
+import { Icon, Input } from "semantic-ui-react";
 import { FilterSearchBarStrategy } from "../../../filters/filter-algorithms/FilterSearchBarStrategy";
 
 const stringSimilarity = require("string-similarity");
@@ -118,13 +118,13 @@ export default function SearchBarFilter({
     };
 
     return (
-        <div className="search-component">
-            <Icon name="search" className="search-icon"></Icon>
-            <input
+        <div className="search-component" style={{ marginLeft: 20 }}>
+            <Input
+                icon="search"
                 className="search-item"
                 placeholder={searchBarPlaceholder}
                 onChange={handleInput}
-            ></input>
+            ></Input>
         </div>
     );
 }

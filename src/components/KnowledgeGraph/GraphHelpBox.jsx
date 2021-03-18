@@ -22,11 +22,11 @@ export default function GraphHelpBox() {
                 <div>
                     This visualisation shows you a summary of the entire
                     knowledge graph. <br /> Diamonds represent concepts (i.e.
-                    classes) and circles represent "views" on this entities.{" "}
+                    classes) and circles represent "views" on these concepts.{" "}
                     <br /> Only key concepts are visualised but you can
                     customise the visualisation to show additional ones. <br />{" "}
                     The presence of an edge between a concept and a view shows
-                    that that entity is involved in that view with a prominent
+                    that the concept is involved in that view with a prominent
                     role. <br /> Move the mouse over circles and diamonds to get
                     details about them and the data they contain. <br /> Double
                     click on any node of the graph to explore its content.{" "}
@@ -57,6 +57,20 @@ export default function GraphHelpBox() {
         {
             target: ".filters-menu-button",
             content: "Here you see the available filters",
+            locale: { skip: <strong aria-label="skip">End tutorial</strong> },
+            spotlightClicks: true,
+            styles: {
+                options: {
+                    zIndex: 10000,
+                },
+            },
+            placement: "left",
+            hideCloseButton: true,
+        },
+        {
+            target: ".filter-help-tooltip-patternPie",
+            content:
+                "Every filter has a specific behaviour. Mouse over the question mark to show a tooltip with explanations",
             locale: { skip: <strong aria-label="skip">End tutorial</strong> },
             spotlightClicks: true,
             styles: {
@@ -103,7 +117,7 @@ export default function GraphHelpBox() {
         {
             target: ".graph-tooltip-checkbox",
             content:
-                "Click here to disable or enable explanations when moving mouse over graph circles and diamonds",
+                "Click here to disable or enable the explanations that appear when your mouse moves over graph circles and diamonds",
             locale: { skip: <strong aria-label="skip">End tutorial</strong> },
             hideCloseButton: true,
         },

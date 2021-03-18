@@ -7,6 +7,7 @@ import { Icon, Popup } from "semantic-ui-react";
 import SearchBarFilter from "../filters/facets/SearchBarFilter";
 import { find, forEach, orderBy, map, cloneDeep, uniqBy } from "lodash";
 import InfiniteScroll from "react-infinite-scroll-component";
+import OutsideClickHandler from "react-outside-click-handler";
 
 /**
  * You can modify max-height to change table height and eventually remove max-height in
@@ -18,9 +19,9 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 const highlightRow = (e) => {
     let columnClass = e.target.classList[1];
-    let columnCells = document.getElementsByClassName(columnClass);
-    for (let c of columnCells) {
-        if (typeof c !== "undefined") {
+    if (columnClass !== "icon" && typeof columnClass !== "undefined") {
+        let columnCells = document.getElementsByClassName(columnClass);
+        for (let c of columnCells) {
             let isHeader = c.classList[0] === "header-cell";
             if (isHeader) {
                 c.classList.add("header-column-hover");
@@ -50,12 +51,14 @@ export default function List({
     itemTooltip = "click to explore resources",
     listContainerStyle = {},
 }) {
-    const [resources, setResources] = useState(list);
-    const [sortResourceBy, setSortBy] = useState({
+    const defaultSortBy = {
         uri: undefined,
         label: undefined,
         id: undefined,
-    });
+    };
+
+    const [resources, setResources] = useState(list);
+    const [sortResourceBy, setSortBy] = useState(defaultSortBy);
 
     const sortingFunction = (resourcesList) => {
         let orderByKey = sortResourceBy.id;
@@ -231,124 +234,135 @@ export default function List({
             style={{ ...defaultListContainerStyle, ...listContainerStyle }}
             id="list-container"
         >
-            <div style={{ fontFamily: "Montserrat-Medium" }}>
-                <div
-                    id="scroll-to-top-button"
-                    onClick={scrollToTop}
-                    style={{
-                        position: "absolute",
-                        left: -50,
-                        top: 380,
-                        cursor: "pointer",
-                    }}
-                >
-                    <div style={{ position: "fixed" }}>
-                        <Icon name="arrow alternate circle up" size="big" />
-                    </div>
-                </div>
-                <div>
-                    <h1
+            <OutsideClickHandler
+                onOutsideClick={() => {
+                    setSortBy(defaultSortBy);
+                }}
+            >
+                <div style={{ fontFamily: "Montserrat-Medium" }}>
+                    <div
+                        id="scroll-to-top-button"
+                        onClick={scrollToTop}
                         style={{
-                            backgroundColor: "#002933",
-                            fontSize: 18,
-                            color: "#fff",
-                            padding: 10,
-                            // borderRadius: "10px 10px 0px 0px",
-                            textTransform: "uppercase",
+                            position: "absolute",
+                            left: -50,
+                            top: 380,
+                            cursor: "pointer",
                         }}
-                        id="scroll-to-top"
                     >
-                        {title}
-                    </h1>
-                    <div id="table-header-container">
-                        <div
+                        <div style={{ position: "fixed" }}>
+                            <Icon name="arrow alternate circle up" size="big" />
+                        </div>
+                    </div>
+                    <div>
+                        <h1
                             style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "baseline",
+                                backgroundColor: "#002933",
+                                fontSize: 18,
+                                color: "#fff",
+                                padding: 10,
+                                // borderRadius: "10px 10px 0px 0px",
+                                textTransform: "uppercase",
                             }}
-                            id="search-container"
+                            id="scroll-to-top"
                         >
-                            <SearchBarFilter />
+                            {title}
+                        </h1>
+                        <div id="table-header-container">
                             <div
-                                className="result-display"
-                                style={{ marginRight: 50 }}
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "baseline",
+                                }}
+                                id="search-container"
                             >
-                                Showing 1 to {resources.length} of{" "}
-                                {resources.length} resources |{" "}
-                                {
-                                    uniqBy(
-                                        list,
-                                        sortResourceBy && sortResourceBy.uri
-                                            ? sortResourceBy.uri
-                                            : sortResourceBy.id
-                                    ).length
-                                }{" "}
-                                {sortResourceBy.label
-                                    ? `different ${sortResourceBy.label.toLowerCase()}`
-                                    : "different view"}
+                                <SearchBarFilter />
+                                <div
+                                    className="result-display"
+                                    style={{ marginRight: 50 }}
+                                >
+                                    Showing 1 to {resources.length} of{" "}
+                                    {resources.length} resources |{" "}
+                                    {
+                                        uniqBy(
+                                            list,
+                                            sortResourceBy && sortResourceBy.uri
+                                                ? sortResourceBy.uri
+                                                : sortResourceBy.id
+                                        ).length
+                                    }{" "}
+                                    {sortResourceBy.label
+                                        ? `different ${sortResourceBy.label.toLowerCase()}`
+                                        : ""}
+                                </div>
                             </div>
-                        </div>
-                        <div className="header" id="list-header">
-                            <div className="header-row">
-                                {headerLabels.map((hk) => {
-                                    const h = hk.label;
-                                    headerColumnId++;
-                                    // get keys from first node
-                                    return (
-                                        <div
-                                            className={`header-cell column-cell-${headerColumnId} `}
-                                            onClick={() => {
-                                                setSortBy(hk);
-                                            }}
-                                            style={
-                                                hk.id === sortResourceBy.id
-                                                    ? {
-                                                          backgroundColor:
-                                                              "rgb(108, 122, 224)",
-                                                          cursor: "pointer",
-                                                      }
-                                                    : {
-                                                          cursor: "pointer",
-                                                      }
-                                            }
-                                        >
-                                            {h}
-                                        </div>
-                                    );
-                                })}
+                            <div className="header" id="list-header">
+                                <div className="header-row">
+                                    {headerLabels.map((hk) => {
+                                        const h = hk.label;
+                                        headerColumnId++;
+                                        // get keys from first node
+                                        return (
+                                            <div
+                                                className={`header-cell column-cell-${headerColumnId} `}
+                                                onClick={() => {
+                                                    if (headerLabels.length > 1)
+                                                        setSortBy(hk);
+                                                }}
+                                                style={
+                                                    hk.id === sortResourceBy.id
+                                                        ? {
+                                                              backgroundColor:
+                                                                  "rgb(108, 122, 224)",
+                                                              cursor: "pointer",
+                                                          }
+                                                        : {
+                                                              cursor:
+                                                                  headerLabels.length >
+                                                                  1
+                                                                      ? "pointer"
+                                                                      : "",
+                                                          }
+                                                }
+                                            >
+                                                {h}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="table" id="list-table">
-                    <div className={"body"}>
-                        <InfiniteScroll
-                            dataLength={resourcesToRender.length}
-                            next={renderMoreData}
-                            hasMore={
-                                resourcesToRender.length < resources.length
-                                    ? true
-                                    : false
-                            }
-                            style={{ overflow: "hidden" }}
-                            loader={<h4>Loading...</h4>}
-                        >
-                            <ReactList
-                                // itemsRenderer={(items, ref) => renderTable(items, ref)}
-                                itemRenderer={renderRow}
-                                length={resourcesToRender.length}
-                                type="variable"
-                                // scrollTo={
-                                //     context.clickedListElement
-                                //         ? context.clickedListElement
-                                //         : null
-                                // }
-                            />
-                        </InfiniteScroll>
+                    <div className="table" id="list-table">
+                        <div className={"body"}>
+                            <InfiniteScroll
+                                dataLength={resourcesToRender.length}
+                                next={renderMoreData}
+                                hasMore={
+                                    resourcesToRender.length < resources.length
+                                        ? true
+                                        : false
+                                }
+                                style={{ overflow: "hidden" }}
+                                loader={<h4>Loading...</h4>}
+                            >
+                                <ReactList
+                                    // itemsRenderer={(items, ref) => renderTable(items, ref)}
+                                    itemRenderer={renderRow}
+                                    length={resourcesToRender.length}
+                                    type="variable"
+                                    // scrollTo={
+                                    //     context.clickedListElement
+                                    //         ? context.clickedListElement
+                                    //         : null
+                                    // }
+                                />
+                            </InfiniteScroll>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </OutsideClickHandler>
         </div>
     );
 }
