@@ -11,6 +11,8 @@ import { useTouch } from "../hooks/ld-ui-hooks";
 import "react-toggle/style.css"; // for ES6 modules
 
 import "./PatternMenu.css";
+import { useFilterCtx } from "../../filters/FilterCtx/useFilterCtx";
+import { every, map } from "lodash";
 
 export default function PatternMenu({
     showLayoutButton = true,
@@ -29,6 +31,19 @@ export default function PatternMenu({
         marginTop: 30,
     };
 
+    const { filters, notifyReset } = useFilterCtx();
+
+    const allFiltersHaveDefaultConfig =
+        filters &&
+        every(
+            map(filters, (f) => {
+                return { hasDefaultConfig: f.hasDefaultConfig() };
+            }),
+            ["hasDefaultConfig", true]
+        );
+
+    console.log("Filters should be defaults:", filters);
+
     return (
         <div
             style={{ ...menuStyle, ...style }}
@@ -40,14 +55,27 @@ export default function PatternMenu({
                         style={{
                             color: "white",
                             fontSize: 18,
+                            height: 20,
+                            width: "100%",
                         }}
                     >
-                        <Icon name="filter" className="filters-icon" />
                         <div
                             className={`menu-main-title ${"menu-main-open"} filters-title`}
+                            style={{ display: "flex" }}
                         >
-                            Filters
+                            <Icon name="filter" className="filters-icon" />
+                            <div style={{ marginLeft: 15 }}>Filters</div>
                         </div>
+                        {!allFiltersHaveDefaultConfig && (
+                            <div
+                                style={{ float: "right", cursor: "pointer" }}
+                                onClick={() => {
+                                    notifyReset();
+                                }}
+                            >
+                                <Icon name="check" /> Reset
+                            </div>
+                        )}
                     </div>
                     <Menu.Menu className={""}>
                         {children &&
@@ -187,7 +215,7 @@ export default function PatternMenu({
                     </Menu.Menu>
                 </Menu.Item>
                 {showLayoutButton && (
-                    <Menu.Item className="menu-item layouts-menu-button">
+                    <Menu.Item className="menu-item layouts-menu-button layout-item-border-top">
                         <div
                             style={{
                                 fontSize: 18,

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ViewController from "../../KnowledgeGraph/ViewController";
 import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
 import useFilter from "../../../filters/FilterCtx/useFilter";
-import { forEach, clone, map, some } from "lodash";
+import { forEach, clone, map, some, every } from "lodash";
 import { FilterPatternStrategy } from "../../../filters/filter-algorithms/FilterPatternStrategy";
 
 export default function PatternFilter({ id = "patternPie", isActive = true }) {
@@ -14,9 +14,13 @@ export default function PatternFilter({ id = "patternPie", isActive = true }) {
     const initialFilterOptions = {
         active: isActive,
         filterCallback: filterAlgorithm,
+        hasDefaultConfig: true,
     };
     // get filter component or create it for the first time
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+    const { filter, setFilterOptions, useResetFilter } = useFilter(
+        id,
+        initialFilterOptions
+    );
 
     // compute initial arguments for filter
     const defaultCheckboxItemPatterns = map(patterns, (p) => {
@@ -39,14 +43,25 @@ export default function PatternFilter({ id = "patternPie", isActive = true }) {
         if (filter) {
             setFilterOptions({
                 ...filter.options,
+                hasDefaultConfig: every(checkboxItemPatterns, [
+                    "checked",
+                    true,
+                ]),
                 filterCallback: filterAlgorithm,
             });
         }
     }, [checkboxItemPatterns]);
 
+    useResetFilter(() => {
+        setCheckboxItemPatterns(defaultCheckboxItemPatterns);
+    });
+
     return (
         <div style={{ marginTop: 20 }}>
             <ViewController
+                classes={{
+                    selectAllButton: "select-all-checkbox-button",
+                }}
                 styles={{
                     checkboxContainer: {
                         marginBottom: 20,

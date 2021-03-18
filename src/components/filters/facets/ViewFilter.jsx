@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ViewController from "../../KnowledgeGraph/ViewController";
 import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
 import useFilter from "../../../filters/FilterCtx/useFilter";
-import { forEach, clone, some, filter as lodashFilter } from "lodash";
+import { forEach, clone, some, filter as lodashFilter, every } from "lodash";
 import { FilterResourceByViewStrategy } from "../../../filters/filter-algorithms/FilterResourceByViewStrategy";
 
 export default function ViewFilter({
@@ -18,8 +18,12 @@ export default function ViewFilter({
     const initialFilterOptions = {
         active: isActive,
         filterCallback: filterAlgorithm,
+        hasDefaultConfig: true,
     };
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+    const { filter, setFilterOptions, filterShouldReset } = useFilter(
+        id,
+        initialFilterOptions
+    );
 
     const defaultAvailableViews = [];
     forEach(resources, (r) => {
@@ -51,19 +55,22 @@ export default function ViewFilter({
         if (filter) {
             setFilterOptions({
                 ...filter.options,
+                hasDefaultConfig: every(availableViews, ["checked", true]),
                 filterCallback: filterAlgorithm,
             });
         }
     }, [availableViews]);
 
-    // const { classUri } = useKGCtx();
+    useEffect(() => {
+        setAvailableViews(defaultAvailableViews);
+    }, [filterShouldReset]);
 
-    // const [viewConfig, setViewConfig] = useState(
-    //     conceptViewConfigRepository.read(classUri) || {}
-    // );
     return (
         <div style={{ marginTop: 20 }}>
             <ViewController
+                classes={{
+                    selectAllButton: "select-all-checkbox-button",
+                }}
                 styles={{
                     checkboxContainer: {
                         marginBottom: 20,

@@ -38,11 +38,10 @@ export default function SearchBarFilter({
 
     const initialFilterOptions = {
         active: true,
+        hasDefaultConfig: true,
         filterCallback: filterAlgorithm,
     };
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
-    console.log("Initializae filter");
-    console.log(filter);
 
     const [search, setSearch] = useState(
         (filter && filter.getStrategyOption("search")) || ""
@@ -94,10 +93,6 @@ export default function SearchBarFilter({
         filteredResources,
     });
 
-    console.log(filter);
-    console.log("search bar");
-    console.log(filterAlgorithm, search, filteredResources);
-
     useEffect(() => {
         // set a delay after a user modify input before updating filtering
         const delayDebounceFn = setTimeout(() => {
@@ -106,6 +101,7 @@ export default function SearchBarFilter({
                 setFilterOptions({
                     ...filter.options,
                     active: true,
+                    hasDefaultConfig: true,
                     filterCallback: filterAlgorithm,
                 });
             }
