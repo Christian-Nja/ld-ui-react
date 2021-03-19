@@ -14,6 +14,7 @@ import HelpCtxProvider from "../filters/HelpCtx/HelpCtxProvider";
 export default function PatternInstancesPage({
     knowledgeGraph,
     patternTypeUri,
+    resetFilters,
 }) {
     return (
         <KGCtxProvider
@@ -22,7 +23,10 @@ export default function PatternInstancesPage({
         >
             <HelpCtxProvider>
                 <AlertCtxProvider>
-                    <FilterCtxProvider resourceUri={patternTypeUri}>
+                    <FilterCtxProvider
+                        resourceUri={patternTypeUri}
+                        resetFilters={resetFilters}
+                    >
                         <LayoutCtxProvider defaultLayout={{ layout: "list" }}>
                             <WithFilterPatternInstancesScreen
                                 knowledgeGraph={knowledgeGraph}

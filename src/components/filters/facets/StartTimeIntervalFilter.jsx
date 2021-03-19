@@ -29,9 +29,13 @@ export default function StartTimeIntervalFilter({ id = "time", options = {} }) {
     const initialFilterOptions = {
         active: true,
         filterCallback: filterAlgorithm,
+        hasDefaultConfig: true,
         showElementsWithMissingProperty: showElementsWithMissingProperty,
     };
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+    const { filter, setFilterOptions, useResetFilter } = useFilter(
+        id,
+        initialFilterOptions
+    );
 
     const defaultShowElementsWithMissingProperty =
         filter &&
@@ -61,6 +65,9 @@ export default function StartTimeIntervalFilter({ id = "time", options = {} }) {
         if (filter) {
             setFilterOptions({
                 ...filter.options,
+                hasDefaultConfig:
+                    range[0] === initialRange[0] &&
+                    showElementsWithMissingProperty,
                 filterCallback: filterAlgorithm,
             });
         }
@@ -69,6 +76,11 @@ export default function StartTimeIntervalFilter({ id = "time", options = {} }) {
     const onChangeElementsWithMissingPropertyFlag = (checked) => {
         setShowElementsWithMissingProperty(checked);
     };
+
+    useResetFilter(() => {
+        setRange([initialRange[0]]);
+        setShowElementsWithMissingProperty(true);
+    });
 
     return (
         <div>

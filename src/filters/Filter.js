@@ -59,4 +59,7 @@ export default class Filter {
     getDescription() {
         return this.getOption("description");
     }
+    hasDefaultConfig() {
+        return this.getOption("hasDefaultConfig");
+    }
 }

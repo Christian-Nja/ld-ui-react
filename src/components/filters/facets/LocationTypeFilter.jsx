@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ViewController from "../../KnowledgeGraph/ViewController";
 import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
 import useFilter from "../../../filters/FilterCtx/useFilter";
-import { forEach, clone, some } from "lodash";
+import { forEach, clone, some, every } from "lodash";
 import { FilterLocationTypeStrategy } from "../../../filters/filter-algorithms/FilterLocationTypeStrategy";
 
 export default function LocationTypeFilter({
@@ -15,9 +15,14 @@ export default function LocationTypeFilter({
 
     const initialFilterOptions = {
         active: isActive,
+        hasDefaultConfig: true,
+
         filterCallback: filterAlgorithm,
     };
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+    const { filter, setFilterOptions, useResetFilter } = useFilter(
+        id,
+        initialFilterOptions
+    );
 
     const defaultLocations = [];
     forEach(resources, (r) => {
@@ -49,10 +54,16 @@ export default function LocationTypeFilter({
         if (filter) {
             setFilterOptions({
                 ...filter.options,
+                hasDefaultConfig: every(locations, ["checked", true]),
+
                 filterCallback: filterAlgorithm,
             });
         }
     }, [locations]);
+
+    useResetFilter(() => {
+        setLocations(defaultLocations);
+    });
 
     return (
         <div style={{ marginTop: 20 }}>
@@ -72,6 +83,9 @@ export default function LocationTypeFilter({
                         height: 20,
                         cursor: "pointer",
                     },
+                }}
+                classes={{
+                    selectAllButton: "select-all-checkbox-button",
                 }}
                 availableViews={locations}
                 onViewConfigurationChange={(

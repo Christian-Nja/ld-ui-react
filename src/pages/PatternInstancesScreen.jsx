@@ -104,6 +104,7 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                     case "minValue":
                         measurementFilters.push(
                             <MinMeasurementSliderFilter
+                                topBorder={true}
                                 id={`min-${m}`}
                                 title={`Min ${m}`}
                                 measurementType={m}
@@ -151,21 +152,32 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                     >
                         {thereIsGeoLocationToFilter && (
                             <GeoFilter
+                                topBorder={true}
                                 title="On a map"
                                 id="geo"
                                 description="Draw an area on the map to show only cultural properties located in that area."
                             />
                         )}
-                        {thereIsCulturalPropertyToFilter && (
+                        {thereAreTypeLocationsToFilter && (
+                            <LocationTypeFilter
+                                topBorder={true}
+                                id="locationType"
+                                property="locationType"
+                                title="Location Type"
+                                description="Check items to show show objects with the specified location type. If no view is selected all the objects with any location type are shown."
+                            />
+                        )}
+                        {/* {thereIsCulturalPropertyToFilter && (
                             <SinglePropertySearchBarFilter
                                 title="Cultural Property"
                                 propertyToSearch="culturalProperty"
                                 searchBarPlaceholder="Search"
                                 description="Search a specific cultural property."
                             />
-                        )}
+                        )} */}
                         {thereIsTimeToFilter && (
                             <StartTimeIntervalFilter
+                                topBorder={true}
                                 title="Start Time"
                                 id="startTime"
                                 description="Select the minimum start time of the time interval of a location. You will see all the views with the beginning year of location in a place greater than the selected value. You can choose to include or exclude values with no specified start time value. There may be two cases: (A) the object has always been located in a place; (B) data is missing"
@@ -176,14 +188,6 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                                 title="End Time"
                                 id="endTime"
                                 description="Select the maximum start time of the time interval of a location. You will see all the views with the ending year of location in a place less than the selected value. You can choose to include or exclude values with no specified end time value. There may be two cases: (A) the object is currently been located in the place; (B) data is missing"
-                            />
-                        )}
-                        {thereAreTypeLocationsToFilter && (
-                            <LocationTypeFilter
-                                id="locationType"
-                                property="locationType"
-                                title="Location Type"
-                                description="Check items to show show objects with the specified location type. If no view is selected all the objects with any location type are shown."
                             />
                         )}
                         {thereArePartsToFilter && (
@@ -208,6 +212,7 @@ export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
                             })}
                         {measurementFilters.length !== 0 && (
                             <MinMeasurementCountSliderFilter
+                                topBorder={true}
                                 id="minMeasurements"
                                 title="Min measurements"
                                 description="Tune this filter to show only cultural properties with their number of collected measurements greater than the selected value."

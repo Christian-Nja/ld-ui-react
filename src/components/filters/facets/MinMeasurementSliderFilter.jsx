@@ -36,10 +36,14 @@ export default function MinMeasurementSliderFilter({
     const initialFilterOptions = {
         active: true,
         filterCallback: filterAlgorithm,
+        hasDefaultConfig: true,
         showElementsWithMissingProperty: showElementsWithMissingProperty,
     };
 
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+    const { filter, setFilterOptions, useResetFilter } = useFilter(
+        id,
+        initialFilterOptions
+    );
 
     const defaultShowElementsWithMissingProperty =
         filter &&
@@ -56,7 +60,7 @@ export default function MinMeasurementSliderFilter({
     const initialRange = findSliderDomain(resources, measurementType);
 
     const [range, setRange] = useState(
-        [filter && filter.getStrategyOption("minValue")] || initialRange[0]
+        [filter && filter.getStrategyOption("minValue")] || [initialRange[0]]
     );
     const filterAlgorithm = FilterMinValueStrategy.create({
         minValue: range[0],
@@ -68,14 +72,17 @@ export default function MinMeasurementSliderFilter({
         if (filter) {
             setFilterOptions({
                 ...filter.options,
+                hasDefaultConfig: range[0] === initialRange[0],
                 filterCallback: filterAlgorithm,
             });
         }
     }, [range, showElementsWithMissingProperty]);
 
-    const onChangeElementsWithMissingPropertyFlag = (checked) => {
-        setShowElementsWithMissingProperty(checked);
-    };
+    useResetFilter(() => {
+        if (filter) {
+            setRange([initialRange[0]]);
+        }
+    });
 
     if (resources.length < 2) {
         return null;

@@ -18,14 +18,19 @@ export default function RightGenericSliderFilter({
 }) {
     const initialFilterOptions = {
         active: isActive,
+        hasDefaultConfig: true,
+
         filterCallback: filterAlgorithm,
     };
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+    const { filter, setFilterOptions, useResetFilter } = useFilter(
+        id,
+        initialFilterOptions
+    );
 
     const initialRange = findSliderDomain(resources, resourceProperty);
+    defaultRange = defaultRange || [initialRange[1]];
     const [range, setRange] = useState(
-        [filter && filter.getStrategyOption("maxValue")] ||
-            defaultRange || [initialRange[1]]
+        [filter && filter.getStrategyOption("maxValue")] || defaultRange
     );
 
     const filterAlgorithm = FilterMaxValueStrategy.create({
@@ -38,10 +43,15 @@ export default function RightGenericSliderFilter({
         if (filter) {
             setFilterOptions({
                 ...filter.options,
+                hasDefaultConfig: range[0] === defaultRange[0],
                 filterCallback: filterAlgorithm,
             });
         }
     }, [range]);
+
+    useResetFilter(() => {
+        setRange(defaultRange);
+    });
 
     if (resources.length < 2) {
         return null;

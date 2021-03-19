@@ -5,6 +5,7 @@ import { useAlertCtx } from "../AlertCtx/useAlertCtx";
 export default function useFilter(id, options) {
     const {
         filters,
+        useResetFilter,
         getFilterById,
         setNewFilter,
         setFilterOptionsById,
@@ -32,5 +33,10 @@ export default function useFilter(id, options) {
     const setInvertedFilterState = () => {
         setInvertedFilterStateById(id);
     };
-    return { filter, setFilterOptions, setInvertedFilterState };
+    return {
+        filter,
+        setFilterOptions,
+        setInvertedFilterState,
+        useResetFilter,
+    };
 }

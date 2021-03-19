@@ -11,7 +11,7 @@ import {
 } from "lodash";
 
 import { useKGCtx } from "../../../knowledgegraph/KGCtx/useKGCtx";
-import { Icon } from "semantic-ui-react";
+import { Icon, Input } from "semantic-ui-react";
 import { FilterSearchBarStrategy } from "../../../filters/filter-algorithms/FilterSearchBarStrategy";
 
 const stringSimilarity = require("string-similarity");
@@ -38,11 +38,10 @@ export default function SearchBarFilter({
 
     const initialFilterOptions = {
         active: true,
+        hasDefaultConfig: true,
         filterCallback: filterAlgorithm,
     };
     const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
-    console.log("Initializae filter");
-    console.log(filter);
 
     const [search, setSearch] = useState(
         (filter && filter.getStrategyOption("search")) || ""
@@ -94,10 +93,6 @@ export default function SearchBarFilter({
         filteredResources,
     });
 
-    console.log(filter);
-    console.log("search bar");
-    console.log(filterAlgorithm, search, filteredResources);
-
     useEffect(() => {
         // set a delay after a user modify input before updating filtering
         const delayDebounceFn = setTimeout(() => {
@@ -106,6 +101,7 @@ export default function SearchBarFilter({
                 setFilterOptions({
                     ...filter.options,
                     active: true,
+                    hasDefaultConfig: true,
                     filterCallback: filterAlgorithm,
                 });
             }
@@ -118,13 +114,13 @@ export default function SearchBarFilter({
     };
 
     return (
-        <div className="search-component">
-            <Icon name="search" className="search-icon"></Icon>
-            <input
+        <div className="search-component" style={{ marginLeft: 20 }}>
+            <Input
+                icon="search"
                 className="search-item"
                 placeholder={searchBarPlaceholder}
                 onChange={handleInput}
-            ></input>
+            ></Input>
         </div>
     );
 }

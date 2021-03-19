@@ -31,17 +31,22 @@ import { clone, filter, find } from "lodash";
 export default function ViewController({
     availableViews = [],
     styles = {},
-    classes = {
-        controllerContainer: "",
-        checkboxContainer: "",
-        checkboxLabel: "",
-    },
+    classes = {},
     onViewConfigurationChange = (clickedUri, checked) => {},
     onSelectAll = () => {},
     onDeselectAll = () => {},
     showSelectAllButtons = true,
 }) {
     if (availableViews.length < 2) showSelectAllButtons = false;
+
+    const defaultClasses = {
+        controllerContainer: "",
+        checkboxContainer: "",
+        checkboxLabel: "",
+        selectAllButton: "",
+    };
+    classes = { ...defaultClasses, ...classes };
+
     return (
         <div
             style={{ ...styles.controllerContainer }}
@@ -104,6 +109,7 @@ export default function ViewController({
                                 textAlign: "center",
                                 ...styles.selectAllButton,
                             }}
+                            className={classes.selectAllButton}
                             onClick={onSelectAll}
                         >
                             Select All
@@ -118,6 +124,7 @@ export default function ViewController({
                                 textAlign: "center",
                                 ...styles.deSelectAllButton,
                             }}
+                            className={classes.selectAllButton}
                             onClick={onDeselectAll}
                         >
                             Deselect All

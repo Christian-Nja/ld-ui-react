@@ -36,6 +36,7 @@ export default function ResourcesScreen({ filteredKnowledgeGraph }) {
                         style={{ position: "absolute" }}
                     >
                         <ViewFilter
+                            topBorder={true}
                             id="viewFilter"
                             title="Resource View"
                             description="Show only resources that are associated with the selected view."

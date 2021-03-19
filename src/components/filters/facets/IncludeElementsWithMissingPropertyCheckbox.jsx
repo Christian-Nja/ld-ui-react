@@ -10,14 +10,15 @@ export function IncludeElementsWithMissingPropertyCheckbox({
 }) {
     const checkboxId = `show-missing-property-elements-${nanoid()}`;
 
+    console.log("Include", checked, nanoid());
+
     return (
         <div style={{ ...styles.checkbox }} className={`${classes.checkbox}`}>
             <input
                 type="checkbox"
                 id={checkboxId}
                 style={{ ...styles.checkboxButton }}
-                defaultChecked={checked}
-                value={checked}
+                checked={checked}
                 onChange={(e) => {
                     onChange(e.target.checked);
                 }}

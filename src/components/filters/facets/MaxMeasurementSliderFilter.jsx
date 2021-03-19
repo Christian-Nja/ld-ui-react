@@ -36,10 +36,14 @@ export default function MaxMeasurementSliderFilter({
     const initialFilterOptions = {
         active: true,
         filterCallback: filterAlgorithm,
+        hasDefaultConfig: true,
         showElementsWithMissingProperty: showElementsWithMissingProperty,
     };
 
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+    const { filter, setFilterOptions, useResetFilter } = useFilter(
+        id,
+        initialFilterOptions
+    );
 
     const defaultShowElementsWithMissingProperty =
         filter &&
@@ -56,7 +60,7 @@ export default function MaxMeasurementSliderFilter({
     const initialRange = findSliderDomain(resources, measurementType);
 
     const [range, setRange] = useState(
-        [filter && filter.getStrategyOption("maxValue")] || initialRange[0]
+        [filter && filter.getStrategyOption("maxValue")] || [initialRange[1]]
     );
     const filterAlgorithm = FilterMaxValueStrategy.create({
         maxValue: range[0],
@@ -68,6 +72,9 @@ export default function MaxMeasurementSliderFilter({
         if (filter) {
             setFilterOptions({
                 ...filter.options,
+                hasDefaultConfig:
+                    range[0] === initialRange[1] &&
+                    showElementsWithMissingProperty,
                 filterCallback: filterAlgorithm,
             });
         }
@@ -77,9 +84,18 @@ export default function MaxMeasurementSliderFilter({
         setShowElementsWithMissingProperty(checked);
     };
 
+    useResetFilter(() => {
+        if (filter) {
+            setShowElementsWithMissingProperty(true);
+            setRange([initialRange[1]]);
+        }
+    });
+
     if (resources.length < 2) {
         return null;
     }
+
+    console.log("SHOW ELEMENTS:", showElementsWithMissingProperty);
 
     return (
         <div>

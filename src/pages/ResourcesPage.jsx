@@ -6,12 +6,19 @@ import KGCtxProvider from "../knowledgegraph/KGCtx/KGCtxProvider";
 import WithFilterResourcesScreen from "./WithFilterResourcesScreen";
 import HelpCtxProvider from "../filters/HelpCtx/HelpCtxProvider";
 
-export default function ResourcesPage({ knowledgeGraph, classUri }) {
+export default function ResourcesPage({
+    knowledgeGraph,
+    classUri,
+    resetFilters,
+}) {
     return (
         <KGCtxProvider knowledgeGraph={knowledgeGraph} classUri={classUri}>
             <HelpCtxProvider>
                 <AlertCtxProvider>
-                    <FilterCtxProvider resourceUri={classUri}>
+                    <FilterCtxProvider
+                        resourceUri={classUri}
+                        resetFilters={resetFilters}
+                    >
                         <LayoutCtxProvider defaultLayout={{ layout: "list" }}>
                             <WithFilterResourcesScreen
                                 knowledgeGraph={knowledgeGraph}

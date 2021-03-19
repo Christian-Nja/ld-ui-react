@@ -9,7 +9,7 @@ import useFilter from "../../../filters/FilterCtx/useFilter";
 
 import { cloneDeep } from "lodash";
 
-import { Icon } from "semantic-ui-react";
+import { Icon, Popup } from "semantic-ui-react";
 
 const circleToPolygon = require("circle-to-polygon");
 const numberOfEdges = 64;
@@ -84,16 +84,25 @@ export default function GeoFilter({ id = "geo", options = {} }) {
     const initialFilterOptions = {
         active: true,
         filterCallback: filterAlgorithm,
+        hasDefaultConfig: true,
     };
 
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+    const { filter, setFilterOptions, useResetFilter } = useFilter(
+        id,
+        initialFilterOptions
+    );
 
     const initialFeatureGroup = { type: "FeatureCollection", features: [] };
-    console.log("FILTER, it should return options", filter);
+
     const [featureGroup, setFeatureGroup] = useState(
         (filter && filter.getStrategyOption("featureGroup")) ||
             initialFeatureGroup
     );
+    const thereIsActiveSelection =
+        featureGroup &&
+        featureGroup.features &&
+        featureGroup.features.length > 0;
+    console.log("There is active selection?", thereIsActiveSelection);
 
     const filterAlgorithm = FilterOnMapStrategy.create({
         featureGroup,
@@ -103,6 +112,10 @@ export default function GeoFilter({ id = "geo", options = {} }) {
         if (filter) {
             setFilterOptions({
                 ...filter.options,
+                hasDefaultConfig:
+                    featureGroup &&
+                    featureGroup.features &&
+                    featureGroup.features.length === 0,
                 filterCallback: filterAlgorithm,
             });
         }
@@ -230,6 +243,15 @@ export default function GeoFilter({ id = "geo", options = {} }) {
     //     // mapRef.current.leafletElement.invalidateSize();
     // }, [enlarged]);
 
+    useResetFilter(() => {
+        // startDelete
+        editRef.current.leafletElement._toolbars.edit._modes.remove.handler.enable();
+        // saveDelete
+        editRef.current.leafletElement._toolbars.edit._modes.remove.handler.removeAllLayers();
+        editRef.current.leafletElement._toolbars.edit._modes.remove.handler.disable();
+        setMapState({ id: SHAPE_DELETED, e: null });
+    });
+
     return (
         <div>
             <Map
@@ -320,24 +342,68 @@ export default function GeoFilter({ id = "geo", options = {} }) {
                 </div>
             )}
             <div
-                className={`enlarge-map-button ${
-                    enlarged ? "enlarged-map-button-hidden" : ""
-                }`}
                 style={{
-                    position: "relative",
-                    top: -60,
-                    zIndex: 1500,
-                    width: "fitContent",
-                    padding: 5,
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "fit-content",
                     float: "right",
-                    left: -0,
-                    cursor: "pointer",
-                }}
-                onClick={() => {
-                    setEnlarged(true);
+                    top: -100,
+                    position: "relative",
                 }}
             >
-                <Icon name="expand" size="huge" color="black" />
+                <Popup
+                    trigger={
+                        <div
+                            className={`${
+                                thereIsActiveSelection
+                                    ? "enlarge-map-button"
+                                    : "enlarged-map-button-hidden"
+                            } ${enlarged ? "enlarged-map-button-hidden" : ""}`}
+                            style={{
+                                zIndex: 1500,
+                                width: "fitContent",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => {
+                                // startDelete
+                                editRef.current.leafletElement._toolbars.edit._modes.remove.handler.enable();
+                                // saveDelete
+                                editRef.current.leafletElement._toolbars.edit._modes.remove.handler.removeAllLayers();
+                                editRef.current.leafletElement._toolbars.edit._modes.remove.handler.disable();
+                                setMapState({ id: SHAPE_DELETED, e: null });
+                            }}
+                        >
+                            <Icon name="delete" size="huge" color="red" />
+                        </div>
+                    }
+                    on={["hover"]}
+                    content={"Clear previous selection"}
+                    position="left center"
+                    inverted
+                />
+                <Popup
+                    trigger={
+                        <div
+                            className={`enlarge-map-button ${
+                                enlarged ? "enlarged-map-button-hidden" : ""
+                            }`}
+                            style={{
+                                zIndex: 1500,
+                                width: "fitContent",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => {
+                                setEnlarged(true);
+                            }}
+                        >
+                            <Icon name="expand" size="huge" color="black" />
+                        </div>
+                    }
+                    on={["hover"]}
+                    content={"Expand Map"}
+                    position="left center"
+                    inverted
+                />
             </div>
         </div>
     );

@@ -4,6 +4,8 @@ import { FilterCtx } from "./FilterCtx";
 export function useFilterCtx() {
     const {
         filters,
+        useResetFilter,
+        notifyReset,
         setNewFilter,
         setInvertedFilterStateById,
         setFilterOptionsById,
@@ -13,6 +15,8 @@ export function useFilterCtx() {
     } = useContext(FilterCtx);
     return {
         filters,
+        useResetFilter,
+        notifyReset,
         setNewFilter,
         setInvertedFilterStateById,
         getFilterById,

@@ -1,16 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FilterCtx } from "./FilterCtx";
 import { clone, remove, find, cloneDeep } from "lodash";
 import Filter from "../Filter";
 import { FilterRepository } from "./FilterRepository";
 
 // resourceUri: the filter works on. It is used to scope the filter
-export default function FilterCtxProvider({ children, resourceUri }) {
+export default function FilterCtxProvider({
+    children,
+    resourceUri,
+    resetFilters = false,
+}) {
     const filterRepository = new FilterRepository(resourceUri);
 
-    const [filters, setFilters] = useState(filterRepository.loadAll() || []);
+    const savedFilters = filterRepository.loadAll() || [];
 
-    console.log("FILTERS:,", filters);
+    const [filters, setFilters] = useState(resetFilters ? [] : savedFilters);
+
+    const [filterShouldReset, setFilterShouldReset] = useState(false);
+
+    const notifyReset = () => {
+        setFilterShouldReset(true);
+    };
+
+    const useResetFilter = (onFilterReset) => {
+        console.log("Tooo many callss function", onFilterReset);
+        useEffect(() => {
+            console.log("Tooo many callss", onFilterReset);
+            if (filterShouldReset) {
+                onFilterReset();
+                setFilterShouldReset(false);
+            }
+        }, [filterShouldReset]);
+    };
 
     const setNewFilter = (id, options) => {
         if (!getFilterById(id)) {
@@ -65,6 +86,8 @@ export default function FilterCtxProvider({ children, resourceUri }) {
         <FilterCtx.Provider
             value={{
                 filters,
+                useResetFilter,
+                notifyReset,
                 getFilterById,
                 setNewFilter,
                 setFilterOptionsById,

@@ -18,9 +18,13 @@ export default function LeftGenericSliderFilter({
 }) {
     const initialFilterOptions = {
         active: isActive,
+        hasDefaultConfig: true,
         filterCallback: filterAlgorithm,
     };
-    const { filter, setFilterOptions } = useFilter(id, initialFilterOptions);
+    const { filter, setFilterOptions, useResetFilter } = useFilter(
+        id,
+        initialFilterOptions
+    );
 
     const initialRange = findSliderDomain(resources, resourceProperty);
     defaultRange = defaultRange ? defaultRange : [initialRange[0]];
@@ -40,6 +44,7 @@ export default function LeftGenericSliderFilter({
         if (filter) {
             setFilterOptions({
                 ...filter.options,
+                hasDefaultConfig: range[0] === defaultRange[0],
                 filterCallback: filterAlgorithm,
             });
         }
@@ -49,10 +54,15 @@ export default function LeftGenericSliderFilter({
         if (filter && !filter.getOption("filterCallback")) {
             setFilterOptions({
                 ...filter.options,
+                hasDefaultConfig: range[0] === defaultRange[0],
                 filterCallback: filterAlgorithm,
             });
         }
     }, [filterAlgorithm]);
+
+    useResetFilter(() => {
+        setRange(defaultRange);
+    });
 
     if (resources.length < 2) {
         return null;
