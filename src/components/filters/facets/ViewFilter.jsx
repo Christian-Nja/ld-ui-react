@@ -20,7 +20,7 @@ export default function ViewFilter({
         filterCallback: filterAlgorithm,
         hasDefaultConfig: true,
     };
-    const { filter, setFilterOptions, filterShouldReset } = useFilter(
+    const { filter, setFilterOptions, useResetFilter } = useFilter(
         id,
         initialFilterOptions
     );
@@ -61,9 +61,9 @@ export default function ViewFilter({
         }
     }, [availableViews]);
 
-    useEffect(() => {
+    useResetFilter(() => {
         setAvailableViews(defaultAvailableViews);
-    }, [filterShouldReset]);
+    });
 
     return (
         <div style={{ marginTop: 20 }}>
