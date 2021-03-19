@@ -21,6 +21,8 @@ export default function MaxMeasurementSliderFilter({
     measurementType,
 }) {
     const formatTicks = (d) => {
+        console.log("FORMAT TICKS");
+        console.log(formatTicks);
         return Qty(`${d} ${measurementUnit}`).format("m");
     };
 
