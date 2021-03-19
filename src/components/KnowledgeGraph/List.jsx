@@ -60,6 +60,8 @@ export default function List({
     const [resources, setResources] = useState(list);
     const [sortResourceBy, setSortBy] = useState(defaultSortBy);
 
+    const [sortDirection, setSortDirection] = useState("asc");
+
     const sortingFunction = (resourcesList) => {
         let orderByKey = sortResourceBy.id;
         return orderBy(
@@ -73,7 +75,7 @@ export default function List({
                     return resourcesList[orderByKey];
                 },
             ],
-            ["asc"]
+            [sortDirection]
         );
     };
 
@@ -101,6 +103,7 @@ export default function List({
     useEffect(() => {
         const newResources = taggingFunction(sortingFunction(cloneDeep(list)));
         setResources(newResources);
+        setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     }, [sortResourceBy, list]);
 
     const renderMoreData = () => {
@@ -326,7 +329,16 @@ export default function List({
                                                           }
                                                 }
                                             >
-                                                {h}
+                                                {h}{" "}
+                                                {hk.id === sortResourceBy.id ? (
+                                                    sortDirection === "asc" ? (
+                                                        <Icon name="sort descending" />
+                                                    ) : (
+                                                        <Icon name="sort ascending" />
+                                                    )
+                                                ) : (
+                                                    ""
+                                                )}
                                             </div>
                                         );
                                     })}
