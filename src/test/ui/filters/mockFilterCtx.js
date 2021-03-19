@@ -6,6 +6,7 @@ export default function mockUseFilter() {
             filter: undefined,
             setFilterOptions: () => {},
             setInvertedFilterState: () => {},
+            useResetFilter: () => {},
         };
     };
     jest.spyOn(useFilter, "default").mockImplementation(mockedUseFilter);
