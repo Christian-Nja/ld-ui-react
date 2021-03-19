@@ -9,6 +9,7 @@ import HelpCtxProvider from "../filters/HelpCtx/HelpCtxProvider";
 export default function PatternsAndClassesPage({
     knowledgeGraph,
     knowledgeGraphUri,
+    resetFilters,
 }) {
     return (
         <KGCtxProvider
@@ -17,7 +18,10 @@ export default function PatternsAndClassesPage({
         >
             <HelpCtxProvider>
                 <AlertCtxProvider>
-                    <FilterCtxProvider resourceUri={knowledgeGraphUri}>
+                    <FilterCtxProvider
+                        resourceUri={knowledgeGraphUri}
+                        resetFilters={resetFilters}
+                    >
                         <LayoutCtxProvider>
                             <WithFilterPatternAndClassesScreen
                                 knowledgeGraph={knowledgeGraph}

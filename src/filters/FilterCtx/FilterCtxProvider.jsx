@@ -5,10 +5,16 @@ import Filter from "../Filter";
 import { FilterRepository } from "./FilterRepository";
 
 // resourceUri: the filter works on. It is used to scope the filter
-export default function FilterCtxProvider({ children, resourceUri }) {
+export default function FilterCtxProvider({
+    children,
+    resourceUri,
+    resetFilters = false,
+}) {
     const filterRepository = new FilterRepository(resourceUri);
 
-    const [filters, setFilters] = useState(filterRepository.loadAll() || []);
+    const savedFilters = filterRepository.loadAll() || [];
+
+    const [filters, setFilters] = useState(resetFilters ? [] : savedFilters);
 
     const [filterShouldReset, setFilterShouldReset] = useState(false);
 
