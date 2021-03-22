@@ -45,9 +45,23 @@ export default function PatternInstancesHelpBox() {
             hideCloseButton: true,
         },
         {
+            target: "#list-header",
+            locale: { skip: <strong aria-label="skip">End tutorial</strong> },
+            content:
+                "Click header to sort elements in ascending and descending order on clicked property. Elements will be grouped by the same value for clicked property",
+            spotlightClicks: true,
+            styles: {
+                options: {
+                    zIndex: 10000,
+                },
+            },
+            placement: "right",
+            hideCloseButton: true,
+        },
+        {
             target: ".result-display",
             content:
-                "here you can see the number of views displayed in this list",
+                "Here you can see the number of views displayed in this list",
             locale: { skip: <strong aria-label="skip">End tutorial</strong> },
             spotlightClicks: true,
             styles: {
