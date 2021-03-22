@@ -12,6 +12,7 @@ export default function OccurencesSliderFilter({}) {
             resourceTypeFilterHasEffectOn={"Pattern"}
             id="occurences"
             resourceProperty="occurences"
+            sliderStep={1}
         />
     );
 }

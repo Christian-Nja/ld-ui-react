@@ -89,6 +89,7 @@ export default function EndTimeIntervalFilter({ id = "time", options = {} }) {
                 setRange={setRange}
                 domain={initialRange}
                 reversed={true}
+                sliderStep={1}
             />
             <IncludeElementsWithMissingPropertyCheckbox
                 styles={{

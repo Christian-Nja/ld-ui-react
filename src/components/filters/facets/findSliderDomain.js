@@ -2,7 +2,7 @@ export default function findSliderDomain(arr, valueKey) {
     let min, max;
     for (let i = 0, len = arr.length; i < len; i++) {
         if (arr[i][valueKey]) {
-            let n = Number.parseInt(arr[i][valueKey]);
+            let n = Number.parseFloat(arr[i][valueKey]);
             if (min === undefined) {
                 min = n;
                 max = n;
@@ -16,5 +16,5 @@ export default function findSliderDomain(arr, valueKey) {
             }
         }
     }
-    return [min, max];
+    return [Math.floor(min), Math.ceil(max)];
 }

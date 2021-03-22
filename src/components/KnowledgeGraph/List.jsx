@@ -62,6 +62,8 @@ export default function List({
 
     const [sortDirection, setSortDirection] = useState("asc");
 
+    console.log("LIST LENGTH", list.length);
+
     const sortingFunction = (resourcesList) => {
         let orderByKey = sortResourceBy.id;
         return orderBy(
@@ -173,7 +175,7 @@ export default function List({
                     style={
                         resources[index].initialRow
                             ? {
-                                  borderTop: "1px solid black",
+                                  borderTop: "1px solid grey",
                               }
                             : {}
                     }
@@ -310,34 +312,32 @@ export default function List({
                                             <div
                                                 className={`header-cell column-cell-${headerColumnId} `}
                                                 onClick={() => {
-                                                    if (headerLabels.length > 1)
-                                                        setSortBy(hk);
+                                                    setSortBy(hk);
                                                 }}
                                                 style={
                                                     hk.id === sortResourceBy.id
                                                         ? {
                                                               backgroundColor:
-                                                                  "rgb(108, 122, 224)",
+                                                                  headerLabels.length >
+                                                                  1
+                                                                      ? "rgb(108, 122, 224)"
+                                                                      : "",
                                                               cursor: "pointer",
                                                           }
                                                         : {
-                                                              cursor:
-                                                                  headerLabels.length >
-                                                                  1
-                                                                      ? "pointer"
-                                                                      : "",
+                                                              cursor: "pointer",
                                                           }
                                                 }
                                             >
                                                 {h}{" "}
                                                 {hk.id === sortResourceBy.id ? (
                                                     sortDirection === "asc" ? (
-                                                        <Icon name="sort descending" />
+                                                        <Icon name="sort content descending" />
                                                     ) : (
-                                                        <Icon name="sort ascending" />
+                                                        <Icon name="sort content ascending" />
                                                     )
                                                 ) : (
-                                                    ""
+                                                    <Icon name="sort" />
                                                 )}
                                             </div>
                                         );
@@ -382,9 +382,8 @@ export default function List({
 const defaultListContainerStyle = {
     marginLeft: "5%",
     marginRight: "2%",
-    position: "absolute",
+    position: "relative",
     top: 70,
-    width: "90%",
 };
 
 const scrollToTop = () => {

@@ -11,6 +11,7 @@ import { find } from "lodash";
 import Qty from "js-quantities";
 import { FilterMaxValueStrategy } from "../../../filters/filter-algorithms/FilterMaxValueStrategy";
 import { IncludeElementsWithMissingPropertyCheckbox } from "./IncludeElementsWithMissingPropertyCheckbox";
+import { decimalPlaces } from "../../../utilities/math";
 
 const MIN = 0;
 const MAX = 1;
@@ -21,9 +22,9 @@ export default function MaxMeasurementSliderFilter({
     measurementType,
 }) {
     const formatTicks = (d) => {
-        console.log("FORMAT TICKS");
-        console.log(formatTicks);
-        return Qty(`${d} ${measurementUnit}`).format("m");
+        const decimals = decimalPlaces(d);
+        return `${decimals > 1 ? d.toPrecision(2) : d} ${measurementUnit}`;
+        // return Qty(`${d} ${measurementUnit}`).format("m");
     };
 
     const { knowledgeGraph } = useKGCtx();

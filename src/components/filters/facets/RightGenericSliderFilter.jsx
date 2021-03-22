@@ -4,6 +4,7 @@ import SliderFilter from "./SliderFilter";
 
 import findSliderDomain from "./findSliderDomain";
 import { FilterMaxValueStrategy } from "../../../filters/filter-algorithms/FilterMaxValueStrategy";
+import { decimalPlaces } from "../../../utilities/math";
 
 export default function RightGenericSliderFilter({
     id = "genericSlider",
@@ -13,8 +14,10 @@ export default function RightGenericSliderFilter({
     defaultRange,
     resourceTypeFilterHasEffectOn,
     formatTicks = (d) => {
-        return d;
+        const decimals = decimalPlaces(d);
+        return `${decimals > 1 ? d.toPrecision(2) : d}`;
     },
+    sliderStep = 0.1,
 }) {
     const initialFilterOptions = {
         active: isActive,
@@ -64,6 +67,7 @@ export default function RightGenericSliderFilter({
             domain={initialRange}
             formatTicks={formatTicks}
             reversed={true}
+            sliderStep={sliderStep}
         />
     );
 }

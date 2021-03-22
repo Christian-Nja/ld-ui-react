@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 // Graphin Components
 import Graphin, { Behaviors, GraphinContext } from "@antv/graphin";
 import "@antv/graphin/dist/index.css"; // Don't forget to import css
+import "@antv/graphin-icons/dist/index.css";
 
 import { useGraphinDoubleClick } from "../hooks/ld-ui-hooks";
 import { useLayoutCtx } from "../../layout/LayoutCtx/useLayoutCtx";
@@ -57,7 +58,7 @@ export default function VisualGraph({ visualGraph = [] }) {
     //    queue.enque(ICommand)
     // }
 
-    const { ActivateRelations } = Behaviors;
+    const { ActivateRelations, FontPaint } = Behaviors;
 
     const defaultLayout = {
         type: "graphin-force",
@@ -195,6 +196,7 @@ export default function VisualGraph({ visualGraph = [] }) {
                     label={<label>Enable node explanations</label>}
                 />
             </div>
+            <FontPaint />
         </Graphin>
     );
 }

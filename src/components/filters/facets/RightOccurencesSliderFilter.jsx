@@ -12,6 +12,7 @@ export default function RightOccurencesSliderFilter({}) {
             resourceTypeFilterHasEffectOn={"Pattern"}
             id="maxOccurences"
             resourceProperty="occurences"
+            sliderStep={1}
         />
     );
 }

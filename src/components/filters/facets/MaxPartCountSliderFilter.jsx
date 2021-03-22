@@ -10,6 +10,7 @@ export default function MaxPartCountSliderFilter({}) {
             resources={knowledgeGraph.getResources()}
             id="maxParts"
             resourceProperty="parts"
+            sliderStep={1}
         />
     );
 }

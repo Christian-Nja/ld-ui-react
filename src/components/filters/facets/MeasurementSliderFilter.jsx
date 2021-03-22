@@ -10,6 +10,8 @@ import { find } from "lodash";
 
 import Qty from "js-quantities";
 import { FilterIntervalStrategy } from "../../../filters/filter-algorithms/FilterIntervalStrategy";
+import { decimalPlaces } from "../../../utilities/math";
+
 const MIN = 0;
 const MAX = 1;
 
@@ -19,7 +21,9 @@ export default function MeasurementSliderFilter({
     measurementType,
 }) {
     const formatTicks = (d) => {
-        return Qty(`${d} ${measurementUnit}`).format("m");
+        const decimals = decimalPlaces(d);
+        return `${decimals > 1 ? d.toPrecision(2) : d} ${measurementUnit}`;
+        // return Qty(`${d} ${measurementUnit}`).format("m");
     };
 
     const { knowledgeGraph } = useKGCtx();
