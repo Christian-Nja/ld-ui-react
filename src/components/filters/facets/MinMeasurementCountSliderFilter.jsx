@@ -10,6 +10,7 @@ export default function MinMeasurementCountSliderFilter({}) {
             resources={knowledgeGraph.getResources()}
             id="minMeasurements"
             resourceProperty="measures"
+            sliderStep={1}
         />
     );
 }

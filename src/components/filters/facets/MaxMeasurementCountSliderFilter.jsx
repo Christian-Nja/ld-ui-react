@@ -10,6 +10,7 @@ export default function MaxMeasurementCountSliderFilter({}) {
             resources={knowledgeGraph.getResources()}
             id="maxMeasurements"
             resourceProperty="measures"
+            sliderStep={1}
         />
     );
 }

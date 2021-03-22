@@ -3,6 +3,8 @@ import React, { useRef, useState } from "react";
 // Graphin Components
 import Graphin, { Behaviors, GraphinContext } from "@antv/graphin";
 import "@antv/graphin/dist/index.css"; // Don't forget to import css
+import iconLoader from "@antv/graphin-icons";
+import "@antv/graphin-icons/dist/index.css";
 
 import { useGraphinDoubleClick } from "../hooks/ld-ui-hooks";
 import { useLayoutCtx } from "../../layout/LayoutCtx/useLayoutCtx";
@@ -12,6 +14,12 @@ import {
     safelyLoadShowTooltipFromSessionStorage,
     saveShowTooltipToSessionStorage,
 } from "./sessionStorageTooltipHandlers";
+import { cloneDeep } from "lodash";
+
+// Register in Graphin
+// Register in Graphin
+const { fontFamily, glyphs } = iconLoader();
+const icons = Graphin.registerFontFamily(iconLoader);
 
 export default function VisualGraph({ visualGraph = [] }) {
     // graphRef for mix React virtual DOM and graphin imperative operation on DOM
@@ -57,7 +65,7 @@ export default function VisualGraph({ visualGraph = [] }) {
     //    queue.enque(ICommand)
     // }
 
-    const { ActivateRelations } = Behaviors;
+    const { ActivateRelations, FontPaint } = Behaviors;
 
     const defaultLayout = {
         type: "graphin-force",
@@ -195,6 +203,7 @@ export default function VisualGraph({ visualGraph = [] }) {
                     label={<label>Enable node explanations</label>}
                 />
             </div>
+            <FontPaint />
         </Graphin>
     );
 }

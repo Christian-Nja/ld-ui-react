@@ -384,9 +384,8 @@ export default function List({
 const defaultListContainerStyle = {
     marginLeft: "5%",
     marginRight: "2%",
-    position: "absolute",
+    position: "relative",
     top: 70,
-    width: "90%",
 };
 
 const scrollToTop = () => {

@@ -10,6 +10,7 @@ export default function MinPartCountSliderFilter({}) {
             resources={knowledgeGraph.getResources()}
             id="minParts"
             resourceProperty="parts"
+            sliderStep={1}
         />
     );
 }

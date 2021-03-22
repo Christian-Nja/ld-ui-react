@@ -185,6 +185,11 @@ export default class KnowledgeGraph {
                     },
                 },
                 style: {
+                    icon: {
+                        type: "image",
+                        value: resource.getProperty("iconUrl"),
+                        size: [40, 40],
+                    },
                     keyshape: {
                         size: [
                             resource.getProperty("nodeSize"),

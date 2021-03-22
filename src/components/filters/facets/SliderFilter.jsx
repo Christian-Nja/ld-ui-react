@@ -2,6 +2,7 @@ import React from "react";
 
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 import { Tick, Track, Handle, TooltipRail } from "./SliderComponents";
+import { decimalPlaces } from "../../../utilities/math";
 
 const sliderStyle = {
     margin: "5%",
@@ -22,9 +23,11 @@ export default function SliderFilter({
     domain,
     setRange,
     formatTicks = (d) => {
-        return d;
+        const decimals = decimalPlaces(d);
+        return `${decimals > 1 ? d.toPrecision(2) : d}`;
     },
     reversed = false,
+    sliderStep = 0.1,
 }) {
     // filter cannot work with one node
     const onChange = (newRange) => {
@@ -40,7 +43,7 @@ export default function SliderFilter({
             <div style={{ height: 40, width: "100%", marginTop: 20 }}>
                 <Slider
                     mode={1}
-                    step={0.1}
+                    step={sliderStep}
                     domain={domain}
                     rootStyle={sliderStyle}
                     onChange={onChange}
