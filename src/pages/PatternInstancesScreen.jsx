@@ -25,6 +25,8 @@ import SinglePropertySearchBarFilter from "../components/filters/facets/SinglePr
 export default function PatternInstancesScreen({ filteredKnowledgeGraph }) {
     const { knowledgeGraph } = useKGCtx();
 
+    console.log("RESOURCES KG", knowledgeGraph.getResources().length);
+
     // determine dynamically measurement filters
     const resources = knowledgeGraph.getResources();
     const thereIsGeoLocationToFilter = hasResourceToFilter(

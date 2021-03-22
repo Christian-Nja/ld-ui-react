@@ -62,6 +62,8 @@ export default function List({
 
     const [sortDirection, setSortDirection] = useState("asc");
 
+    console.log("LIST LENGTH", list.length);
+
     const sortingFunction = (resourcesList) => {
         let orderByKey = sortResourceBy.id;
         return orderBy(

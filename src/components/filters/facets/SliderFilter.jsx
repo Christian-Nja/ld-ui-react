@@ -28,8 +28,6 @@ export default function SliderFilter({
 }) {
     // filter cannot work with one node
     const onChange = (newRange) => {
-        console.log("Im changing all");
-        console.log(newRange);
         if (!Number.isNaN(newRange[0]) && !Number.isNaN(newRange[1])) {
             setRange(newRange);
         } else {
@@ -37,14 +35,12 @@ export default function SliderFilter({
         }
     };
 
-    console.log("Slider:", range);
-
     if (domain[MIN] < domain[MAX]) {
         return (
             <div style={{ height: 40, width: "100%", marginTop: 20 }}>
                 <Slider
                     mode={1}
-                    step={1}
+                    step={0.1}
                     domain={domain}
                     rootStyle={sliderStyle}
                     onChange={onChange}
