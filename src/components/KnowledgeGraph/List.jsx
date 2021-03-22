@@ -312,22 +312,20 @@ export default function List({
                                             <div
                                                 className={`header-cell column-cell-${headerColumnId} `}
                                                 onClick={() => {
-                                                    if (headerLabels.length > 1)
-                                                        setSortBy(hk);
+                                                    setSortBy(hk);
                                                 }}
                                                 style={
                                                     hk.id === sortResourceBy.id
                                                         ? {
                                                               backgroundColor:
-                                                                  "rgb(108, 122, 224)",
+                                                                  headerLabels.length >
+                                                                  1
+                                                                      ? "rgb(108, 122, 224)"
+                                                                      : "",
                                                               cursor: "pointer",
                                                           }
                                                         : {
-                                                              cursor:
-                                                                  headerLabels.length >
-                                                                  1
-                                                                      ? "pointer"
-                                                                      : "",
+                                                              cursor: "pointer",
                                                           }
                                                 }
                                             >

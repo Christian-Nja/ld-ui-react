@@ -88,6 +88,7 @@ export default function StartTimeIntervalFilter({ id = "time", options = {} }) {
                 range={range}
                 setRange={setRange}
                 domain={initialRange}
+                sliderStep={1}
             />
             <IncludeElementsWithMissingPropertyCheckbox
                 styles={{

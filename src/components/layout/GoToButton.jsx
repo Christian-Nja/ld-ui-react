@@ -11,7 +11,7 @@ export default function GoToButton({ style = {} }) {
         color: "white",
         borderRadius: 5,
         cursor: "pointer",
-        zIndex: 400,
+        zIndex: 10,
     };
 
     return (
