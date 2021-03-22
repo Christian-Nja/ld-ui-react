@@ -175,7 +175,7 @@ export default function List({
                     style={
                         resources[index].initialRow
                             ? {
-                                  borderTop: "1px solid black",
+                                  borderTop: "1px solid grey",
                               }
                             : {}
                     }
@@ -334,12 +334,12 @@ export default function List({
                                                 {h}{" "}
                                                 {hk.id === sortResourceBy.id ? (
                                                     sortDirection === "asc" ? (
-                                                        <Icon name="sort descending" />
+                                                        <Icon name="sort content descending" />
                                                     ) : (
-                                                        <Icon name="sort ascending" />
+                                                        <Icon name="sort content ascending" />
                                                     )
                                                 ) : (
-                                                    ""
+                                                    <Icon name="sort" />
                                                 )}
                                             </div>
                                         );
