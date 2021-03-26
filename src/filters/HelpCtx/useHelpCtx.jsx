@@ -5,8 +5,11 @@ export function useHelpCtx(key) {
     const {
         safelyLoadTutorialCookieFromLocalStorage,
         saveFirstAccessToLocalStorage,
+        noTutorial,
     } = useContext(HelpCtx);
-    const isFirstAccess = safelyLoadTutorialCookieFromLocalStorage(key);
+    const isFirstAccess = noTutorial
+        ? false
+        : safelyLoadTutorialCookieFromLocalStorage(key);
     useEffect(() => {
         saveFirstAccessToLocalStorage(key);
     }, []);

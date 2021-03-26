@@ -7,8 +7,21 @@ import "./PropertyValueList.css";
 
 export default function PropertyValueList({ properties = {}, title }) {
     const keys = Object.keys(properties);
+    let groupIndex = 1,
+        newGroupIndex,
+        separatorBorder = "";
     const renderItem = (index, key) => {
         const isLinked = properties[keys[index]].onClick ? true : false;
+
+        if (properties[keys[index]].index) {
+            newGroupIndex = properties[keys[index]].index;
+            separatorBorder = "";
+            if (newGroupIndex && newGroupIndex !== groupIndex) {
+                // separatorBorder = "1px solid #d4d4d5";
+                separatorBorder = "1px solid grey";
+                groupIndex++;
+            }
+        }
 
         return (
             <div
@@ -16,7 +29,14 @@ export default function PropertyValueList({ properties = {}, title }) {
                 className={`property-value-item ${
                     isLinked ? "property-value-item-ld" : ""
                 }`}
-                style={key % 2 == 0 ? { backgroundColor: "#f5f5f5" } : null}
+                style={
+                    key % 2 == 0
+                        ? {
+                              backgroundColor: "#f5f5f5",
+                              borderTop: separatorBorder,
+                          }
+                        : null
+                }
             >
                 <div style={{ minWidth: "fit-content", marginRight: 50 }}>
                     {keys[index]}
@@ -52,7 +72,12 @@ export default function PropertyValueList({ properties = {}, title }) {
                     {title}
                 </h1>
             )}
-            <div style={{ overflow: "auto" }}>
+            <div
+                style={{
+                    overflow: "auto",
+                    // border: "1px solid #d4d4d5",
+                }}
+            >
                 <ReactList
                     itemRenderer={renderItem}
                     length={keys.length}

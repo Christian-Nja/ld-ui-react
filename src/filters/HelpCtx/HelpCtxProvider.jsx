@@ -6,13 +6,14 @@ import {
     saveFirstAccessToLocalStorage,
 } from "./tutorialCookieLocalStorageHandlers";
 
-export default function HelpCtxProvider({ children }) {
+export default function HelpCtxProvider({ children, noTutorial }) {
     // set default filters
     return (
         <HelpCtx.Provider
             value={{
                 saveFirstAccessToLocalStorage,
                 safelyLoadTutorialCookieFromLocalStorage,
+                noTutorial,
             }}
         >
             {children || null}

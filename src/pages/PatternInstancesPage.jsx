@@ -15,13 +15,14 @@ export default function PatternInstancesPage({
     knowledgeGraph,
     patternTypeUri,
     resetFilters,
+    noTutorial,
 }) {
     return (
         <KGCtxProvider
             knowledgeGraph={knowledgeGraph}
             classUri={patternTypeUri}
         >
-            <HelpCtxProvider>
+            <HelpCtxProvider noTutorial={noTutorial}>
                 <AlertCtxProvider>
                     <FilterCtxProvider
                         resourceUri={patternTypeUri}

@@ -283,24 +283,34 @@ export default function List({
                                 id="search-container"
                             >
                                 <SearchBarFilter />
-                                <div
-                                    className="result-display"
-                                    style={{ marginRight: 50 }}
-                                >
-                                    Showing 1 to {resources.length} of{" "}
-                                    {resources.length} resources |{" "}
-                                    {
-                                        uniqBy(
-                                            list,
-                                            sortResourceBy && sortResourceBy.uri
-                                                ? sortResourceBy.uri
-                                                : sortResourceBy.id
-                                        ).length
-                                    }{" "}
-                                    {sortResourceBy.label
-                                        ? `different ${sortResourceBy.label.toLowerCase()}`
-                                        : ""}
-                                </div>
+                                {list.length !== 0 ? (
+                                    <div
+                                        className="result-display"
+                                        style={{ marginRight: 50 }}
+                                    >
+                                        Showing 1 to {resources.length} of{" "}
+                                        {resources.length} resources |{" "}
+                                        {
+                                            uniqBy(
+                                                list,
+                                                sortResourceBy &&
+                                                    sortResourceBy.uri
+                                                    ? sortResourceBy.uri
+                                                    : sortResourceBy.id
+                                            ).length
+                                        }{" "}
+                                        {sortResourceBy.label
+                                            ? `different ${sortResourceBy.label.toLowerCase()}`
+                                            : ""}
+                                    </div>
+                                ) : (
+                                    <div
+                                        className="result-display"
+                                        style={{ marginRight: 50 }}
+                                    >
+                                        Showing 0 to 0 resources
+                                    </div>
+                                )}
                             </div>
                             <div className="header" id="list-header">
                                 <div className="header-row">

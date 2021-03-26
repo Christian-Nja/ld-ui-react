@@ -10,10 +10,11 @@ export default function ResourcesPage({
     knowledgeGraph,
     classUri,
     resetFilters,
+    noTutorial,
 }) {
     return (
         <KGCtxProvider knowledgeGraph={knowledgeGraph} classUri={classUri}>
-            <HelpCtxProvider>
+            <HelpCtxProvider noTutorial={noTutorial}>
                 <AlertCtxProvider>
                     <FilterCtxProvider
                         resourceUri={classUri}
