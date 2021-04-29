@@ -55,9 +55,15 @@ const D3_ZINDEX = 625; // over markers under tooltip and popup
  * @param {{ timeIndexedTypedLocations : TimeIndexedTypedLocation [], depiction : string } }
  */
 export default function TimeIndexedTypedLocation({
+    styles = {
+        mapStyle: {
+            height: 500,
+            width: 500,
+        },
+        popupStyle: {},
+    },
     timeIndexedTypedLocations,
     cPropDepiction,
-    cPropLabel,
     onObjectClick = () => {},
 }) {
     /** mapRef */
@@ -161,7 +167,7 @@ export default function TimeIndexedTypedLocation({
                     timeInterval: `${tITL.startTime} - ${
                         tITL.endTime !== "" ? tITL.endTime : "Today"
                     }`,
-                    locationType: tITL.locationType.split("/").pop(), // at the moment we pass the uri TODO: pass the label
+                    locationType: tITL.locationTypeLabel, // at the moment we pass the uri TODO: pass the label
                     culturalProperty:
                         tITL.cPropLabel !== ""
                             ? tITL.cPropLabel
@@ -350,7 +356,7 @@ export default function TimeIndexedTypedLocation({
 
     return (
         <div>
-            <div id="map"></div>
+            <div id="map" style={styles.mapStyle}></div>
         </div>
     );
 }

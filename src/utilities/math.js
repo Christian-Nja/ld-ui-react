@@ -98,6 +98,7 @@ export function baseLog(b, n) {
 
 /**
  * @description Scale a number x (number in a range minD, maxD) projecting it to a range (minV, maxV)
+ *              returns minV if result is not finite
  * @author Christian Colonna
  * @date 08-12-2020
  * @export
@@ -116,4 +117,22 @@ export function scaleData(x, minD, maxD, minV, maxV) {
         return result;
     }
     return minV;
+}
+
+export function scaleInto01(x, min, max) {
+    return (x - min) / (max - min);
+}
+
+export function decimalPlaces(num) {
+    var match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    if (!match) {
+        return 0;
+    }
+    return Math.max(
+        0,
+        // Number of digits right of decimal point.
+        (match[1] ? match[1].length : 0) -
+            // Adjust for scientific notation.
+            (match[2] ? +match[2] : 0)
+    );
 }

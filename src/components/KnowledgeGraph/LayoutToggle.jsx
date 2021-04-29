@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
 
 import { Button } from "semantic-ui-react";
+import { useLayoutCtx } from "../../layout/LayoutCtx/useLayoutCtx";
 
-export default function LayoutToggle(props) {
-    const [value, setValue] = useState(props.layoutOptions.currentLayout);
+export default function LayoutToggle() {
+    const { layoutOptions, setLayoutOptions } = useLayoutCtx();
+    const [value, setValue] = useState(layoutOptions.layout);
+
     useEffect(() => {
-        props.setLayoutOptions({
-            ...props.layoutOptions,
-            currentLayout: value,
-            graphLayout: value === "graph" ? true : false,
+        setLayoutOptions({
+            ...layoutOptions,
+            layout: value,
         });
     }, [value]);
+
     return (
         <div
             style={{

@@ -19,8 +19,6 @@ export default class ColorGenerator {
             .scale(this.gradient)
             .mode(this.mode)
             .colors(this.colorCount);
-        console.log("Chroma colors");
-        console.log(colors);
         for (let color of colors) {
             yield color;
         }

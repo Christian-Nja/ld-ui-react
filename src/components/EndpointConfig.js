@@ -14,7 +14,7 @@ const context = {
 // The query engine and its source
 const queryEngine = new ComunicaEngine({
     type: "sparql",
-    value: "http://arco.istc.cnr.it/visualPatterns/sparql", //<== TODO : get this dynamically
+    value: "https://arco.istc.cnr.it/visualPatterns/sparql", //<== TODO : get this dynamically
 });
 
 // The object that can create new paths
