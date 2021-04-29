@@ -1,6 +1,6 @@
 {
     "name": "odp-reactor",
-    "version": "1.0.1",
+    "version": "0.0.1",
     "description": "React UIs to visualize Linked Data, especially Ontology Design Patterns",
     "main": "lib/index.js",
     "scripts": {
